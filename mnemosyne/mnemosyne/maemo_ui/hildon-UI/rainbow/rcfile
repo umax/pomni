@@ -672,6 +672,18 @@ style "category-label" {
 }
 widget "*.input_mode_new_category_label" style "category-label"
 widget "*.category_name_w" style "category-label"
+
+style "text-views" {
+    base[NORMAL] = "#FFFFFF"
+    base[SELECTED] = "#FFFFFF"
+    base[ACTIVE] = "#FFFFFF"
+    text[NORMAL] = "#000000"
+    text[PRELIGHT] = "#000000"
+    text[SELECTED] = "#000000"
+    text[ACTIVE] = "#000000"
+}
+widget "*.question_text_w" style "text-views"
+widget "*.answer_text_w" style "text-views"
 #----------------------------- Input mode -----------------
 
 
