@@ -28,7 +28,7 @@ import gtk
 
 import mnemosyne.maemo_ui.widgets.common as widgets
 
-def create_about_ui(main_switcher, image_name, help_html):
+def create_about_ui(main_switcher, image_name):
     """Creates AboutWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=2)
@@ -104,7 +104,8 @@ def create_about_ui(main_switcher, image_name, help_html):
     help_scrolledwindow = gtk.ScrolledWindow()
     help_scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
     help_scrolledwindow.set_name('scrolled_window')
-    help_html = widgets.create_gtkhtml(open(help_html).read())
+    #help_html = widgets.create_gtkhtml(open(help_html).read())
+    help_html = widgets.create_gtkhtml()
     # packing widgets
     logo_box.pack_start(logo, expand=False, fill=False, padding=10)
     logo_box.pack_end(program_label, expand=False, fill=False)
@@ -137,6 +138,4 @@ def create_about_ui(main_switcher, image_name, help_html):
         yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
     toplevel_table.show_all()
     return main_switcher.append_page(toplevel_table), mode_switcher, \
-        menu_button, about_button, help_button
-
-
+        menu_button, about_button, help_button, help_html

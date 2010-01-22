@@ -74,7 +74,7 @@ def create_gtkhtml(content=None):
 
     import gtkhtml2
     import urllib
-    import urllib2
+    #import urllib2
     import urlparse
 
     view = gtkhtml2.View()

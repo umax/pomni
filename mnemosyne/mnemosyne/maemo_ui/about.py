@@ -35,10 +35,10 @@ class AboutWidget(UiComponent):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager, )
         # create widgets
-        self.page, self.switcher, menu_button, about_button, help_button = \
-            widgets.create_about_ui(self.main_widget().switcher,
-                os.path.join(self.config()['theme_path'], "mnemosyne.png"),
-                os.path.join(self.config()['help_path'], "help.html"))
+        self.page, self.switcher, menu_button, about_button, help_button, \
+        self.help_html = widgets.create_about_ui(self.main_widget().switcher, \
+            os.path.join(self.config()['theme_path'], "mnemosyne.png"))
+            #    os.path.join(self.config()['help_path'], "help.html"))
         # connect signals
         menu_button.connect('clicked', self.about_to_main_menu_cb)
         about_button.connect('released', self.show_about_cb)
@@ -64,6 +64,9 @@ class AboutWidget(UiComponent):
         """Show program documentation."""
         
         self.switcher.set_current_page(1)
+        renderer = self.component_manager.get_current('renderer')
+        renderer.render_html(self.help_html, open(os.path.join( \
+            self.config()['help_path'], "help.html")).read())
 
     def about_to_main_menu_cb(self, widget):
         """Returns to main menu."""
