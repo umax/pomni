@@ -40,11 +40,13 @@ class ReviewWdgt(ReviewWidget):
         self.is_sound_card = False
         self.tts = None
         self.renderer = self.component_manager.get_current('renderer')
-        self.page, self.tts_button, self.edit_button, self.del_button, \
-            self.question_container, self.answer_container, \
+        # create widgets
+        self.page, self.question_container, self.answer_container, \
             self.question_text, self.answer_text, self.grades_table, \
-            grades, toolbar_buttons, self.tags_label = \
-            widgets.create_review_ui(self._main_widget.switcher)
+            grades, buttons, self.tags_label = widgets.create_review_ui( \
+            self._main_widget.switcher)
+        self.tts_button, self.edit_button, self.del_button = \
+            buttons[1], buttons[2], buttons[3]
         self.tts_available = tts.is_available()
         self.tts_button.set_sensitive(False)
         # connect signals
@@ -53,12 +55,11 @@ class ReviewWdgt(ReviewWidget):
         self.answer_text.connect('button-press-event', self.get_answer_cb)
         for grade_button in grades:
             grade_button.connect('clicked', self.grade_cb)
-        toolbar_buttons[0].connect('clicked', self.statistics_card_cb)
-        toolbar_buttons[1].connect('clicked', self.speak_cb)
-        toolbar_buttons[2].connect('clicked', self.edit_card_cb)
-        toolbar_buttons[3].connect('clicked', self.add_card_cb)
-        toolbar_buttons[4].connect('clicked', self.delete_card_cb)
-        toolbar_buttons[5].connect('clicked', self.review_to_main_menu_cb)
+        buttons[0].connect('clicked', self.statistics_card_cb)
+        buttons[1].connect('clicked', self.speak_cb)
+        buttons[2].connect('clicked', self.edit_card_cb)
+        buttons[3].connect('clicked', self.delete_card_cb)
+        buttons[4].connect('clicked', self.review_to_main_menu_cb)
 
     def activate(self):
         """Set necessary switcher page."""
@@ -161,13 +162,6 @@ class ReviewWdgt(ReviewWidget):
         """Hook for 'show answer' button."""
 
         self.review_controller().show_answer()
-
-    def add_card_cb(self, widget):
-        """Hook for 'add new card' button."""
-
-        #self.controller().add_cards()
-        self.component_manager.get_current("add_cards_dialog")\
-            (self.component_manager).activate('review')
 
     def statistics_card_cb(self, widget):
         """Hook for 'statistics' button."""
