@@ -51,12 +51,19 @@ def create_question_dialog(window, text):
     button_no = dialog.add_button('NO', gtk.RESPONSE_REJECT)
     button_no.set_size_request(120, 80)
     button_no.set_name('dialog_button')
+    table = gtk.Table(rows=1, columns=1)
     label = gtk.Label()
     label.set_name('dialog_label')
-    label.set_text('\n' + text.replace('?', '?\n').replace(',', ',\n') + '\n')
-    label.show()
-    dialog.vbox.pack_start(label)
+    label.set_justify(gtk.JUSTIFY_CENTER)
+    # make question text easy for user
+    if 'Activate cards' in text:
+        text = 'Delete this card and 1 related card?'
+    label.set_text(text)
+    table.attach(label, 0, 1, 0, 1, xpadding=30, ypadding=30)
+    table.show_all()
+    dialog.vbox.pack_start(table)
     dialog.vbox.set_spacing(2)
+    dialog.action_area.set_layout(gtk.BUTTONBOX_CENTER)
     response = dialog.run()
     dialog.destroy()
     if response == gtk.RESPONSE_YES:
