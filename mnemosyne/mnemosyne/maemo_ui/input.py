@@ -54,7 +54,6 @@ class InputWidget(UiComponent):
         self.default_tag_name = _("<default>")
         self.content_type = None
         self.last_input_page = None
-        self.previous_mode = None
         self.fact = None
         self.tag_mode = False
         self.sounddir = None
@@ -63,7 +62,6 @@ class InputWidget(UiComponent):
         self.selected_tags = None
         self.tags = sorted(self.database().get_tag_names(), \
             cmp=numeric_string_cmp) or [self.default_tag_name]
-        self.added_new_cards = False
         self._main_widget = self.main_widget()
         self._main_widget.soundplayer.stop()
         # create widgets
@@ -80,7 +78,8 @@ class InputWidget(UiComponent):
         content_button.connect('clicked', self.show_content_dialog_cb)
         menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
-        sound_button.connect('button-press-event', self.preview_sound_in_input_cb)
+        sound_button.connect('button-press-event', \
+            self.preview_sound_in_input_cb)
         question_text.connect('button_release_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
         
@@ -399,10 +398,8 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             self.selected_tags = self.default_tag_name
             self.last_selected_grade = 0
 
-    def activate(self, mode=None):
+    def activate(self):
         """Activate input mode."""
-
-        self.previous_mode = mode
 
         # this part is the first part of add_cards from default controller
         self.stopwatch().pause()
@@ -438,21 +435,11 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         if grade in (0, 1):
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
-            [tag.strip() for tag in self.selected_tags.split(',')], save=True)
-        self.added_new_cards = True
+            [unicode(tag).strip() for tag in self.selected_tags.split(',')], \
+            save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
         self.show_snd_container()
-
-        # this part is called from add_card_cb, when card is added
-        self.database().save()
-        review_controller = self.review_controller()
-        review_controller.reload_counters()
-        if review_controller.card is None:
-            review_controller.new_question()
-        else:
-            review_controller.update_status_bar()
-        self.stopwatch().unpause()
 
     def input_to_main_menu_cb(self, widget):
         """Return to main menu."""
@@ -465,9 +452,20 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             self.conf["card_type_last_selected"] = self.card_type.id
             self.conf["content_type_last_selected"] = self.content_type
             self.conf.save()
+
+            # this part is called from add_card_cb, when card is added
+            self.database().save()
+            review_controller = self.review_controller()
+            review_controller.reload_counters()
+            if review_controller.card is None:
+                review_controller.new_question()
+            #else:
+            #    review_controller.update_status_bar()
+            self.stopwatch().unpause()
+
             self._main_widget.soundplayer.stop()
             self._main_widget.switcher.remove_page(self.page)
-            self._main_widget.activate_mode(self.previous_mode)
+            self._main_widget.menu_()
 
 
 
