@@ -106,6 +106,7 @@ class ReviewWdgt(ReviewWidget):
         """Clear question text."""
 
         self.tags_label.set_text("No tags")
+        self.tts_button.set_sensitive(False)
         self.renderer.render_html(self.question_text)
 
     def clear_answer(self):
