@@ -80,15 +80,14 @@ def create_information_dialog(window, text):
     button_ok = dialog.add_button('OK', gtk.RESPONSE_OK)
     button_ok.set_size_request(120, 80)
     button_ok.set_name('dialog_button')
+    table = gtk.Table(rows=1, columns=1)
     label = gtk.Label()
     label.set_justify(gtk.JUSTIFY_CENTER)
     label.set_name('dialog_label')
-    label.set_text('\n   ' + text.replace('.', '.   \n').replace( \
-        ',', ',\n') + '\n')
-    label.show()
-    dialog.vbox.pack_start(label)
+    label.set_text(text.replace('. ', '.   \n').replace(',', ',\n'))
+    table.attach(label, 0, 1, 0, 1, xpadding=30, ypadding=30)
+    table.show_all()
+    dialog.vbox.pack_start(table)
     dialog.action_area.set_layout(gtk.BUTTONBOX_SPREAD)
     dialog.run()
     dialog.destroy()
-
-
