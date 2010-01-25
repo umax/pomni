@@ -131,7 +131,7 @@ class MainWdgt(MainWidget):
             self.create_mode('review')
         self.controller().activate_cards()
 
-    def input_(self, mode=None):
+    def input_(self):
         """Activate input mode."""
        
         self.kill_menu_object()
@@ -139,7 +139,7 @@ class MainWdgt(MainWidget):
             self.create_mode('review')
         #self.controller().add_cards()
         self.component_manager.get_current("add_cards_dialog")\
-            (self.component_manager).activate(mode)
+            (self.component_manager).activate()
 
     def configure_(self):
         """Activate configure mode through main controller."""
