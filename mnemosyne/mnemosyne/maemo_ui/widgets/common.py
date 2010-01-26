@@ -50,6 +50,9 @@ def create_gtkhtml(content=None):
             # jump to the local url(anchor)
             view.jump_to_anchor(url[1:])
             view.show()
+        # open local html
+        elif url.startswith("/"):
+            load_html(document, open(url).read())
         else:
             # open browser here
             import webbrowser
