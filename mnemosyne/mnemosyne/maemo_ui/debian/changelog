@@ -1,3 +1,13 @@
+mnemosyne (2.0.0~beta6~rc2) unstable; urgency=low
+
+  * improved User Guide performance (Max)
+  * fixed bug in libmnemosyne with deleting n-sided cards (Ed)
+  * fixed bug with returning to wrong mode from Input mode (Max)
+  * removed 'Add card' button from Review mode (Max)
+  * fixed text alignment in dialogs (Max)
+
+ -- Max Usachev <maxusachev@gmail.com>  Tue, 26 Jan 2010 20:03:03 +0200
+
 mnemosyne (2.0.0~beta6~rc1) unstable; urgency=low
 
   * created first version of User guide (Ed)
