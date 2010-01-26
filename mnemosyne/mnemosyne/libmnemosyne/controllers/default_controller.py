@@ -263,6 +263,7 @@ class DefaultController(Controller):
             return
         db.delete_fact_and_related_data(fact)
         db.save()
+        self.scheduler().rebuild_queue()
         review_controller.reload_counters()
         review_controller.new_question()
         self.stopwatch().unpause()
