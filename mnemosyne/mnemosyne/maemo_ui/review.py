@@ -21,7 +21,7 @@
 #
 
 """
-Hildon UI. Review widgets.
+Hildon UI. Review widget.
 """
 
 from mnemosyne.libmnemosyne.ui_components.review_widget import ReviewWidget
@@ -36,10 +36,11 @@ class ReviewWdgt(ReviewWidget):
     def __init__(self, component_manager):
         ReviewWidget.__init__(self, component_manager)
         self._main_widget = self.main_widget()
+        self._review_controller = self.review_controller()
+        self.renderer = self.component_manager.get_current('renderer')
+        self.tts = None
         self.sndtext = None
         self.is_sound_card = False
-        self.tts = None
-        self.renderer = self.component_manager.get_current('renderer')
         # create widgets
         self.page, self.question_container, self.answer_container, \
             self.question_text, self.answer_text, self.grades_table, \
@@ -67,12 +68,12 @@ class ReviewWdgt(ReviewWidget):
         self._main_widget.switcher.set_current_page(self.page)
 
     def enable_edit_current_card(self, enabled):
-        """Enable or disable 'edit card' button."""
+        """Enable or disable 'Edit card' button."""
 
         self.edit_button.set_sensitive(enabled)
 
     def enable_delete_current_card(self, enabled):
-        """Enable or disable 'delete card' button."""
+        """Enable or disable 'Delete card' button."""
 
         self.del_button.set_sensitive(enabled)
 
@@ -94,7 +95,7 @@ class ReviewWdgt(ReviewWidget):
             else:
                 self.tts_button.set_sensitive(self.tts_available)
             self.renderer.render_html(self.question_text, text)
-        tags = [tag.name for tag in self.review_controller().card.tags]
+        tags = [tag.name for tag in self._review_controller.card.tags]
         self.tags_label.set_text("Card tags: " + ', '.join(tags))
 
     def set_answer(self, text):
@@ -115,7 +116,7 @@ class ReviewWdgt(ReviewWidget):
         self.renderer.render_html(self.answer_text)
 
     def update_show_button(self, text, default, enabled): 
-        """Update show button."""
+        """Update Show button."""
 
         self.answer_container.set_sensitive(enabled)
         if enabled:
@@ -131,7 +132,7 @@ class ReviewWdgt(ReviewWidget):
 
     # callbacks
     def speak_cb(self, widget):
-        """Hook for 'tts' button."""
+        """Hook for 'Speak' button."""
 
         config = self.config()
         params = {"language": config['tts_language'], "voice": \
@@ -144,7 +145,7 @@ class ReviewWdgt(ReviewWidget):
         self.tts.speak(self.renderer.tts_text)
 
     def preview_sound_in_review_cb(self, widget, event):
-        """Hook for 'play sound' button."""
+        """Hook for 'Play sound' button."""
 
         if self.is_sound_card:
             self.renderer.render_sound_hint(self.question_text)
@@ -154,41 +155,40 @@ class ReviewWdgt(ReviewWidget):
                 self._main_widget.soundplayer.stop()
 
     def review_to_main_menu_cb(self, widget):
-        """Hook for 'main menu' button."""
+        """Hook for 'Main menu' button."""
 
         self._main_widget.soundplayer.stop()
         self._main_widget.menu_()
 
     def get_answer_cb(self, widget, event):
-        """Hook for 'show answer' button."""
+        """Hook for 'Show answer' button."""
 
-        self.review_controller().show_answer()
+        self._review_controller.show_answer()
 
     def statistics_card_cb(self, widget):
-        """Hook for 'statistics' button."""
+        """Hook for 'Statistics' button."""
 
         self.config()["last_variant_for_statistics_page"] = 0
         self.controller().show_statistics()
 
     def delete_card_cb(self, widget):
-        """Hook for 'delete card' button."""
+        """Hook for 'Delete card' button."""
 
         self._main_widget.soundplayer.stop()
         self.controller().delete_current_fact()
 
     def edit_card_cb(self, widget):
-        """Hook for 'edit card' button."""
+        """Hook for 'Edit card' button."""
 
         self._main_widget.soundplayer.stop()
-        #self.controller().edit_current_card()
         self.component_manager.get_current("edit_fact_dialog")\
             (self.component_manager).activate()
 
     def grade_cb(self, widget):
-        """Hook for 'grade' button."""
+        """Hook for 'GradeN' button."""
 
         self._main_widget.soundplayer.stop()
-        self.review_controller().grade_answer(int(widget.name[-1]))
+        self._review_controller.grade_answer(int(widget.name[-1]))
 
 
 # Local Variables:
