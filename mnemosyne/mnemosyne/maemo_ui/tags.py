@@ -78,10 +78,7 @@ class TagsWidget(NonBlockingActivateCardsDialog):
             tags_box.remove(child)
         for tag in self.database().get_tags():
             self.tags_dict[tag.name] = tag._id
-            # get cards count for tag
-            cards_count = sum([ \
-                self.database().card_count_for_grade_and__tag_id( \
-                    grade, tag._id) for grade in range(-1, 6)])
+            cards_count = self.database().total_card_count_for__tag_id(tag._id)
             tags_box.pack_start(widgets.create_tag_checkbox(tag.name + \
                 unicode(" (%s cards)" % cards_count), \
                 tag._id in criterion.active_tag__ids))
