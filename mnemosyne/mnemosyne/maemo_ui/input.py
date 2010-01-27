@@ -182,6 +182,7 @@ class InputWidget(UiComponent):
 
         tags = ', '.join([tag.strip() for tag in self.selected_tags.split(',') \
             if tag.strip() in self.tags]) or self.default_tag_name
+        self.selected_tags = tags
         self.widgets["TagsLabel"].set_text(_('Current tags: ') + tags)
 
     def check_complete_input(self):
