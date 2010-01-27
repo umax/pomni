@@ -63,7 +63,6 @@ class InputWidget(UiComponent):
         self.tags = sorted(self.database().get_tag_names(), \
             cmp=numeric_string_cmp) or [self.default_tag_name]
         self._main_widget = self.main_widget()
-        self._main_widget.soundplayer.stop()
         # create widgets
         self.page, card_type_button, content_button, menu_button, tags_button, \
             sound_button, question_text, answer_text, foreign_text, \
@@ -72,9 +71,7 @@ class InputWidget(UiComponent):
             question_container, toolbar_container, self.grades, tags_label, \
             tags_button = widgets.create_input_ui(self._main_widget.switcher, \
                 self.conf["theme_path"])
-        
         # connect signals
-        card_type_button.connect('clicked', self.show_cardtype_dialog_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
         menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
@@ -82,21 +79,17 @@ class InputWidget(UiComponent):
             self.preview_sound_in_input_cb)
         question_text.connect('button_release_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
-        
         # create language switcher and set its callbacks for all text widgets
-        text_widgets = [question_text, answer_text, foreign_text,
-                        pronunciation_text, translation_text, cloze_text]
         langswitcher = self.component_manager.get_current("langswitcher")
-        for widget in text_widgets:
+        for widget in [question_text, answer_text, foreign_text, \
+            pronunciation_text, translation_text, cloze_text]:
             widget.connect('focus-in-event', langswitcher.restore_cb)
             widget.connect('focus-out-event', langswitcher.save_cb)
-
-        # Widgets as attributes
+        # widgets as attributes
         self.areas = {"cloze": cloze_text, "answer":  answer_text,
             "foreign": foreign_text, "pronunciation": pronunciation_text,
             "translation": translation_text, "question": question_text}
-
-        # Change default font
+        # change default font
         font = pango.FontDescription("Nokia Sans %s" % \
             (self.conf['font_size'] - FONT_DISTINCTION))
         for area in self.areas.values():
@@ -141,7 +134,7 @@ class InputWidget(UiComponent):
         for card_type in self.card_types():
             self.selectors[card_type.id]["card_type"] = card_type
 
-        # Turn off hildon autocapitalization
+        # turn off hildon autocapitalization
         try:
             for widget in self.areas.values():
                 widget.set_property("hildon-input-mode", 'full')
@@ -150,10 +143,9 @@ class InputWidget(UiComponent):
             pass # so, skip silently
 
     def show_snd_container(self):
-        """Show or hide sound button. """
+        """Show or hide Sound button. """
                     
-        text = self.get_textview_text(self.areas["question"])
-        if "sound src=" in text:
+        if "sound src=" in self.get_textview_text(self.areas["question"]):
             self.widgets["QuestionContainer"].hide()
             self.widgets["SoundContainer"].show()
         else:
@@ -331,7 +323,8 @@ class InputWidget(UiComponent):
         else:
             ctype = self.content_type + 'dir'
             setattr(self, ctype, self.conf[ctype])
-            dialog, liststore, iconview_widget = widgets.create_media_dialog_ui()
+            dialog, liststore, iconview_widget = \
+                widgets.create_media_dialog_ui()
             if ctype == 'imagedir':
                 for fname in os.listdir(self.imagedir):
                     if os.path.isfile(os.path.join(self.imagedir, fname)):
@@ -386,6 +379,8 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
         # connect signals
+        self.widgets["CardTypeButton"].connect( \
+            'clicked', self.show_cardtype_dialog_cb)
         for button in self.grades.values():
             button.connect('clicked', self.add_card_cb)
         for name in ('answer', 'foreign', 'pronunciation', 'translation', \
@@ -460,8 +455,6 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             review_controller.reload_counters()
             if review_controller.card is None:
                 review_controller.new_question()
-            #else:
-            #    review_controller.update_status_bar()
             self.stopwatch().unpause()
 
             self._main_widget.soundplayer.stop()
