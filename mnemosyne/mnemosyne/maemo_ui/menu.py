@@ -21,7 +21,7 @@
 #
 
 """
-Hildon UI. Menu widgets.
+Hildon UI. Menu widget.
 """
 
 import mnemosyne.maemo_ui.widgets.menu as widgets
@@ -55,49 +55,50 @@ class MenuWidget(UiComponent):
 
     # callbacks
     def tags_cb(self, widget):
-        """Go to activate tags mode."""
+        """Go to Tags mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.tags_()
 
     def input_cb(self, widget):
-        """Go to input mode."""
+        """Go to Input mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.input_()
 
     def review_cb(self, widget):
-        """Go to review mode."""
+        """Go to Review mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.review_()
 
     def sync_cb(self, widget):
-        """Go to sync mode."""
+        """Go to Sync mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.sync_()
 
     def settings_cb(self, widget):
-        """Go to configuration mode."""
+        """Go to Configuration mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.configure_()
 
     def statistics_cb(self, widget):
-        """Go to statistics mode."""
+        """Go to Statistics mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.statistics_()
 
     def about_cb(self, widget):
-        """Go to about mode."""
+        """Go to About mode."""
 
         self._main_widget.switcher.remove_page(self.page)
         self._main_widget.about_()
 
     def exit_cb(self, widget):
         """Exit program."""
+
         self._main_widget.exit_()
 
 
