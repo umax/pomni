@@ -26,37 +26,18 @@ Hildon UI: Tags widget.
 
 import re
 import mnemosyne.maemo_ui.widgets.tags as widgets
+from mnemosyne.libmnemosyne.ui_component import UiComponent
 from mnemosyne.libmnemosyne.ui_components.dialogs import ActivateCardsDialog
 from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
     DefaultCriterion
 
 
-class NonBlockingActivateCardsDialog(ActivateCardsDialog):
-    """Non blocking variant of ActivateCardsDialog."""
-
-    def activate_cards(self):
-        """This part is the first part of activate_cards
-           from default controller."""
-
-        self.stopwatch().pause()
-        self.component_manager.get_current("activate_cards_dialog") \
-            (self.component_manager).activate()
-
-    def update_ui(self, review_controller):
-        """This part is called from tags_to_main_menu_cb,
-           when tags is selected."""
-
-        review_controller.reset_but_try_to_keep_current_card()
-        review_controller.reload_counters()
-        review_controller.update_status_bar()
-        self.stopwatch().unpause()
-
-
-class TagsWidget(NonBlockingActivateCardsDialog):
+class TagsWidget(ActivateCardsDialog):
     """Activate cards widget."""
     
     def __init__(self, component_manager):
-        NonBlockingActivateCardsDialog.__init__(self, component_manager)
+        UiComponent.__init__(self, component_manager)
+        # create widgets
         self.page, self.tags_box, menu_button, stat_button = \
             widgets.create_tags_ui(self.main_widget().switcher)
         self.tags_dict = {}
@@ -66,6 +47,9 @@ class TagsWidget(NonBlockingActivateCardsDialog):
 
     def activate(self):
         """Activate 'ActivateCardsDialog'."""
+
+        # this part is the first part of activate_cards from default controller
+        self.stopwatch().pause()
 
         self.main_widget().switcher.set_current_page(self.page)
         self.display_criterion(self.database().current_activity_criterion())
@@ -100,7 +84,13 @@ class TagsWidget(NonBlockingActivateCardsDialog):
         """Return to main menu."""
 
         self.database().set_current_activity_criterion(self.get_criterion())
-        self.update_ui(self.review_controller())
+
+        # this is the second part of activate_cards from default_controller
+        review_controller = self.review_controller()
+        review_controller.reset_but_try_to_keep_current_card()
+        review_controller.reload_counters()
+        self.stopwatch().unpause()
+
         self.main_widget().switcher.remove_page(self.page)
         self.main_widget().menu_()
     
