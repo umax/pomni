@@ -106,18 +106,14 @@ def create_tag_checkbox(name, active):
     hbox.show_all()
     return hbox
 
-def create_button(name=None, callback=None, event='clicked', \
-    width=80, height=80, label=None):
+def create_button(name, callback=None, event='clicked', width=80, height=80):
     """Creates gtkButton widget."""
 
     button = gtk.Button()
     button.set_size_request(width, height)
-    if name is not None:
-        button.set_name(name)
+    button.set_name(name)
     if callback is not None:
         button.connect(event, callback)
-    if label is not None:
-        button.set_label(label)
     return button
 
 def create_radio_button(group=None, name=None, callback=None, \

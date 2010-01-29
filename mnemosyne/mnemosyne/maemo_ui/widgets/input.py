@@ -29,40 +29,30 @@ import gtk
 import mnemosyne.maemo_ui.widgets.common as widgets
 from mnemosyne.maemo_ui.widgets.common import create_tag_checkbox
 
+
 def create_input_ui(main_switcher, theme_path):
     """Creates InputWidget UI."""
 
-    def create_grade_button(name, width=80, height=80):
-        button = gtk.Button()
-        button.set_size_request(width, height)
-        button.set_name(name)
-        return button
+    def create_text_block():
+        """Creates text field and text field container."""
+        container = gtk.Frame()
+        container.set_name('html_container')
+        text_widget = gtk.TextView()
+        text_widget.set_justification(gtk.JUSTIFY_CENTER)
+        text_widget.set_wrap_mode(gtk.WRAP_WORD)
+        return container, text_widget
 
     toplevel_table = gtk.Table(rows=1, columns=3)
-    # create toolbar container
+    # create containers
     toolbar_container = widgets.create_toolbar_container('toolbar_container')
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
-    # create grades container
     grades_container = widgets.create_toolbar_container('grades_container')
     grades_table = gtk.Table(rows=6, columns=1, homogeneous=True)
     # create toolbar buttons
-    card_type_button = gtk.Button()
-    card_type_button.set_size_request(80, 80)
-    content_button = gtk.Button()
-    content_button.set_size_request(80, 80)
-    menu_button = gtk.Button()
-    menu_button.set_size_request(80, 80)
-    menu_button.set_name('main_menu_button')
-    widgets_table = gtk.Table(rows=2, columns=1)
-    widgets_table.set_row_spacings(14)
-    tags_button = gtk.Button()
-    tags_button.set_size_request(80, 80)
-    tags_button.set_name('tags_button')
-    card_type_switcher = gtk.Notebook()
-    card_type_switcher.set_show_tabs(False)
-    card_type_switcher.set_show_border(False)
-    two_sided_box = gtk.VBox(spacing=10)
-    two_sided_box.set_homogeneous(True)
+    card_type_button = widgets.create_button('undefined')
+    content_button = widgets.create_button('undefined')
+    tags_button = widgets.create_button('tags_button')
+    menu_button = widgets.create_button('main_menu_button')
     # create sound button
     sound_container = gtk.Frame()
     sound_container.set_name('html_container')
@@ -75,46 +65,14 @@ def create_input_ui(main_switcher, theme_path):
     # create grades buttons
     grades = {}
     for num in range(6):
-        grades[num] = create_grade_button('grade%s' % num)
+        grades[num] = widgets.create_button('grade%s' % num)
     # create text fields
-    question_container = gtk.Frame()
-    question_container.set_name('html_container')
-    question_text = gtk.TextView()
-    question_text.set_name('question_text')
-    question_text.set_justification(gtk.JUSTIFY_CENTER)
-    question_text.set_wrap_mode(gtk.WRAP_WORD)
-    answer_container = gtk.Frame()
-    answer_container.set_name('html_container')
-    answer_text = gtk.TextView()
-    answer_text.set_name('answer_text')
-    answer_text.set_justification(gtk.JUSTIFY_CENTER)
-    answer_text.set_wrap_mode(gtk.WRAP_WORD)
-    three_sided_box = gtk.VBox(spacing=10)
-    foreign_container = gtk.Frame()
-    foreign_container.set_name('html_container')
-    foreign_text = gtk.TextView()
-    foreign_text.set_name('foreign_text')
-    foreign_text.set_justification(gtk.JUSTIFY_CENTER)
-    foreign_text.set_wrap_mode(gtk.WRAP_WORD)
-    pronunciation_container = gtk.Frame()
-    pronunciation_container.set_name('html_container')
-    pronunciation_text = gtk.TextView()
-    pronunciation_text.set_name('pronunciation_text')
-    pronunciation_text.set_justification(gtk.JUSTIFY_CENTER)
-    pronunciation_text.set_wrap_mode(gtk.WRAP_WORD)
-    translation_container = gtk.Frame()
-    translation_container.set_name('html_container')
-    translation_text = gtk.TextView()
-    translation_text.set_name('translation_text')
-    translation_text.set_justification(gtk.JUSTIFY_CENTER)
-    translation_text.set_wrap_mode(gtk.WRAP_WORD)
-    cloze_box = gtk.VBox()
-    cloze_container = gtk.Frame()
-    cloze_container.set_name('html_container')
-    cloze_text = gtk.TextView()
-    cloze_text.set_name('cloze_text')
-    cloze_text.set_justification(gtk.JUSTIFY_CENTER)
-    cloze_text.set_wrap_mode(gtk.WRAP_WORD)
+    question_container, question_text = create_text_block()
+    answer_container, answer_text = create_text_block()
+    foreign_container, foreign_text = create_text_block()
+    pronunciation_container, pronunciation_text = create_text_block()
+    translation_container, translation_text = create_text_block()
+    cloze_container, cloze_text = create_text_block()
     # create new tag elements
     tags_label = gtk.Label()
     tags_label.set_name('tags_label')
@@ -125,9 +83,7 @@ def create_input_ui(main_switcher, theme_path):
     new_tag_label = gtk.Label()
     new_tag_label.set_text('New tag: ')
     new_tag_label.set_name('white_label')
-    new_tag_button = gtk.Button()
-    new_tag_button.set_size_request(60, 60)
-    new_tag_button.set_name('plus_button')
+    new_tag_button = widgets.create_button('plus_button', width=60, height=60)
     new_tag_frame = gtk.Frame()
     new_tag_frame.set_name('html_container')
     new_tag_entry = gtk.Entry()
@@ -147,6 +103,16 @@ def create_input_ui(main_switcher, theme_path):
     tags_viewport.set_shadow_type(gtk.SHADOW_NONE)
     tags_box = gtk.VBox()
     tags_box.set_homogeneous(True)
+    # create other widgets
+    three_sided_box = gtk.VBox(spacing=10)
+    cloze_box = gtk.VBox()
+    widgets_table = gtk.Table(rows=2, columns=1)
+    widgets_table.set_row_spacings(14)
+    card_type_switcher = gtk.Notebook()
+    card_type_switcher.set_show_tabs(False)
+    card_type_switcher.set_show_border(False)
+    two_sided_box = gtk.VBox(spacing=10)
+    two_sided_box.set_homogeneous(True)
     # packing widgets
     toolbar_table.attach(card_type_button, 0, 1, 0, 1, \
         xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)

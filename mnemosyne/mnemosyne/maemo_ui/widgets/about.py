@@ -33,10 +33,7 @@ def create_about_ui(main_switcher, image_name):
 
     toplevel_table = gtk.Table(rows=1, columns=2)
     # create toolbar container
-    toolbar_container = gtk.Notebook()
-    toolbar_container.set_show_tabs(False)
-    toolbar_container.set_size_request(82, 480)
-    toolbar_container.set_name('three_button_container')
+    toolbar_container = widgets.create_toolbar_container('three_button_container')
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
     # create mode switcher
     mode_switcher = gtk.Notebook()
@@ -48,9 +45,7 @@ def create_about_ui(main_switcher, image_name):
         'help_toolbar_about_button', None, width=80, height=80)
     help_button = widgets.create_radio_button(about_button,
         'help_toolbar_help_button', None, width=80, height=80)
-    menu_button = gtk.Button()
-    menu_button.set_size_request(80, 80)
-    menu_button.set_name('main_menu_button')
+    menu_button = widgets.create_button('main_menu_button')
     info_container = gtk.Notebook()
     info_container.set_show_border(False)
     info_container.set_show_tabs(False)

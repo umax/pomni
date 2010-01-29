@@ -30,18 +30,11 @@ import mnemosyne.maemo_ui.widgets.common as widgets
 def create_configuration_ui(main_switcher):
     """Creates ConfigureWidget UI."""
 
-    def create_toolbar_container(name, show_tabs=False, width=82, height=480):
-        """Creates toolbar container."""
-
-        container = gtk.Notebook()
-        container.set_show_tabs(show_tabs)
-        container.set_size_request(width, height)
-        container.set_name(name)
-        return container
-
     toplevel_table = gtk.Table(rows=1, columns=2)
-    toolbar_container = create_toolbar_container('toolbar_container')
+    # create containers
+    toolbar_container = widgets.create_toolbar_container('toolbar_container')
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
+    # create toolbar buttons
     general_settings_button = widgets.create_radio_button(None, \
         'config_toolbar_general_settings_button', None, width=80, height=80)
     skin_settings_button = widgets.create_radio_button(general_settings_button,
@@ -49,10 +42,12 @@ def create_configuration_ui(main_switcher):
     tts_settings_button = widgets.create_radio_button(general_settings_button,
         'config_toolbar_tts_settings_button', None, width=80, height=80)
     menu_button = widgets.create_button('main_menu_button', None)
+    # create settings switcher
     mode_settings_switcher = gtk.Notebook()
     mode_settings_switcher.set_show_tabs(False)
     mode_settings_switcher.set_show_border(False)
     mode_settings_switcher.set_name('config_mode_settings_switcher')
+    # create widgets for General settings
     general_settings_table = gtk.Table(rows=2, columns=1, homogeneous=True)
     general_settings_table.set_row_spacings(10)
     directories_table = gtk.Table(rows=2, columns=1, homogeneous=True)
@@ -91,6 +86,7 @@ def create_configuration_ui(main_switcher):
     start_with_review_checkbox.set_name('config_checkbox')
     start_with_review_label = gtk.Label('Open Review mode at startup')
     start_with_review_label.set_name('white_label')
+    # create widgets for Skin settings
     skin_settings_table = gtk.Table(rows=1, columns=1)
     font_size_table = gtk.Table(rows=1, columns=3)
     font_size_example_container = gtk.Frame()
@@ -101,6 +97,7 @@ def create_configuration_ui(main_switcher):
         width=64, height=64)
     font_size_increase_button = widgets.create_button('up_arrow', None, 
         width=64, height=64)
+    # create widgets for TTS settings
     tts_settings_table = gtk.Table(rows=2, columns=1, homogeneous=True)
     tts_settings_table1 = gtk.Table(rows=2, columns=1, homogeneous=True)
     tts_settings_table1.set_row_spacings(10)
@@ -248,6 +245,3 @@ def create_configuration_ui(main_switcher):
         tts_lang_prev_button, tts_lang_next_button, menu_button, \
         font_size_decrease_button, font_size_increase_button, \
         tts_voice_prev_button, tts_voice_next_button
-
-
-
