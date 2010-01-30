@@ -1,10 +1,16 @@
+mnemosyne (2.0.0~beta7) unstable; urgency=low
+
+  * improved postinst script
+
+ -- Max Usachev <maxusachev@gmail.com>  Sat, 30 Jan 2010 15:29:25 +0200
+
 mnemosyne (2.0.0~beta6) unstable; urgency=low
 
   * removed NonBlockingActivateCardsDialog
   * fixed bug with saving not existing tags when adding new card
   * removed not used images
 
- -- Max <maxusachev@gmail.com>  Sat, 30 Jan 2010 12:47:49 +0200
+ -- Max Usachev <maxusachev@gmail.com>  Sat, 30 Jan 2010 12:47:49 +0200
 
 mnemosyne (2.0.0~beta6~rc2) unstable; urgency=low
 
