@@ -123,13 +123,14 @@ class MaemoStatisticsWidget(StatisticsDialog):
 
         html = self.html
         html += "<tr><td><b>Total cards statistics</b></td></tr>"
+        database = self.database()
         html += "<tr><td>Total cards: %d<br><br><br></td></tr>" % \
-            sum([self.database().card_count_for_grade(grade) \
-            for grade in range(-1, 6)])
+            sum([database.total_card_count_for__tag_id(tag._id) \
+                for tag in database.get_tags()])
         html += "<tr><td><b>Grade statistics for all cards</b></td></tr>"
         for grade in range(-1, 6):
             html += "<tr><td>Grade %2i: %i cards</td></tr>" % \
-                (grade, self.database().card_count_for_grade(grade))
+                (grade, self.database().total_card_count_for_grade(grade))
         html += "</table></body></html>"
         html = self.renderer.change_font_size(html)
         self.renderer.render_html(self.total_card_html_widget, html)
@@ -145,7 +146,8 @@ class MaemoStatisticsWidget(StatisticsDialog):
                 name.replace('<', '&lt;').replace('>', '&gt;')
             for grade in range(-1, 6):
                 html += "<tr><td>Grade %2i: %i cards</td></tr>" % (grade, \
-                self.database().card_count_for_grade_and__tag_id(grade, _id))
+                self.database().total_card_count_for_grade_and__tag_id(\
+                    grade, _id))
         html += "</table></body></html>"
         html = self.renderer.change_font_size(html)
         self.renderer.render_html(self.tags_html_widget, html)
