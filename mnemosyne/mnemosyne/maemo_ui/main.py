@@ -26,10 +26,9 @@ Main Widget.
 
 import os
 import gtk
-
 import mnemosyne.maemo_ui.widgets.main as widgets
-
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
+
 
 class MainWdgt(MainWidget):
     """Main widget class."""
@@ -134,9 +133,11 @@ class MainWdgt(MainWidget):
         self.kill_menu_object()
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.controller().activate_cards()
+        #self.controller().activate_cards()
+        self.component_manager.get_current("activate_cards_dialog")\
+            (self.component_manager).activate()
 
-    def input_(self, mode=None):
+    def input_(self):
         """Activate input mode."""
        
         self.kill_menu_object()
@@ -144,7 +145,7 @@ class MainWdgt(MainWidget):
             self.create_mode('review')
         #self.controller().add_cards()
         self.component_manager.get_current("add_cards_dialog")\
-            (self.component_manager).activate(mode)
+            (self.component_manager).activate()
 
     def configure_(self):
         """Activate configure mode through main controller."""

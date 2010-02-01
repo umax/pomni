@@ -54,7 +54,6 @@ class InputWidget(UiComponent):
         self.default_tag_name = _("<default>")
         self.content_type = None
         self.last_input_page = None
-        self.previous_mode = None
         self.fact = None
         self.tag_mode = False
         self.sounddir = None
@@ -63,9 +62,7 @@ class InputWidget(UiComponent):
         self.selected_tags = None
         self.tags = sorted(self.database().get_tag_names(), \
             cmp=numeric_string_cmp) or [self.default_tag_name]
-        self.added_new_cards = False
         self._main_widget = self.main_widget()
-        self._main_widget.soundplayer.stop()
         # create widgets
         self.page, card_type_button, content_button, menu_button, tags_button, \
             sound_button, question_text, answer_text, foreign_text, \
@@ -74,30 +71,25 @@ class InputWidget(UiComponent):
             question_container, toolbar_container, self.grades, tags_label, \
             tags_button = widgets.create_input_ui(self._main_widget.switcher, \
                 self.conf["theme_path"])
-        
         # connect signals
-        card_type_button.connect('clicked', self.show_cardtype_dialog_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
         menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
-        sound_button.connect('button-press-event', self.preview_sound_in_input_cb)
+        sound_button.connect('button-press-event', \
+            self.preview_sound_in_input_cb)
         question_text.connect('button_release_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
-        
         # create language switcher and set its callbacks for all text widgets
-        text_widgets = [question_text, answer_text, foreign_text,
-                        pronunciation_text, translation_text, cloze_text]
         langswitcher = self.component_manager.get_current("langswitcher")
-        for widget in text_widgets:
+        for widget in [question_text, answer_text, foreign_text, \
+            pronunciation_text, translation_text, cloze_text]:
             widget.connect('focus-in-event', langswitcher.restore_cb)
             widget.connect('focus-out-event', langswitcher.save_cb)
-
-        # Widgets as attributes
+        # widgets as attributes
         self.areas = {"cloze": cloze_text, "answer":  answer_text,
             "foreign": foreign_text, "pronunciation": pronunciation_text,
             "translation": translation_text, "question": question_text}
-
-        # Change default font
+        # change default font
         font = pango.FontDescription("Nokia Sans %s" % \
             (self.conf['font_size'] - FONT_DISTINCTION))
         for area in self.areas.values():
@@ -142,7 +134,7 @@ class InputWidget(UiComponent):
         for card_type in self.card_types():
             self.selectors[card_type.id]["card_type"] = card_type
 
-        # Turn off hildon autocapitalization
+        # turn off hildon autocapitalization
         try:
             for widget in self.areas.values():
                 widget.set_property("hildon-input-mode", 'full')
@@ -151,10 +143,9 @@ class InputWidget(UiComponent):
             pass # so, skip silently
 
     def show_snd_container(self):
-        """Show or hide sound button. """
+        """Show or hide Sound button. """
                     
-        text = self.get_textview_text(self.areas["question"])
-        if "sound src=" in text:
+        if "sound src=" in self.get_textview_text(self.areas["question"]):
             self.widgets["QuestionContainer"].hide()
             self.widgets["SoundContainer"].show()
         else:
@@ -183,6 +174,7 @@ class InputWidget(UiComponent):
 
         tags = ', '.join([tag.strip() for tag in self.selected_tags.split(',') \
             if tag.strip() in self.tags]) or self.default_tag_name
+        self.selected_tags = tags
         self.widgets["TagsLabel"].set_text(_('Current tags: ') + tags)
 
     def check_complete_input(self):
@@ -331,7 +323,8 @@ class InputWidget(UiComponent):
         else:
             ctype = self.content_type + 'dir'
             setattr(self, ctype, self.conf[ctype])
-            dialog, liststore, iconview_widget = widgets.create_media_dialog_ui()
+            dialog, liststore, iconview_widget = \
+                widgets.create_media_dialog_ui()
             if ctype == 'imagedir':
                 for fname in os.listdir(self.imagedir):
                     if os.path.isfile(os.path.join(self.imagedir, fname)):
@@ -386,6 +379,8 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
         # connect signals
+        self.widgets["CardTypeButton"].connect( \
+            'clicked', self.show_cardtype_dialog_cb)
         for button in self.grades.values():
             button.connect('clicked', self.add_card_cb)
         for name in ('answer', 'foreign', 'pronunciation', 'translation', \
@@ -399,10 +394,8 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             self.selected_tags = self.default_tag_name
             self.last_selected_grade = 0
 
-    def activate(self, mode=None):
+    def activate(self):
         """Activate input mode."""
-
-        self.previous_mode = mode
 
         # this part is the first part of add_cards from default controller
         self.stopwatch().pause()
@@ -438,21 +431,11 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         if grade in (0, 1):
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
-            [tag.strip() for tag in self.selected_tags.split(',')], save=True)
-        self.added_new_cards = True
+            [unicode(tag).strip() for tag in self.selected_tags.split(',')], \
+            save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
         self.show_snd_container()
-
-        # this part is called from add_card_cb, when card is added
-        self.database().save()
-        review_controller = self.review_controller()
-        review_controller.reload_counters()
-        if review_controller.card is None:
-            review_controller.new_question()
-        else:
-            review_controller.update_status_bar()
-        self.stopwatch().unpause()
 
     def input_to_main_menu_cb(self, widget):
         """Return to main menu."""
@@ -465,9 +448,18 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             self.conf["card_type_last_selected"] = self.card_type.id
             self.conf["content_type_last_selected"] = self.content_type
             self.conf.save()
+
+            # this part is called from add_card_cb, when card is added
+            self.database().save()
+            review_controller = self.review_controller()
+            review_controller.reload_counters()
+            if review_controller.card is None:
+                review_controller.new_question()
+            self.stopwatch().unpause()
+
             self._main_widget.soundplayer.stop()
             self._main_widget.switcher.remove_page(self.page)
-            self._main_widget.activate_mode(self.previous_mode)
+            self._main_widget.menu_()
 
 
 

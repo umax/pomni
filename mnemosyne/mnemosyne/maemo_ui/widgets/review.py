@@ -30,16 +30,9 @@ import mnemosyne.maemo_ui.widgets.common as widgets
 def create_review_ui(main_switcher):
     """Creates ReviewWidget UI."""
 
-    def create_button(name, width=80, height=80):
-        button = gtk.Button()
-        button.set_size_request(width, height)
-        button.set_name(name)
-        return button
-
     toplevel_table = gtk.Table(rows=1, columns=3)
     # create containers
-    toolbar_container = widgets.create_toolbar_container( \
-        'review_toolbar_container')
+    toolbar_container = widgets.create_toolbar_container('toolbar_container')
     grades_container = widgets.create_toolbar_container('grades_container')
     widgets_table = gtk.Table(rows=2, columns=1)
     widgets_table.set_row_spacings(14)
@@ -59,16 +52,16 @@ def create_review_ui(main_switcher):
     question_text = widgets.create_gtkhtml()
     # create toolbar buttons
     buttons = {}
-    buttons[0] = create_button('review_toolbar_stat_current_card_button')
-    buttons[1] = create_button('review_toolbar_tts_button')
-    buttons[2] = create_button('review_toolbar_edit_card_button')
-    buttons[3] = create_button('plus_button')
-    buttons[4] = create_button('review_toolbar_delete_card_button')
-    buttons[5] = create_button('main_menu_button')
+    buttons[0] = widgets.create_button( \
+        'review_toolbar_stat_current_card_button')
+    buttons[1] = widgets.create_button('review_toolbar_tts_button')
+    buttons[2] = widgets.create_button('review_toolbar_edit_card_button')
+    buttons[3] = widgets.create_button('review_toolbar_delete_card_button')
+    buttons[4] = widgets.create_button('main_menu_button')
     # create grades buttons
     grades = {}
     for num in range(6):
-        grades[num] = create_button('grade%s' % num)
+        grades[num] = widgets.create_button('grade%s' % num)
     # packing toolbar buttons
     for pos in buttons.keys():
         toolbar_table.attach(buttons[pos], 0, 1, pos, pos + 1, \
@@ -97,6 +90,6 @@ def create_review_ui(main_switcher):
         xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
         yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, xpadding=30)
     toplevel_table.show_all()
-    return main_switcher.append_page(toplevel_table), buttons[1], buttons[2], \
-        buttons[4], question_container, answer_container, question_text, \
-        answer_text, grades_table, grades.values(), buttons.values(), tags_label
+    return main_switcher.append_page(toplevel_table), question_container, \
+        answer_container, question_text, answer_text, grades_table, \
+        grades.values(), buttons.values(), tags_label

@@ -28,15 +28,12 @@ import gtk
 
 import mnemosyne.maemo_ui.widgets.common as widgets
 
-def create_about_ui(main_switcher, image_name, help_html):
+def create_about_ui(main_switcher, image_name):
     """Creates AboutWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=2)
     # create toolbar container
-    toolbar_container = gtk.Notebook()
-    toolbar_container.set_show_tabs(False)
-    toolbar_container.set_size_request(82, 480)
-    toolbar_container.set_name('three_button_container')
+    toolbar_container = widgets.create_toolbar_container('three_button_container')
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
     # create mode switcher
     mode_switcher = gtk.Notebook()
@@ -48,9 +45,7 @@ def create_about_ui(main_switcher, image_name, help_html):
         'help_toolbar_about_button', None, width=80, height=80)
     help_button = widgets.create_radio_button(about_button,
         'help_toolbar_help_button', None, width=80, height=80)
-    menu_button = gtk.Button()
-    menu_button.set_size_request(80, 80)
-    menu_button.set_name('main_menu_button')
+    menu_button = widgets.create_button('main_menu_button')
     info_container = gtk.Notebook()
     info_container.set_show_border(False)
     info_container.set_show_tabs(False)
@@ -93,7 +88,7 @@ def create_about_ui(main_switcher, image_name, help_html):
     program_label.set_use_markup(True)
     program_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'large'>version 2.0.0 beta6</span>")
+        "'large'>version 2.0.0~beta8</span>")
     # create help widgets
     help_table = gtk.Table(rows=1, columns=1, homogeneous=False)
     help_frame = gtk.Frame()
@@ -104,7 +99,8 @@ def create_about_ui(main_switcher, image_name, help_html):
     help_scrolledwindow = gtk.ScrolledWindow()
     help_scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
     help_scrolledwindow.set_name('scrolled_window')
-    help_html = widgets.create_gtkhtml(open(help_html).read())
+    #help_html = widgets.create_gtkhtml(open(help_html).read())
+    help_html = widgets.create_gtkhtml()
     # packing widgets
     logo_box.pack_start(logo, expand=False, fill=False, padding=10)
     logo_box.pack_end(program_label, expand=False, fill=False)
@@ -137,6 +133,4 @@ def create_about_ui(main_switcher, image_name, help_html):
         yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
     toplevel_table.show_all()
     return main_switcher.append_page(toplevel_table), mode_switcher, \
-        menu_button, about_button, help_button
-
-
+        menu_button, about_button, help_button, help_html

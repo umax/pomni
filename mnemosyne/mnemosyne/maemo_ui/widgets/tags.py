@@ -25,28 +25,20 @@ Hildon UI. Widgets for Tags mode.
 """
 
 import gtk
+import mnemosyne.maemo_ui.widgets.common as widgets
 from mnemosyne.maemo_ui.widgets.common import create_tag_checkbox
 
 
 def create_tags_ui(main_switcher):
     """Creates TagsWidget UI."""
 
-    def create_button(name, width=80, height=80):
-        button = gtk.Button()
-        button.set_size_request(width, height)
-        button.set_name(name)
-        return button
-
     toplevel_table = gtk.Table(rows=1, columns=2, homogeneous=False)
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
     # create toolbar container
-    toolbar_container = gtk.Notebook()
-    toolbar_container.set_show_tabs(False)
-    toolbar_container.set_size_request(82, 480)
-    toolbar_container.set_name('two_button_container')
+    toolbar_container = widgets.create_toolbar_container('two_button_container')
     # create toolbar buttons
-    statistics_button = create_button('stat_button')
-    menu_button = create_button('main_menu_button')
+    statistics_button = widgets.create_button('stat_button')
+    menu_button = widgets.create_button('main_menu_button')
     # create tags frame
     tags_frame = gtk.Frame()
     tags_frame.set_name('html_container')
@@ -79,4 +71,3 @@ def create_tags_ui(main_switcher):
     toplevel_table.show_all()
     return main_switcher.append_page(toplevel_table), tags_box, menu_button, \
         statistics_button
-

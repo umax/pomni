@@ -124,16 +124,6 @@ style "html-container" {
 }
 widget "*.html_container" style "html-container"
 
-style "one-button-container" {
-    engine "sapwood" {
-        image {
-            function = BOX
-            file = "one_button_toolbar.png"
-        }
-    }
-}
-widget "*.one_button_container" style "one-button-container"
-
 style "two-button-container" {
     engine "sapwood" {
         image {
@@ -403,16 +393,6 @@ style "grades-container" {
 }
 widget "*.grades_container" style "grades-container"
 
-style "review-toolbar-container" {
-    engine "sapwood" {
-        image {
-            function = BOX
-            file = "left_6.png"
-        }
-    }
-}
-widget "*.review_toolbar_container" style "review-toolbar-container"
-
 style "toolbar-container" {
     engine "sapwood" {
         image {
@@ -424,7 +404,7 @@ style "toolbar-container" {
 widget "*.toolbar_container" style "toolbar-container"
 
 style "speak-button" {
-    engine "sapwood" {
+    engine "pixmap" {
         image {
             function = BOX
             state = INSENSITIVE

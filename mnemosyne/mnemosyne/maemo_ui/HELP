@@ -1,7 +1,7 @@
 ================================
-Mnemosyne for Maemo.
+Mnemosyne for Maemo
 ================================
-User Guide.
+User Guide
 ================================
 
 .. contents:: Table of Contents
@@ -153,21 +153,21 @@ Input mode is used to enter new cards. Lets look at the controls in this mode. A
 
 Upper control is 'Type'. For text cards you can choose one of the following types:
 
-+--------------------------------------------------------+-------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/front_to_back.png | *'Front to back'* - the simplest type of card with question |
-|                                                        | and answer fields.                                          |
-+--------------------------------------------------------+-------------------------------------------------------------+
++--------------------------------------------------------+----------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/front_to_back.png | *'Front to back'* - the simplest type of card with question    |
+|                                                        | and answer fields.                                             |
++--------------------------------------------------------+----------------------------------------------------------------+
 
-+------------------------------------------------------+---------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/three_sided.png | *'Three-sided'* cards have question, prononciation and answer |
-|                                                      | fields.                                                       |
-+------------------------------------------------------+---------------------------------------------------------------+
++------------------------------------------------------+------------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/three_sided.png | *'Three-sided'* cards have question, prononciation and answer    |
+|                                                      | fields.                                                          |
++------------------------------------------------------+------------------------------------------------------------------+
 
-+----------------------------------------------------+-------------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/both_ways.png | *'Both ways'* is for creation 2 cards: question-answer and answer-|
-|                                                    | question. Sometimes it helps to memorise facts better if you use  |
-|                                                    | direct and back order of cards. 'Both ways' helps you with this.  |
-+----------------------------------------------------+-------------------------------------------------------------------+
++----------------------------------------------------+--------------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/both_ways.png | *'Both ways'* is for creation 2 cards: question-answer and answer- |
+|                                                    | question. Sometimes it helps to memorise facts better if you use   |
+|                                                    | direct and back order of cards. 'Both ways' helps you with this.   |
++----------------------------------------------------+--------------------------------------------------------------------+
 
 +------------------------------------------------+------------------------------------------------------------------------+
 | .. image:: /usr/share/mnemosyne/help/cloze.png |*'Cloze'* is for creation `cloze deletion`_ cards. Parts of the question|
@@ -186,19 +186,19 @@ Upper control is 'Type'. For text cards you can choose one of the following type
 
 Next control is 'Kind'. You can chose between text, sound and pictures. Note that it's only possible to choose non-text kind of cards(sounds or pictures) for 'Front to back' type of cards.
 
-+-------------------------------------------------------+----------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/text_content.png | *'Text content'* means that only text will be used as question.|
-+-------------------------------------------------------+----------------------------------------------------------------+
++-------------------------------------------------------+-----------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/text_content.png | *'Text content'* means that only text will be used as question. |
++-------------------------------------------------------+-----------------------------------------------------------------+
 
-+--------------------------------------------------------+--------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/sound_content.png | *'Sound content'* means that sound file will be used as|
-|                                                        | question.                                              |
-+--------------------------------------------------------+--------------------------------------------------------+
++--------------------------------------------------------+----------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/sound_content.png | *'Sound content'* means that sound file will be used as        |
+|                                                        | question.                                                      |
++--------------------------------------------------------+----------------------------------------------------------------+
 
-+----------------------------------------------------------+--------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/picture_content.png | *'Image content'* means that image file will be used as|
-|                                                          | question.                                              |
-+----------------------------------------------------------+--------------------------------------------------------+
++----------------------------------------------------------+--------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/picture_content.png | *'Image content'* means that image file will be used as      |
+|                                                          | question.                                                    |
++----------------------------------------------------------+--------------------------------------------------------------+
 
 +------------------------------------------------------+------------------------------------------------------------------+
 | .. image:: /usr/share/mnemosyne/help/tags_button.png | Next control is *'Tags'*. You can create tags and assign them to |
@@ -226,12 +226,12 @@ This is a main mode of the application. Most of the user's time is spent here. T
 
 Cards and grade panel look the same as in the input mode, only left panel is different. 
 
-+------------------------------------------------------------+-----------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/statistics_button.png | First(upper) control there is *'Statistics'* button. It   |
-|                                                            | will show you statistics for the current card and overall |
-|                                                            | program statistics. It actually brings you to the         |
-|                                                            | `Statistics mode` (see below).                            |
-+------------------------------------------------------------+-----------------------------------------------------------+
++------------------------------------------------------------+------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/statistics_button.png | First(upper) control there is *'Statistics'* button. It    |
+|                                                            | will show you statistics for the current card and overall  |
+|                                                            | program statistics. It actually brings you to the          |
+|                                                            | `Statistics mode` (see below).                             |
++------------------------------------------------------------+------------------------------------------------------------+
 
 
 +---------------------------------------------------------+---------------------------------------------------------------+
@@ -241,22 +241,16 @@ Cards and grade panel look the same as in the input mode, only left panel is dif
 +---------------------------------------------------------+---------------------------------------------------------------+
 
 
-+------------------------------------------------------+---------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/edit_button.png | Next control is *'Edit card'*. It allows user to edit current |
-|                                                      | card (see `Edit mode`_ below).                                |
-+------------------------------------------------------+---------------------------------------------------------------+
++------------------------------------------------------+------------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/edit_button.png | Next control is *'Edit card'*. It allows user to edit current    |
+|                                                      | card (see `Edit mode`_ below).                                   |
++------------------------------------------------------+------------------------------------------------------------------+
 
 
-+-----------------------------------------------------+-------------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/add_button.png | And the next one is *'Add card'*. Program switches to `Input mode`|
-|                                                     | when user presses this button.                                    |
-+-----------------------------------------------------+-------------------------------------------------------------------+
-
-
-+--------------------------------------------------------+------------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/delete_button.png | *'Delete card'* is the next control. Use it if you want to |
-|                                                        | delete current card.                                       |
-+--------------------------------------------------------+------------------------------------------------------------+
++--------------------------------------------------------+----------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/delete_button.png | *'Delete card'* is the next control. Use it if you want to     |
+|                                                        | delete current card.                                           |
++--------------------------------------------------------+----------------------------------------------------------------+
 
 
 +------------------------------------------------------+------------------------------------------------------------------+
@@ -286,11 +280,11 @@ Tags mode
 
 This mode is used for tag activation and deactivation. Cards with only non-active tags assigned to it will not be scheduled for review. So, using tagging it's easy to devide your set of cards into groups and activate/deactivate them when needed.
 
-+------------------------------------------------------------+-----------------------------------------------------------+
-| .. image:: /usr/share/mnemosyne/help/statistics_button.png | Selecting *'Statistics'* button in this mode will show    |
-|                                                            | you statistics for all tags. It actually brings you to the| 
-|                                                            | `Statistics mode` (see below).                            |
-+------------------------------------------------------------+-----------------------------------------------------------+
++------------------------------------------------------------+------------------------------------------------------------+
+| .. image:: /usr/share/mnemosyne/help/statistics_button.png | Selecting *'Statistics'* button in this mode will show     |
+|                                                            | you statistics for all tags. It actually brings you to the | 
+|                                                            | `Statistics mode` (see below).                             |
++------------------------------------------------------------+------------------------------------------------------------+
 
 
 Settings

@@ -1,3 +1,15 @@
+python-libmnemosyne (2.0.0-15) unstable; urgency=low
+
+  * added function to get total cards count for each tags
+
+ -- Max <maxusachev@gmail.com>  Sat, 30 Jan 2010 12:42:24 +0200
+
+python-libmnemosyne (2.0.0-15~rc2) unstable; urgency=low
+
+  * fixed bug with deleting n-sided cards
+
+ -- Max Usachev <maxusachev@gmail.com>  Tue, 26 Jan 2010 20:01:58 +0200
+
 python-libmnemosyne (2.0.0-15~rc1) unstable; urgency=low
 
   * got latest code from upstream 
