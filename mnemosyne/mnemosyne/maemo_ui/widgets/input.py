@@ -39,7 +39,7 @@ def create_input_ui(main_switcher, theme_path):
         container.set_name('html_container')
         text_widget = gtk.TextView()
         text_widget.set_justification(gtk.JUSTIFY_CENTER)
-        text_widget.set_wrap_mode(gtk.WRAP_WORD)
+        text_widget.set_wrap_mode(gtk.WRAP_CHAR)
         return container, text_widget
 
     toplevel_table = gtk.Table(rows=1, columns=3)
@@ -104,15 +104,16 @@ def create_input_ui(main_switcher, theme_path):
     tags_box = gtk.VBox()
     tags_box.set_homogeneous(True)
     # create other widgets
+    two_sided_box = gtk.VBox(spacing=10)
+    two_sided_box.set_homogeneous(True)
     three_sided_box = gtk.VBox(spacing=10)
+    three_sided_box.set_homogeneous(True)
     cloze_box = gtk.VBox()
     widgets_table = gtk.Table(rows=2, columns=1)
     widgets_table.set_row_spacings(14)
     card_type_switcher = gtk.Notebook()
     card_type_switcher.set_show_tabs(False)
     card_type_switcher.set_show_border(False)
-    two_sided_box = gtk.VBox(spacing=10)
-    two_sided_box.set_homogeneous(True)
     # packing widgets
     toolbar_table.attach(card_type_button, 0, 1, 0, 1, \
         xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
@@ -134,7 +135,7 @@ def create_input_ui(main_switcher, theme_path):
     toplevel_table.attach(grades_container, 3, 4, 0, 1, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
     widgets_table.attach(tags_label, 0, 1, 0, 1, \
-        xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=4)
+        xoptions=gtk.SHRINK, yoptions=gtk.FILL, xpadding=4)
     widgets_table.attach(card_type_switcher, 0, 1, 1, 2, \
         xoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND, \
         yoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND)
