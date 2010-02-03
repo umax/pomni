@@ -124,6 +124,16 @@ style "html-container" {
 }
 widget "*.html_container" style "html-container"
 
+style "one-button-container" {
+    engine "sapwood" {
+        image {
+            function = BOX
+            file = "one_button_toolbar.png"
+        }
+    }
+}
+widget "*.one_button_container" style "one-button-container"
+
 style "two-button-container" {
     engine "sapwood" {
         image {
@@ -366,6 +376,19 @@ style "menu-button-stats" {
     }
 }
 widget "*.menu_button_stats" style "menu-button-stats"
+
+style "menu-button-import" {
+    engine "sapwood" {
+        image {
+            function = BOX
+            file = "import.png"
+        }
+        image {
+            function = FOCUS
+        }
+    }
+}
+widget "*.menu_button_import" style "menu-button-import"
 
 style "menu-button-exit" {
     engine "sapwood" {
