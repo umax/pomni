@@ -25,85 +25,93 @@ Hildon UI. Import widget.
 """
 
 import mnemosyne.maemo_ui.widgets.tags as widgets
+from mnemosyne.maemo_ui.widgets.importcards import \
+    create_importcard_ui, show_filechooser_dialog
 from mnemosyne.libmnemosyne.ui_component import UiComponent
-from mnemosyne.maemo_ui.widgets.importcards  import create_importcard_ui
+
 
 class ImportCardsWidget(UiComponent):
     """Import Widget."""
 
     def __init__(self, component_manager ):
-
         UiComponent.__init__(self, component_manager)
-
         self.formats = [desc.description for desc in \
-                        self.component_manager.get_all("file_format")]
- 
-        self.page, self.format_label, self.tags_box, menu_button, \
-            ok_button, self.file_name_label, \
-            self.format_prev_button, self.format_next_button, \
-            = create_importcard_ui( self.main_widget().window, \
-            self.main_widget().switcher, \
+            self.component_manager.get_all("file_format")]
+        # create widgets 
+        self.page, self.switcher, self.format_label, self.tags_box, \
+            tags_button, self.tags_name_label, file_chooser_button, \
+            self.file_name_label, menu_button, self.convert_button, \
+            self.format_prev_button, self.format_next_button = \
+            create_importcard_ui(self.main_widget().switcher, \
             self.component_manager.get_current("file_format").description)
-        self.tags_dict = {}
-
+        self.tags_mode = False
+        self.selected_tags = []
+        self.fname = None
         # connect signals
         self.format_prev_button.connect('clicked', self.change_format_cb)
         self.format_next_button.connect('clicked', self.change_format_cb)
         menu_button.connect('clicked', self.back_to_main_menu_cb)
-        ok_button.connect('clicked', self.ok_button_cb)
+        file_chooser_button.connect('clicked', self.choose_file_cb)
+        tags_button.connect('clicked', self.show_tags_dialog_cb)
+        self.convert_button.connect('clicked', self.convert_cb)
 
     def activate(self):
         """Set necessary switcher page."""
 
         self.main_widget().switcher.set_current_page(self.page)
-        self.display_criterion(self.database().current_activity_criterion())
 
-    def display_criterion(self, criterion):
-        """Display current criterion."""
+    def choose_file_cb(self, widget):
+        """Show FileChooser dialog."""
 
+        self.fname = show_filechooser_dialog(self.main_widget().window)
+        if self.fname:
+            self.file_name_label.set_text(self.fname)
+        if self.selected_tags:
+            self.convert_button.set_sensitive(True)
+
+    def show_tags_dialog_cb(self, widget):
+        """Show Tags dialog."""
+
+        self.tags_mode = True
         tags_box = self.tags_box
+        self.switcher.set_current_page(1)
         for child in tags_box.get_children():
             tags_box.remove(child)
         for tag in self.database().get_tags():
-            self.tags_dict[tag.name] = tag._id
-            # get cards count for tag
-            cards_count = sum([ \
-                self.database().card_count_for_grade_and__tag_id( \
-                    grade, tag._id) for grade in range(-1, 6)])
-            tags_box.pack_start(widgets.create_tag_checkbox(tag.name + \
-                unicode(" (%s cards)" % cards_count), \
-                tag._id in criterion.active_tag__ids))
+            tag = widgets.create_tag_checkbox(unicode(tag.name), \
+                tag.name in self.selected_tags)
+            tags_box.pack_start(tag)
 
-    def get_criterion(self):
-        """Build the criterion from the information the user entered."""
+    def hide_tags_dialog(self):
+        """Close Tags dialog."""
 
-        criterion = DefaultCriterion(self.component_manager)
+        self.tags_mode = False
+        self.selected_tags = []
         for hbox in self.tags_box.get_children():
             children = hbox.get_children()
             if children[0].get_active():
-                label = children[1].get_label()
-                tag_name = unicode( \
-                    re.search(r'(.+) \(\d+ cards\)', label).group(1))
-                criterion.active_tag__ids.add(self.tags_dict[tag_name])
-        return criterion
+                self.selected_tags.append(unicode(children[1].get_label()))
+        if not self.selected_tags:
+            self.selected_tags = [unicode('<default>')]
+        self.tags_name_label.set_text(\
+            'Tags for imported cards: ' + ', '.join(self.selected_tags))
+        if self.fname is not None:
+            self.convert_button.set_sensitive(True)
+        self.switcher.set_current_page(0)
 
-    def back_to_main_menu_cb(self, widget):
-        """Returns to main menu."""
+    def convert_cb(self, widget):
+        """Convert file to database."""
 
-        self.main_widget().switcher.remove_page(self.page)
-        self.main_widget().menu_('importcards')
-
-    def ok_button_cb(self, widget):
-        """Do Import from file to database """
-
-#        from mnemosyne.libmnemosyne.file_formats.tsv import import_txt_2
         for format in self.component_manager.get_all("file_format"):
-            if (format.description == self.format_label.get_text()):
-                format.do_import(self.file_name_label.get_text())
+            if format.description == self.format_label.get_text():
+                #format.do_import(self.fname, self.selected_tags)
+                format.do_import(self.fname)
                 break
-
-        self.main_widget().switcher.remove_page(self.page)
-        self.main_widget().menu_('importcards')
+        self.file_name_label.set_text( \
+            'Press to select file to import from ...')
+        self.tags_name_label.set_text( \
+            'Press to select tags for importing cards ...')
+        self.convert_button.set_sensitive(False)
 
     def change_format_cb(self, widget):
         """Changes current format file."""
@@ -122,4 +130,13 @@ class ImportCardsWidget(UiComponent):
                 new_format = self.formats[-1]
         finally:
             self.format_label.set_text(new_format)
+
+    def back_to_main_menu_cb(self, widget):
+        """Returns to main menu."""
+
+        if self.tags_mode:
+            self.hide_tags_dialog()
+        else:
+            self.main_widget().switcher.remove_page(self.page)
+            self.main_widget().menu_('importcards')
 
