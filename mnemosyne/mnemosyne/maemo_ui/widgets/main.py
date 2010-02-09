@@ -45,6 +45,7 @@ def create_question_dialog(window, text):
     dialog = gtk.Dialog(parent=window, flags=gtk.DIALOG_MODAL|\
             gtk.DIALOG_DESTROY_WITH_PARENT|gtk.DIALOG_NO_SEPARATOR)
     dialog.set_decorated(False)
+    dialog.set_name('dialog')
     button_yes = dialog.add_button('YES', gtk.RESPONSE_YES)
     button_yes.set_size_request(120, 80)
     button_yes.set_name('dialog_button')
@@ -77,6 +78,7 @@ def create_information_dialog(window, text):
     dialog = gtk.Dialog(parent=window, flags=gtk.DIALOG_MODAL|\
         gtk.DIALOG_DESTROY_WITH_PARENT|gtk.DIALOG_NO_SEPARATOR)
     dialog.set_decorated(False)
+    dialog.set_name('dialog')
     button_ok = dialog.add_button('OK', gtk.RESPONSE_OK)
     button_ok.set_size_request(120, 80)
     button_ok.set_name('dialog_button')
