@@ -1650,7 +1650,7 @@ widget "*.help_toolbar_help_button" style "help-button"
 
 
 #----------------------------- Dialogs ------------------
-style "dialog" {
+style "Dialog" {
     engine "sapwood" {
         image {
             function = FLAT_BOX
@@ -1660,7 +1660,7 @@ style "dialog" {
         }
     }
 }
-class "GtkDialog" style "dialog"
+widget "dialog" style "Dialog"
 
 style "dialog-label" = "white-label" {
     font_name = "Nokia Sans 17"

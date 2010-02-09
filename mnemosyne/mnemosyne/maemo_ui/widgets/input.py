@@ -192,6 +192,7 @@ def create_media_dialog_ui():
     liststore = gtk.ListStore(str, str, str, str, gtk.gdk.Pixbuf)
     dialog = gtk.Dialog()
     dialog.set_decorated(False)
+    dialog.set_name('dialog')
     dialog.set_has_separator(False)
     dialog.resize(570, 410)
     width, height = dialog.get_size()
@@ -247,6 +248,7 @@ def create_card_type_dialog_ui(selectors, front_to_back_id, both_ways_id, \
     selectors[cloze_id]['selector'] = button
     dialog = gtk.Dialog()
     dialog.set_decorated(False)
+    dialog.set_name('dialog')
     dialog.set_has_separator(False)
     pos_x, pos_y = card_type_button.window.get_origin()
     dialog.move(pos_x, pos_y)
@@ -280,6 +282,7 @@ def create_content_dialog_ui(callback, content_button, toolbar_container, \
         width=72, height=72)
     dialog = gtk.Dialog()
     dialog.set_decorated(False)
+    dialog.set_name('dialog')
     dialog.set_has_separator(False)
     pos_x, pos_y = content_button.window.get_origin()
     dialog.move(pos_x, pos_y + toolbar_container.get_size_request()[1]/5)
