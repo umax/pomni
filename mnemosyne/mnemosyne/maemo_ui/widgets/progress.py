@@ -32,7 +32,8 @@ class MaemoProgressDlg(ProgressDialog):
 
     def __init__(self, component_manager):
         ProgressDialog.__init__(self, component_manager)
-
+        
+        self.window = None
         self.fraction = 0.0
         try:
             import hildon
@@ -77,7 +78,8 @@ class MaemoProgressDlg(ProgressDialog):
         """Calculate fraction for progressbar """
 
         self.fraction = float(1.0/(maximum-minimum))
-        self.window.show()
+        if self.window:
+            self.window.show()
        
     def set_text(self, text):
         """Set title on progress bar """
@@ -88,8 +90,11 @@ class MaemoProgressDlg(ProgressDialog):
         """Set new value for progess bar """ 
 
         self.pbar.set_fraction(value * self.fraction)
-        if (value * self.fraction == 1.0 and self.window):
-            self.window.destroy()
+        if value * self.fraction > 0.999 :
+            if self.window:
+                self.window.destroy()
+            else:
+                self.pbar.destroy()
  
         #Pending gtk
         while gtk.events_pending():
