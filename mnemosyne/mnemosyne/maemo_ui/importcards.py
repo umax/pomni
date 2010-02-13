@@ -115,7 +115,11 @@ class ImportCardsWidget(UiComponent):
 
         for format in self.component_manager.get_all("file_format"):
             if format.description == self.format_label.get_text():
-                format.do_import(self.fname)
+                try:
+                    format.do_import(self.fname)
+                except:
+                    self.main_widget().error_box( \
+                        'Oops! Maybe you selected wrong format?')
                 break
 
         self.activate_widgets(True)
