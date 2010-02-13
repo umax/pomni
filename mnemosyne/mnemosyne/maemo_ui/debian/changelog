@@ -1,3 +1,12 @@
+mnemosyne (2.0.0~beta9) unstable; urgency=low
+
+  * fixed bugs with text fields geometry in Input mode
+  * fixed bug with zero statistics information if there are no active cards or tags
+  * updated toolbar icon in Statistic mode
+  * implemented import from *.mem, *.xml and *.txt (tab separated Q/A) formats
+
+ -- Max Usachev <maxusachev@gmail.com>  Sat, 13 Feb 2010 12:37:44 +0200
+
 mnemosyne (2.0.0~beta8) unstable; urgency=low
 
   * final changes for postinst script
