@@ -223,7 +223,10 @@ class SQLiteLogging(object):
                 offset int,
                 last_rep int);""")
         # This is a useful index to have when importing.
-        self.con.execute("create index i_cards_id on cards (id);")
+        try:
+            self.con.execute("create index i_cards_id on cards (id);")
+        except:
+            pass # table is exists
         # Having these indices in place while importing takes too long.
         self.con.execute("drop index if exists i_log_timestamp;")
         self.con.execute("drop index if exists i_log_object_id;")
