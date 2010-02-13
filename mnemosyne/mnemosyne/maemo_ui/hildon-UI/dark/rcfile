@@ -1108,12 +1108,18 @@ style "right-arrow" {
     engine "sapwood" {
         image {
             function = BOX
+            state = INSENSITIVE
+            overlay_file = "arrow_right_disabled.png"
+            overlay_stretch = FALSE
+        }
+        image {
+            function = BOX
             overlay_file = "arrow_right.png"
             overlay_stretch = FALSE
         }
-	    image {
+        image {
 	        function = FOCUS
-	    }
+        }
     }
 }
 widget "*.right_arrow" style "right-arrow"

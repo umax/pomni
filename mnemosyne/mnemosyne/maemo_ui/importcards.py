@@ -38,21 +38,20 @@ class ImportCardsWidget(UiComponent):
         self.formats = [desc.description for desc in \
             self.component_manager.get_all("file_format")]
         # create widgets 
-        self.page, self.switcher, self.format_label, self.tags_box, \
-            tags_button, self.tags_name_label, file_chooser_button, \
-            self.file_name_label, menu_button, self.convert_button, \
-            self.format_prev_button, self.format_next_button = \
-            create_importcard_ui(self.main_widget().switcher, \
+        self.page, self.switcher, self.format_label, self.format_button, \
+            self.tags_box, self.file_chooser_button, self.file_name_label, \
+            self.menu_button, self.convert_button, self.format_prev_button, \
+            self.format_next_button = create_importcard_ui(\
+            self.main_widget().switcher, \
             self.component_manager.get_current("file_format").description)
         self.tags_mode = False
-        self.selected_tags = []
         self.fname = None
         # connect signals
         self.format_prev_button.connect('clicked', self.change_format_cb)
         self.format_next_button.connect('clicked', self.change_format_cb)
-        menu_button.connect('clicked', self.back_to_main_menu_cb)
-        file_chooser_button.connect('clicked', self.choose_file_cb)
-        tags_button.connect('clicked', self.show_tags_dialog_cb)
+        self.menu_button.connect('clicked', self.back_to_main_menu_cb)
+        self.file_chooser_button.connect('clicked', self.choose_file_cb)
+        #tags_button.connect('clicked', self.show_tags_dialog_cb)
         self.convert_button.connect('clicked', self.convert_cb)
 
     def activate(self):
@@ -60,13 +59,23 @@ class ImportCardsWidget(UiComponent):
 
         self.main_widget().switcher.set_current_page(self.page)
 
+    def activate_widgets(self, enable=False):
+        """Disable or enable all widgets."""
+
+        self.format_prev_button.set_sensitive(enable)
+        self.format_next_button.set_sensitive(enable)
+        self.format_button.set_sensitive(enable)
+        self.file_chooser_button.set_sensitive(enable)
+        self.convert_button.set_sensitive(enable)
+        self.menu_button.set_sensitive(enable)
+
     def choose_file_cb(self, widget):
         """Show FileChooser dialog."""
 
-        self.fname = show_filechooser_dialog(self.main_widget().window)
-        if self.fname:
+        fname = show_filechooser_dialog(self.main_widget().window)
+        if fname:
+            self.fname = fname
             self.file_name_label.set_text(self.fname)
-        if self.selected_tags:
             self.convert_button.set_sensitive(True)
 
     def show_tags_dialog_cb(self, widget):
@@ -102,16 +111,21 @@ class ImportCardsWidget(UiComponent):
     def convert_cb(self, widget):
         """Convert file to database."""
 
+        self.activate_widgets(False)
+
         for format in self.component_manager.get_all("file_format"):
             if format.description == self.format_label.get_text():
-                #format.do_import(self.fname, self.selected_tags)
                 format.do_import(self.fname)
                 break
+
+        self.activate_widgets(True)
+        self.convert_button.set_sensitive(False)
         self.file_name_label.set_text( \
             'Press to select file to import from ...')
-        self.tags_name_label.set_text( \
-            'Press to select tags for importing cards ...')
-        self.convert_button.set_sensitive(False)
+        self.fname = None
+        review_controller = self.review_controller()
+        review_controller.reload_counters()
+        review_controller.new_question()
 
     def change_format_cb(self, widget):
         """Changes current format file."""

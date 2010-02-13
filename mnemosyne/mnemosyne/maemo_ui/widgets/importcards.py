@@ -60,7 +60,7 @@ def create_importcard_ui(main_switcher, format_desc):
     switcher = gtk.Notebook()
     switcher.set_show_tabs(False)
     switcher.set_show_border(False)
-    widgets_table = gtk.Table(rows=4, columns=1, homogeneous=True)
+    widgets_table = gtk.Table(rows=3, columns=1, homogeneous=True)
     # create toolbar buttons
     menu_button = widgets.create_button('main_menu_button')
     # create format selector widgets
@@ -89,12 +89,12 @@ def create_importcard_ui(main_switcher, format_desc):
     file_name_label.set_line_wrap(True)
     file_chooser_button.add(file_name_label)
     # create tags button
-    tags_button = widgets.create_button('labels_container', \
-        width=-1, height=80)
-    tags_name_label = gtk.Label('Press to select tags for importing cards ...')
-    tags_name_label.set_name('config_import_label')
-    tags_name_label.set_line_wrap(True)
-    tags_button.add(tags_name_label)
+    #tags_button = widgets.create_button('labels_container', \
+    #    width=-1, height=80)
+    #tags_name_label = gtk.Label('Press to select tags for importing cards ...')
+    #tags_name_label.set_name('config_import_label')
+    #tags_name_label.set_line_wrap(True)
+    #tags_button.add(tags_name_label)
     # create convert button
     convert_button = widgets.create_button('labels_container')
     convert_label = gtk.Label('Convert!')
@@ -137,11 +137,11 @@ def create_importcard_ui(main_switcher, format_desc):
         yoptions=gtk.SHRINK|gtk.EXPAND)
     widgets_table.attach(file_chooser_button, 0, 1, 1, 2, \
         xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
-        yoptions=gtk.SHRINK|gtk.EXPAND)
-    widgets_table.attach(tags_button, 0, 1, 2, 3, \
-        xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
-        yoptions=gtk.SHRINK|gtk.EXPAND)
-    widgets_table.attach(convert_button, 0, 1, 3, 4, \
+        yoptions=gtk.EXPAND|gtk.FILL)
+    #widgets_table.attach(tags_button, 0, 1, 2, 3, \
+    #    xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
+    #    yoptions=gtk.SHRINK|gtk.EXPAND)
+    widgets_table.attach(convert_button, 0, 1, 2, 3, \
         xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
         yoptions=gtk.SHRINK|gtk.EXPAND)
     toplevel_table.attach(toolbar_container, 0, 1, 0, 1, \
@@ -153,6 +153,5 @@ def create_importcard_ui(main_switcher, format_desc):
     switcher.append_page(tags_layout)
     toplevel_table.show_all()
     return main_switcher.append_page(toplevel_table), switcher, format_label, \
-        tags_box, tags_button, tags_name_label, file_chooser_button, \
-        file_name_label, menu_button, convert_button, format_prev_button, \
-        format_next_button
+        format_button, tags_box, file_chooser_button, file_name_label, \
+        menu_button, convert_button, format_prev_button, format_next_button
