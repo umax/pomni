@@ -1,8 +1,16 @@
+python-libmnemosyne (2.0.0-16~rc1) unstable; urgency=low
+
+  * adapted tsv file format for Mnemosyne for Maemo
+  * adapted mem file format for Mnemosyne for Maemo
+  * adapted xml file format for Mnemosyne for Maemo
+
+ -- Max Usachev <maxusachev@gmail.com>  Sat, 13 Feb 2010 12:31:59 +0200
+
 python-libmnemosyne (2.0.0-15) unstable; urgency=low
 
   * added function to get total cards count for each tags
 
- -- Max <maxusachev@gmail.com>  Sat, 30 Jan 2010 12:42:24 +0200
+ -- Max Usachev <maxusachev@gmail.com>  Sat, 30 Jan 2010 12:42:24 +0200
 
 python-libmnemosyne (2.0.0-15~rc2) unstable; urgency=low
 
