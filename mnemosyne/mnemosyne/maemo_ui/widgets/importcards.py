@@ -55,14 +55,16 @@ def create_importcard_ui(main_switcher, format_desc):
 
     # create containers
     toplevel_table = gtk.Table(rows=1, columns=2)
-    toolbar_container = widgets.create_toolbar_container('one_button_container')
+    toolbar_container = widgets.create_toolbar_container('two_button_container')
     toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
     switcher = gtk.Notebook()
     switcher.set_show_tabs(False)
     switcher.set_show_border(False)
-    widgets_table = gtk.Table(rows=3, columns=1, homogeneous=True)
+    widgets_table = gtk.Table(rows=4, columns=1, homogeneous=False)
+    widgets_table.set_row_spacings(20)
     # create toolbar buttons
     menu_button = widgets.create_button('main_menu_button')
+    tags_button = widgets.create_button('tags_button')
     # create format selector widgets
     format_table = gtk.Table(rows=1, columns=3, homogeneous=False)
     format_button = widgets.create_button('labels_container', \
@@ -89,25 +91,36 @@ def create_importcard_ui(main_switcher, format_desc):
     file_name_label.set_line_wrap(True)
     file_chooser_button.add(file_name_label)
     # create tags button
-    #tags_button = widgets.create_button('labels_container', \
-    #    width=-1, height=80)
-    #tags_name_label = gtk.Label('Press to select tags for importing cards ...')
-    #tags_name_label.set_name('config_import_label')
-    #tags_name_label.set_line_wrap(True)
-    #tags_button.add(tags_name_label)
+    tags_container = widgets.create_button('labels_container', \
+        width=-1, height=80)
+    tags_name_label = gtk.Label()
+    tags_name_label.set_name('config_import_label')
+    tags_name_label.set_justify(gtk.JUSTIFY_CENTER)
+    tags_name_label.set_line_wrap(True)
+    tags_name_label.set_single_line_mode(True)
+    tags_container.add(tags_name_label)
     # create convert button
     convert_button = widgets.create_button('labels_container')
     convert_label = gtk.Label('Convert!')
     convert_label.set_name('config_import_label')
     convert_button.set_sensitive(False)
     convert_button.add(convert_label)
+    # create 'new tag' widgets
+    new_tag_box = gtk.HBox()
+    new_tag_label = gtk.Label()
+    new_tag_label.set_text('New tag: ')
+    new_tag_label.set_name('white_label')
+    new_tag_button = widgets.create_button('plus_button', width=60, height=60)
+    new_tag_frame = gtk.Frame()
+    new_tag_frame.set_name('html_container')
+    new_tag_entry = gtk.Entry()
+    new_tag_entry.set_name('entry_widget')
+    new_tag_frame.add(new_tag_entry)
+    new_tag_box.pack_start(new_tag_label, expand=False, fill=False, padding=10)
+    new_tag_box.pack_start(new_tag_frame, expand=True, fill=True, padding=10)
+    new_tag_box.pack_end(new_tag_button, expand=False, fill=False)
     # create tags widgets
     tags_layout = gtk.VBox(spacing=26)
-    tags_note_label = gtk.Label()
-    tags_note_label.set_text('Select tags for imported cards')
-    tags_note_label.set_name('white_label')
-    tags_note_label.set_justify(gtk.JUSTIFY_LEFT)
-    tags_note_label.set_single_line_mode(True)
     tags_frame = gtk.Frame()
     tags_frame.set_name('html_container')
     tags_eventbox = gtk.EventBox()
@@ -125,9 +138,11 @@ def create_importcard_ui(main_switcher, format_desc):
     tags_scrolledwindow.add(tags_viewport)
     tags_eventbox.add(tags_scrolledwindow)
     tags_frame.add(tags_eventbox)
-    tags_layout.pack_start(tags_note_label, expand=False, fill=False)
+    tags_layout.pack_start(new_tag_box, expand=False, fill=False)
     tags_layout.pack_end(tags_frame, expand=True, fill=True)
     # packing toolbar buttons
+    toolbar_table.attach(tags_button, 0, 1, 0, 1, xoptions=gtk.SHRINK, \
+        yoptions=gtk.EXPAND)
     toolbar_table.attach(menu_button, 0, 1, 4, 5, xoptions=gtk.SHRINK, \
         yoptions=gtk.EXPAND)
     toolbar_container.add(toolbar_table)
@@ -138,10 +153,10 @@ def create_importcard_ui(main_switcher, format_desc):
     widgets_table.attach(file_chooser_button, 0, 1, 1, 2, \
         xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
         yoptions=gtk.EXPAND|gtk.FILL)
-    #widgets_table.attach(tags_button, 0, 1, 2, 3, \
-    #    xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
-    #    yoptions=gtk.SHRINK|gtk.EXPAND)
-    widgets_table.attach(convert_button, 0, 1, 2, 3, \
+    widgets_table.attach(tags_container, 0, 1, 2, 3, \
+        xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
+        yoptions=gtk.EXPAND|gtk.FILL)
+    widgets_table.attach(convert_button, 0, 1, 3, 4, \
         xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
         yoptions=gtk.SHRINK|gtk.EXPAND)
     toplevel_table.attach(toolbar_container, 0, 1, 0, 1, \
@@ -153,5 +168,6 @@ def create_importcard_ui(main_switcher, format_desc):
     switcher.append_page(tags_layout)
     toplevel_table.show_all()
     return main_switcher.append_page(toplevel_table), switcher, format_label, \
-        format_button, tags_box, file_chooser_button, file_name_label, \
-        menu_button, convert_button, format_prev_button, format_next_button
+        format_button, tags_box, tags_button, tags_name_label, \
+        file_chooser_button, file_name_label, menu_button, convert_button, \
+        format_prev_button, format_next_button, new_tag_button, new_tag_entry
