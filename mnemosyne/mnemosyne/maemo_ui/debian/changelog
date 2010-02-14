@@ -1,3 +1,9 @@
+mnemosyne (2.0.0~beta10) unstable; urgency=low
+
+  * implemented tags bibding for imported cards
+
+ -- Max Usachev <maxusachev@gmail.com>  Sun, 14 Feb 2010 14:26:57 +0200
+
 mnemosyne (2.0.0~beta9) unstable; urgency=low
 
   * fixed bugs with text fields geometry in Input mode
