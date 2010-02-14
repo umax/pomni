@@ -1,3 +1,9 @@
+mnemosyne (2.0.0~beta11) unstable; urgency=low
+
+  * corrected package dependencies
+
+ -- Max Usachev <maxusachev@gmail.com>  Sun, 14 Feb 2010 16:02:21 +0200
+
 mnemosyne (2.0.0~beta10) unstable; urgency=low
 
   * implemented tags bibding for imported cards
