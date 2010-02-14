@@ -88,7 +88,7 @@ def create_about_ui(main_switcher, image_name):
     program_label.set_use_markup(True)
     program_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'large'>version 2.0.0~beta10</span>")
+        "'large'>version 2.0.0~beta11</span>")
     # create help widgets
     help_table = gtk.Table(rows=1, columns=1, homogeneous=False)
     help_frame = gtk.Frame()
