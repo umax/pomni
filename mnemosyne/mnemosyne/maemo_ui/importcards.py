@@ -59,9 +59,8 @@ class ImportCardsWidget(UiComponent):
         self.convert_button.connect('clicked', self.convert_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
         # update widgets content
-        self.tags_name_label.set_text('Tags for new cards: <default>')
-        self.tags_button.set_sensitive( \
-            self.format_label.get_text() != MnemosyneXML.description)
+        self.update_widgets( \
+            self.component_manager.get_current("file_format").description)
 
     def activate(self):
         """Set necessary switcher page."""
@@ -77,6 +76,17 @@ class ImportCardsWidget(UiComponent):
         self.file_chooser_button.set_sensitive(enable)
         self.convert_button.set_sensitive(enable)
         self.menu_button.set_sensitive(enable)
+
+    def update_widgets(self, format_description):
+        """Updates widgets content and states."""
+
+        if format_description == MnemosyneXML.description:
+            self.tags_button.set_sensitive(False)
+            self.tags_name_label.set_text("Tags for new cards: using XML tags")
+        else:
+            self.tags_button.set_sensitive(True)
+            self.tags_name_label.set_text( \
+                'Tags for new cards: ' + ', '.join(self.selected_tags))
 
     def add_new_tag_cb(self, widget):
         """Create new tag."""
@@ -108,12 +118,16 @@ class ImportCardsWidget(UiComponent):
         self.switcher.set_current_page(1)
         for child in tags_box.get_children():
             tags_box.remove(child)
+        is_exists_default_tag = False
         for tag in self.database().get_tags():
-            tag = widgets.create_tag_checkbox(unicode(tag.name), \
+            hbox = widgets.create_tag_checkbox(unicode(tag.name), \
                 tag.name in self.selected_tags)
+            tags_box.pack_start(hbox)
+            if tag.name == u"<default>":
+                is_exists_default_tag = True
+        if not is_exists_default_tag:
+            tag = widgets.create_tag_checkbox(u"<default>", True)
             tags_box.pack_start(tag)
-        tag = widgets.create_tag_checkbox(u"<default>", True)
-        tags_box.pack_start(tag)
 
     def hide_tags_dialog(self):
         """Close Tags dialog."""
@@ -139,9 +153,11 @@ class ImportCardsWidget(UiComponent):
             if _format.description == self.format_label.get_text():
                 try:
                     _format.do_import(self.fname, self.selected_tags)
+                    self.main_widget().information_box( \
+                        "Importing was finished successfully!\n" + \
+                        "Restart the program if needed.")
                 except:
-                    self.main_widget().error_box( \
-                        'Oops! Error occured.')
+                    self.main_widget().error_box('Oops! Error occured.')
                 break
 
         self.activate_widgets(True)
@@ -149,7 +165,10 @@ class ImportCardsWidget(UiComponent):
         self.file_name_label.set_text( \
             'Press to select file to import from ...')
         self.fname = None
-        self.scheduler().rebuild_queue()
+        database = self.database()
+        db_path = database._path
+        database.unload()
+        database.load(db_path)
         review_controller = self.review_controller()
         review_controller.reload_counters()
         review_controller.new_question()
@@ -170,7 +189,7 @@ class ImportCardsWidget(UiComponent):
                 new_format = self.formats.keys()[-1]
         finally:
             self.format_label.set_text(new_format)
-            self.tags_button.set_sensitive(new_format != MnemosyneXML.description)
+            self.update_widgets(new_format)
 
     def back_to_main_menu_cb(self, widget):
         """Returns to main menu."""
