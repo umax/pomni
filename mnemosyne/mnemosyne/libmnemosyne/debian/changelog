@@ -1,3 +1,10 @@
+python-libmnemosyne (2.0.0-16~rc2) unstable; urgency=low
+
+  * implemented tags binding for imported cards from *.mem
+  * implemented tags binding for imported cards from *.txt
+
+ -- Max Usachev <maxusachev@gmail.com>  Sun, 14 Feb 2010 14:17:29 +0200
+
 python-libmnemosyne (2.0.0-16~rc1) unstable; urgency=low
 
   * adapted tsv file format for Mnemosyne for Maemo
