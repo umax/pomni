@@ -74,6 +74,7 @@ class ImportCardsWidget(UiComponent):
         self.format_next_button.set_sensitive(enable)
         self.format_button.set_sensitive(enable)
         self.file_chooser_button.set_sensitive(enable)
+        self.tags_name_label.set_sensitive(enable)
         self.convert_button.set_sensitive(enable)
         self.menu_button.set_sensitive(enable)
 
