@@ -242,7 +242,7 @@ class TabSeparated(FileFormat):
     import_possible = True
     export_possible = False
 
-    def do_import(self, filename, tag_name=None, reset_learning_data=False):
+    def do_import(self, filename, tag_names, reset_learning_data=False):
 
         db = self.database()
         try:
@@ -270,7 +270,5 @@ class TabSeparated(FileFormat):
             # Orphaned 2 or 3 sided card.
             card_type = self.card_type_by_id("1")
             fact_data = {"q": unicode(fields[0]), "a": unicode(fields[1])}
-            card = self.controller().create_new_cards(fact_data,
-                card_type, grade=-1, tag_names=[u'<default>'],
-                check_for_duplicates=False, save=False)[0]
-
+            self.controller().create_new_cards(fact_data, card_type, -1, \
+                tag_names, check_for_duplicates=False, save=False)
