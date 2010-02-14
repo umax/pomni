@@ -89,7 +89,7 @@ class Mnemosyne1Mem(FileFormat):
             if component.component_type == "card_type" and component.id == "4":
                 plugin.activate()
     
-    def do_import(self, filename, tag_name=None, reset_learning_data=False):
+    def do_import(self, filename, tag_names, reset_learning_data=False):
         db = self.database()
         # Manage database indices.
         db.before_mem_import()
@@ -98,7 +98,7 @@ class Mnemosyne1Mem(FileFormat):
         # day' statistics. We do keep the updated card events for the benefit
         # of the syncing algorithm.
         log_index = db.get_log_index()
-        result = self._import_mem_file(filename, tag_name, reset_learning_data)
+        result = self._import_mem_file(filename, tag_names, reset_learning_data)
         if result:
             return result
         db.remove_added_card_events_since(log_index)
@@ -112,8 +112,7 @@ class Mnemosyne1Mem(FileFormat):
         db.after_mem_import()
         db.save()
             
-    def _import_mem_file(self, filename, tag_name=None,
-                         reset_learning_data=False):        
+    def _import_mem_file(self, filename, tag_names, reset_learning_data=False):
         self.importdir = os.path.dirname(os.path.abspath(filename))
         
         # Mimick 1.x module structure.
@@ -193,8 +192,8 @@ class Mnemosyne1Mem(FileFormat):
                 fact_data = {"loc": loc, "marked": marked, "blank": blank}
                 self._preprocess_media(fact_data) 
                 card_1, card_2 = self.controller().create_new_cards(fact_data,
-                    card_type, grade=-1, tag_names=[item.cat.name],
-                    check_for_duplicates=False, save=False)
+                    card_type, -1, tag_names, check_for_duplicates=False, \
+                    save=False)
                 self._set_card_attributes(card_2, item)
                 self._set_card_attributes(card_1, item_2)
             # Front-to-back.
@@ -204,8 +203,8 @@ class Mnemosyne1Mem(FileFormat):
                 fact_data = {"q": item.q, "a": item.a}
                 self._preprocess_media(fact_data) 
                 card = self.controller().create_new_cards(fact_data,
-                    card_type, grade=-1, tag_names=[item.cat.name],
-                    check_for_duplicates=False, save=False)[0]
+                    card_type, -1, tag_names, check_for_duplicates=False, \
+                    save=False)[0]
                 self._set_card_attributes(card, item)
             # Front-to-back and back-to-front.         
             elif item.id + ".inv" in self.items_by_id:
@@ -213,8 +212,8 @@ class Mnemosyne1Mem(FileFormat):
                 fact_data = {"q": item.q, "a": item.a}
                 self._preprocess_media(fact_data) 
                 card_1, card_2 = self.controller().create_new_cards(fact_data,
-                    card_type, grade=-1, tag_names=[item.cat.name],
-                    check_for_duplicates=False, save=False)
+                    card_type, -1, tag_names, check_for_duplicates=False, \
+                    save=False)
                 self._set_card_attributes(card_1, item)
                 self._set_card_attributes(card_2,
                                           self.items_by_id[item.id + ".inv"])               
@@ -228,8 +227,8 @@ class Mnemosyne1Mem(FileFormat):
                 fact_data = {"f": item.q, "p": p, "t": t}
                 self._preprocess_media(fact_data) 
                 card_1, card_2 = self.controller().create_new_cards(fact_data,
-                    card_type, grade=-1, tag_names=[item.cat.name],
-                    check_for_duplicates=False, save=False) 
+                    card_type, -1, tag_names, check_for_duplicates=False, \
+                    save=False) 
                 self._set_card_attributes(card_1, item)
                 self._set_card_attributes(card_2,
                                           self.items_by_id[item.id + ".tr.1"])  
