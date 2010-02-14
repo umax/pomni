@@ -24,11 +24,12 @@
 Hildon UI. Import widget.
 """
 
+import re
 import gtk
 import mnemosyne.maemo_ui.widgets.common as widgets
 
 
-def show_filechooser_dialog(main_window):
+def show_filechooser_dialog(main_window, filename_filter):
     """Show FileChooser dialog."""
 
     try:
@@ -41,6 +42,12 @@ def show_filechooser_dialog(main_window):
         dlg.set_decorated(False)
         dlg.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         dlg.add_button(gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+    finally:
+        filter1 = gtk.FileFilter()
+        filter1.set_name(re.findall("(.*) \(.*\)", filename_filter)[0])
+        filter1.add_pattern(re.findall("\((.*)\)", filename_filter)[0])
+        dlg.add_filter(filter1)
+        dlg.set_filter(filter1)
 
     fname = None
     response = dlg.run() 

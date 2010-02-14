@@ -28,6 +28,7 @@ import mnemosyne.maemo_ui.widgets.tags as widgets
 from mnemosyne.maemo_ui.widgets.importcards import \
     create_importcard_ui, show_filechooser_dialog
 from mnemosyne.libmnemosyne.ui_component import UiComponent
+from mnemosyne.libmnemosyne.file_formats.mnemosyne_XML import MnemosyneXML
 
 
 class ImportCardsWidget(UiComponent):
@@ -35,8 +36,9 @@ class ImportCardsWidget(UiComponent):
 
     def __init__(self, component_manager ):
         UiComponent.__init__(self, component_manager)
-        self.formats = [desc.description for desc in \
-            self.component_manager.get_all("file_format")]
+        self.formats = {}
+        for _format in self.component_manager.get_all("file_format"):
+            self.formats[_format.description] = _format.filename_filter
         # create widgets 
         self.page, self.switcher, self.format_label, self.format_button, \
             self.tags_box, self.tags_button, self.tags_name_label, \
@@ -58,6 +60,8 @@ class ImportCardsWidget(UiComponent):
         new_tag_button.connect('clicked', self.add_new_tag_cb)
         # update widgets content
         self.tags_name_label.set_text('Tags for new cards: <default>')
+        self.tags_button.set_sensitive( \
+            self.format_label.get_text() != MnemosyneXML.description)
 
     def activate(self):
         """Set necessary switcher page."""
@@ -89,7 +93,8 @@ class ImportCardsWidget(UiComponent):
     def choose_file_cb(self, widget):
         """Show FileChooser dialog."""
 
-        fname = show_filechooser_dialog(self.main_widget().window)
+        fname = show_filechooser_dialog(self.main_widget().window, \
+            self.formats[self.format_label.get_text()])
         if fname:
             self.fname = fname
             self.file_name_label.set_text(self.fname)
@@ -107,9 +112,8 @@ class ImportCardsWidget(UiComponent):
             tag = widgets.create_tag_checkbox(unicode(tag.name), \
                 tag.name in self.selected_tags)
             tags_box.pack_start(tag)
-        if not tags_box.get_children():
-            tag = widgets.create_tag_checkbox(u"<default>", True)
-            tags_box.pack_start(tag)
+        tag = widgets.create_tag_checkbox(u"<default>", True)
+        tags_box.pack_start(tag)
 
     def hide_tags_dialog(self):
         """Close Tags dialog."""
@@ -131,13 +135,13 @@ class ImportCardsWidget(UiComponent):
 
         self.activate_widgets(False)
 
-        for format in self.component_manager.get_all("file_format"):
-            if format.description == self.format_label.get_text():
+        for _format in self.component_manager.get_all("file_format"):
+            if _format.description == self.format_label.get_text():
                 try:
-                    format.do_import(self.fname, self.selected_tags)
+                    _format.do_import(self.fname, self.selected_tags)
                 except:
                     self.main_widget().error_box( \
-                        'Oops! Maybe you selected wrong format?')
+                        'Oops! Error occured.')
                 break
 
         self.activate_widgets(True)
@@ -153,19 +157,20 @@ class ImportCardsWidget(UiComponent):
     def change_format_cb(self, widget):
         """Changes current format file."""
 
-        format_index = self.formats.index(self.format_label.get_text())
+        format_index = self.formats.keys().index(self.format_label.get_text())
         direction = 1
         if widget == self.format_prev_button:
             direction = -1
         try:
-            new_format = self.formats[format_index + direction]
+            new_format = self.formats.keys()[format_index + direction]
         except IndexError:
             if direction:
-                new_format = self.formats[0]
+                new_format = self.formats.keys()[0]
             else:
-                new_format = self.formats[-1]
+                new_format = self.formats.keys()[-1]
         finally:
             self.format_label.set_text(new_format)
+            self.tags_button.set_sensitive(new_format != MnemosyneXML.description)
 
     def back_to_main_menu_cb(self, widget):
         """Returns to main menu."""
