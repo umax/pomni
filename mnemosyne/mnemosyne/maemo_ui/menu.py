@@ -33,11 +33,13 @@ class MenuWidget(UiComponent):
 
     component_type = "menu_widget"
 
-    def __init__(self, component_manager):
+    def __init__(self, component_manager, exit_callback):
         UiComponent.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         # create widgets
-        self.page, buttons = widgets.create_menu_ui(self._main_widget.switcher)
+        #self.page, buttons = widgets.create_menu_ui(self._main_widget.switcher)
+        self.window = widgets.create_menu_ui(exit_callback)
+        """
         # connect signals
         buttons['tags'].connect('clicked', self.tags_cb)
         buttons['review'].connect('clicked', self.review_cb)
@@ -48,11 +50,13 @@ class MenuWidget(UiComponent):
         buttons['stats'].connect('clicked', self.statistics_cb)
         buttons['help'].connect('clicked', self.about_cb)
         buttons['exit'].connect('clicked', self.exit_cb)
+        """
 
     def activate(self):
         """Activates necessary switcher page."""
 
-        self._main_widget.switcher.set_current_page(self.page)
+        #self._main_widget.switcher.set_current_page(self.page)
+        self.window.show_all()
 
     # callbacks
     def tags_cb(self, widget):

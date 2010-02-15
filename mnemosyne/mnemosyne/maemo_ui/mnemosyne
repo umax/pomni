@@ -33,8 +33,8 @@ if os.path.basename(sys.argv[0]).endswith("debug"):
     sys.path.insert(0, "../")
 
 # turn on lazy imports
-from mnemosyne.maemo_ui import importer
-importer.install()
+#from mnemosyne.maemo_ui import importer
+#importer.install()
 
 from optparse import OptionParser
 from mnemosyne.maemo_ui.factory import app_factory
@@ -47,7 +47,8 @@ try:
 except ImportError:
     pass
 else:
-    SERV = osso.Context("org.mnemosyneproj.mnemosyne", version, False)
+    #SERV = osso.Context("org.mnemosyneproj.mnemosyne", version, False)
+    pass
 
 def parse_commandline(argv):
     """ Parse commandline, check options """
@@ -79,9 +80,9 @@ def main(argv):
     app = app_factory(opts.ui)
     app.initialise(basedir)
     # checking database format and convert to current format if needed.
-    fixer = DBFixer(app.database(), app.component_manager)
-    fixer.fix()
-    del fixer
+    #fixer = DBFixer(app.database(), app.component_manager)
+    #fixer.fix()
+    #del fixer
     app.main_widget().start(opts.mode)
     app.finalise()
 

@@ -25,50 +25,42 @@ Hildon UI. Widgets for menu.
 """
 
 import gtk
+import hildon
 
-def create_menu_ui(main_switcher):
+def create_menu_ui(exit_callback):
     """Creates MenuWidget UI."""
 
-    toplevel_table = gtk.Table(rows=2, columns=1)
-    app_name_label = gtk.Label('Mnemosyne for Maemo')
-    app_name_label.set_name('program_name_label')
-    buttons_table = gtk.Table(rows=2, columns=1)
-    buttons_table.set_row_spacings(14)
-    row1 = gtk.Table(rows=1, columns=6)
-    row1.set_col_spacings(28)
-    row2 = gtk.Table(rows=1, columns=6)
-    row2.set_col_spacings(28)
-    buttons = {}
-    for button_name in ('tags', 'review', 'input', 'settings', \
-        'stats','import', 'help', 'settings', 'exit'):
-        button = gtk.Button()
-        button.set_size_request(110, 155)
-        button.set_name('menu_button_%s' % button_name)
-        button_table = gtk.Table(rows=4, columns=1, homogeneous=True)
-        button_label = gtk.Label(button_name.capitalize())
-        button_label.set_name('menu_label_%s' % button_name)
-        button_table.attach(button_label, 0, 1, 3, 4)
-        button.add(button_table)
-        buttons[button_name] = button
-    # packing
-    row1.attach(buttons['review'], 1, 2, 0, 1)
-    row1.attach(buttons['input'], 2, 3, 0, 1)
-    row1.attach(buttons['tags'], 3, 4, 0, 1)
-    row1.attach(buttons['stats'], 4, 5, 0, 1)
-    row2.attach(buttons['import'], 1, 2, 0, 1)
-#    row2.attach(buttons['sync'], 1, 2, 0, 1)
-    row2.attach(buttons['settings'], 2, 3, 0, 1)
-    row2.attach(buttons['help'], 3, 4, 0, 1)
-    row2.attach(buttons['exit'], 4, 5, 0, 1)
-    buttons_table.attach(row1, 0, 1, 0, 1, xoptions=gtk.EXPAND, \
-        yoptions=gtk.EXPAND)
-    buttons_table.attach(row2, 0, 1, 1, 2, xoptions=gtk.EXPAND, \
-        yoptions=gtk.EXPAND)
-    toplevel_table.attach(app_name_label, 0, 1, 0, 1, \
-        yoptions=gtk.SHRINK, ypadding=10)
-    toplevel_table.attach(buttons_table, 0, 1, 1, 2, \
-        xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toplevel_table.show_all()
-    return main_switcher.append_page(toplevel_table), buttons
-
-
+    # create Menu window
+    window = hildon.StackableWindow()
+    window.set_title("Mnemosyne for Maemo")
+    window.connect("delete_event", exit_callback)
+    # create menu buttons
+    buttons_table = gtk.Table(rows=2, columns=2)
+    button_review = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Review")
+    button_input = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Input")
+    button_tags = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Tags")
+    button_stats = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Stats")
+    buttons_table.attach(button_review, 0, 1, 0, 1)
+    buttons_table.attach(button_input, 1, 2, 0, 1)
+    buttons_table.attach(button_tags, 0, 1, 1, 2)
+    buttons_table.attach(button_stats, 1, 2, 1, 2)
+    # create AppMenu
+    menu = hildon.AppMenu()
+    button_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Settings")
+    button_import = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Import")
+    button_help = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Help")
+    menu.append(button_settings)
+    menu.append(button_import)
+    menu.append(button_help)
+    menu.show_all()
+    # packing window elements
+    window.add(buttons_table)
+    window.set_app_menu(menu)
+    return window

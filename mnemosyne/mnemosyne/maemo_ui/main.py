@@ -26,6 +26,7 @@ Main Widget.
 
 import os
 import gtk
+import hildon
 import mnemosyne.maemo_ui.widgets.main as widgets
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
@@ -35,10 +36,10 @@ class MainWdgt(MainWidget):
 
     def __init__(self, component_manager):
         MainWidget.__init__(self, component_manager)
-        self.window = None
-        self.switcher = None
+        #self.window = None
         self.widgets = {}
         self._soundplayer = None
+        print 'init ok'
 
     @property
     def soundplayer(self):
@@ -51,23 +52,25 @@ class MainWdgt(MainWidget):
         """Basic UI setup."""
 
         # load styles
-        gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
+        #gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
         # create main window
-        self.window, self.switcher = widgets.create_main_ui()
+        #self.window = widgets.create_main_ui()
         # fullscreen mode
-        fullscreen = self.config()['fullscreen']
-        if fullscreen:
-            self.window.fullscreen()
+        #fullscreen = self.config()['fullscreen']
+        #if fullscreen:
+        #    self.window.fullscreen()
         # connect signals to methods
-        self.window.connect("delete_event", self.exit_)
-        self.window.connect('window-state-event', self.window_state_cb)
-        self.window.connect('key-press-event', self.window_keypress_cb)
-
-        self.window.show_all()
+        #self.window.connect("delete_event", self.exit_)
+        #self.window.connect('window-state-event', self.window_state_cb)
+        #self.window.connect('key-press-event', self.window_keypress_cb)
+        #self.window.show_all()
+        print 'activate ok'
 
     def activate_mode(self, mode):
         """Activate mode in lazy way."""
 
+        print 'activate_mode'
+        print 'mode=%s' % mode
         widget = self.create_mode(mode)
         widget.activate()
 
@@ -81,7 +84,7 @@ class MainWdgt(MainWidget):
                 widget = self.review_controller().widget
             elif mode == "menu":
                 from mnemosyne.maemo_ui.menu import MenuWidget
-                widget = MenuWidget(self.component_manager)
+                widget = MenuWidget(self.component_manager, self.exit_)
             elif mode == "sync":
                 from mnemosyne.maemo_ui.sync import SyncWidget
                 widget = SyncWidget(self.component_manager)
@@ -123,6 +126,7 @@ class MainWdgt(MainWidget):
     def menu_(self, mode=None):
         """Activate menu."""
 
+        print "menu_"
         if mode is not None:
             del self.widgets[mode]
         self.activate_mode('menu')

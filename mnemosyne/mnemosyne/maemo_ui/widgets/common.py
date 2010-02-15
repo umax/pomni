@@ -25,7 +25,7 @@ Hildon UI. Common widgets (used in different modes).
 """
 
 import gtk
-import mnemosyne.maemo_ui.widgets.common as widgets
+#import mnemosyne.maemo_ui.widgets.common as widgets
 
 def create_gtkhtml(content=None):
     """ Create gtkhtml2 widget """
