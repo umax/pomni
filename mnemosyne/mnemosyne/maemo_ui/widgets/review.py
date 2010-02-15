@@ -25,71 +25,70 @@ Hildon UI. Widgets for review.
 """
 
 import gtk
+import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
 
-def create_review_ui(main_switcher):
+def create_review_ui():
     """Creates ReviewWidget UI."""
 
-    toplevel_table = gtk.Table(rows=1, columns=3)
     # create containers
-    toolbar_container = widgets.create_toolbar_container('toolbar_container')
-    grades_container = widgets.create_toolbar_container('grades_container')
-    widgets_table = gtk.Table(rows=2, columns=1)
-    widgets_table.set_row_spacings(14)
-    toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
+    toplevel_table = gtk.Table(rows=1, columns=3)
+    toolbar_table = gtk.Table(rows=4, columns=1, homogeneous=True)
     grades_table = gtk.Table(rows=6, columns=1, homogeneous=True)
-    widgets_box = gtk.VBox(spacing=10)
-    # create tags label
-    tags_label = gtk.Label()
-    tags_label.set_name('tags_label')
-    tags_label.set_justify(gtk.JUSTIFY_LEFT)
-    tags_label.set_single_line_mode(True)
+    widgets_box = gtk.VBox()
+    # create html widgets
+    #answer_container = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+    #    hildon.BUTTON_ARRANGEMENT_HORIZONTAL)
     answer_container = gtk.Frame()
     answer_container.set_name('html_container')
+    answer_text = widgets.create_gtkhtml()
+    answer_container.add(answer_text)
+    #question_container = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+    #    hildon.BUTTON_ARRANGEMENT_HORIZONTAL)
     question_container = gtk.Frame()
     question_container.set_name('html_container')
-    answer_text = widgets.create_gtkhtml()
     question_text = widgets.create_gtkhtml()
+    question_container.add(question_text)
     # create toolbar buttons
-    buttons = {}
-    buttons[0] = widgets.create_button( \
-        'review_toolbar_stat_current_card_button')
-    buttons[1] = widgets.create_button('review_toolbar_tts_button')
-    buttons[2] = widgets.create_button('review_toolbar_edit_card_button')
-    buttons[3] = widgets.create_button('review_toolbar_delete_card_button')
-    buttons[4] = widgets.create_button('main_menu_button')
+    def create_button():
+        button = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+            hildon.BUTTON_ARRANGEMENT_HORIZONTAL)
+        button.set_size_request(105, -1)
+        return button
+    
+    button_stats = create_button()
+    button_stats.set_title('stats')
+    button_speak = create_button()
+    button_speak.set_title('speak')
+    button_edit = create_button()
+    button_edit.set_title('edit')
+    button_delete = create_button()
+    button_delete.set_title('del')
     # create grades buttons
     grades = {}
     for num in range(6):
-        grades[num] = widgets.create_button('grade%s' % num)
+        grades[num] = create_button()
+        grades[num].set_title(str(num))
     # packing toolbar buttons
-    for pos in buttons.keys():
-        toolbar_table.attach(buttons[pos], 0, 1, pos, pos + 1, \
-            xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toolbar_container.add(toolbar_table)
+    toolbar_table.attach(button_stats, 0, 1, 0, 1)
+    toolbar_table.attach(button_speak, 0, 1, 1, 2)
+    toolbar_table.attach(button_edit, 0, 1, 2, 3)
+    toolbar_table.attach(button_delete, 0, 1, 3, 4)
     # packing grades buttons
     for pos in grades.keys():
         grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, \
-            xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    grades_container.add(grades_table)
+            xoptions=gtk.EXPAND, yoptions=gtk.EXPAND|gtk.FILL)
     # packing other widgets
-    toplevel_table.attach(toolbar_container, 0, 1, 0, 1, \
+    toplevel_table.attach(toolbar_table, 0, 1, 0, 1, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
-    toplevel_table.attach(grades_container, 3, 4, 0, 1, \
+    toplevel_table.attach(grades_table, 3, 4, 0, 1, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
-    question_container.add(question_text)
-    answer_container.add(answer_text)
     widgets_box.pack_start(question_container)
     widgets_box.pack_end(answer_container)
-    widgets_table.attach(tags_label, 0, 1, 0, 1, \
-        xoptions=gtk.SHRINK, yoptions=gtk.SHRINK, xpadding=4)
-    widgets_table.attach(widgets_box, 0, 1, 1, 2, \
-        xoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND, \
-        yoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND)
-    toplevel_table.attach(widgets_table, 2, 3, 0, 1, ypadding=30,
-        xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, \
-        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, xpadding=30)
-    toplevel_table.show_all()
-    return main_switcher.append_page(toplevel_table), question_container, \
-        answer_container, question_text, answer_text, grades_table, \
-        grades.values(), buttons.values(), tags_label
+    toplevel_table.attach(widgets_box, 1, 2, 0, 1)
+    window = hildon.StackableWindow()
+    window.set_title("Review")
+    window.add(toplevel_table)
+    window.show_all()
+    return window, question_text, answer_text, grades_table, grades.values(), \
+        button_stats, button_speak, button_edit, button_delete

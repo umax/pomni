@@ -36,10 +36,10 @@ class MainWdgt(MainWidget):
 
     def __init__(self, component_manager):
         MainWidget.__init__(self, component_manager)
-        #self.window = None
+        self.window = None
         self.widgets = {}
         self._soundplayer = None
-        print 'init ok'
+        print 'MainWidget:init:ok'
 
     @property
     def soundplayer(self):
@@ -52,7 +52,7 @@ class MainWdgt(MainWidget):
         """Basic UI setup."""
 
         # load styles
-        #gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
+        gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
         # create main window
         #self.window = widgets.create_main_ui()
         # fullscreen mode
@@ -64,12 +64,12 @@ class MainWdgt(MainWidget):
         #self.window.connect('window-state-event', self.window_state_cb)
         #self.window.connect('key-press-event', self.window_keypress_cb)
         #self.window.show_all()
-        print 'activate ok'
+        print 'MainWidget:activate:ok'
 
     def activate_mode(self, mode):
         """Activate mode in lazy way."""
 
-        print 'activate_mode'
+        print 'MainWidget:activate_mode'
         print 'mode=%s' % mode
         widget = self.create_mode(mode)
         widget.activate()
@@ -108,6 +108,7 @@ class MainWdgt(MainWidget):
     def start(self, mode):
         """UI entry point. Activates specified mode."""
 
+        print "MainWidget:start"
         if not mode:
             if self.config()['startup_with_review']:
                 self.review_()
@@ -126,7 +127,7 @@ class MainWdgt(MainWidget):
     def menu_(self, mode=None):
         """Activate menu."""
 
-        print "menu_"
+        print "MainWidget:menu_"
         if mode is not None:
             del self.widgets[mode]
         self.activate_mode('menu')
@@ -162,7 +163,8 @@ class MainWdgt(MainWidget):
     def review_(self):
         """Activate review mode."""
 
-        self.kill_menu_object()
+        #self.kill_menu_object()
+        print "MainWidget.review_"
         self.activate_mode('review')
 
     def statistics_(self):

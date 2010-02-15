@@ -63,4 +63,5 @@ def create_menu_ui(exit_callback):
     # packing window elements
     window.add(buttons_table)
     window.set_app_menu(menu)
-    return window
+    window.show_all()
+    return window, button_review

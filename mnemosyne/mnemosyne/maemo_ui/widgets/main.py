@@ -27,20 +27,6 @@ Hildon UI. Widgets for main.
 import gtk
 import hildon
 
-def create_main_ui():
-    """Creates MainWidget UI."""
-
-    #window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    #window.resize(800, 480)
-    #window.set_name('window')
-    #switcher = gtk.Notebook()
-    #switcher.set_show_border(False)
-    #switcher.set_show_tabs(False)
-    #window.add(switcher)
-    #return window, switcher
-    return hildon.StackableWindow()
-
-
 def create_question_dialog(window, text):
     """Create QuestionDialog UI."""
 
