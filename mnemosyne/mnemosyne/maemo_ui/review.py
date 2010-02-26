@@ -41,32 +41,28 @@ class ReviewWdgt(ReviewWidget):
         self.tts = None
         self.sndtext = None
         self.is_sound_card = False
-        self.window = None
+        # create widgets
+        self.window, self.question_text, self.answer_text, \
+        self.grades_table, grades, button_stats, self.tts_button, \
+        self.edit_button, self.del_button = widgets.create_review_ui()
+        self.tts_available = tts.is_available()
+        self.tts_button.set_sensitive(False)
+        # connect signals
+        self.question_text.connect('button-press-event', \
+            self.preview_sound_in_review_cb)
+        self.answer_text.connect('button-press-event', self.get_answer_cb)
+        for grade_button in grades:
+            grade_button.connect('clicked', self.grade_cb)
+        button_stats.connect('clicked', self.statistics_card_cb)
+        self.tts_button.connect('clicked', self.speak_cb)
+        self.edit_button.connect('clicked', self.edit_card_cb)
+        self.del_button.connect('clicked', self.delete_card_cb)
+        self.window.connect("delete-event", self.review_to_main_menu_cb)
 
     def activate(self):
         """Set necessary switcher page."""
 
-        # create widgets
-        if not self.window:
-            self.window, self.question_text, self.answer_text, \
-                self.grades_table, grades, button_stats, self.tts_button, \
-                self.edit_button, self.del_button = widgets.create_review_ui()
-            # FIXME ?
-            self.answer_container = self.answer_text
- 
-            self.tts_available = tts.is_available()
-            self.tts_button.set_sensitive(False)
-            # connect signals
-            self.question_text.connect('button-press-event', \
-                self.preview_sound_in_review_cb)
-            self.answer_text.connect('button-press-event', self.get_answer_cb)
-            for grade_button in grades:
-                grade_button.connect('clicked', self.grade_cb)
-            button_stats.connect('clicked', self.statistics_card_cb)
-            self.tts_button.connect('clicked', self.speak_cb)
-            self.edit_button.connect('clicked', self.edit_card_cb)
-            self.del_button.connect('clicked', self.delete_card_cb)
-            self.window.connect("delete-event", self.review_to_main_menu_cb)
+        # move Review window to the top of windows stack
         self.window.show_all()
 
     def enable_edit_current_card(self, enabled):
@@ -82,9 +78,10 @@ class ReviewWdgt(ReviewWidget):
     def set_question(self, text):
         """Set question text."""
 
+        print 'set_question'
         self.tts_button.set_sensitive(False)
         self.is_sound_card = False
-        self.question_container.set_size_request(-1, -1)
+        self.question_text.set_size_request(-1, -1)
         if "sound src=" in text:
             self.sndtext = text
             self.is_sound_card = True
@@ -92,13 +89,12 @@ class ReviewWdgt(ReviewWidget):
             self._main_widget.soundplayer.play(self.sndtext, self)
         else:
             if "img src=" in text:
-                self.question_container.set_size_request( \
+                self.question_text.set_size_request( \
                     -1, LARGE_CONTAINER_HEIGHT)
             else:
                 self.tts_button.set_sensitive(self.tts_available)
             self.renderer.render_html(self.question_text, text)
         tags = [tag.name for tag in self._review_controller.card.tags]
-        #self.tags_label.set_text("Card tags: " + ', '.join(tags))
         self.window.set_title("Card tags: " + ', '.join(tags))
 
     def set_answer(self, text):
@@ -109,7 +105,6 @@ class ReviewWdgt(ReviewWidget):
     def clear_question(self): 
         """Clear question text."""
 
-        #self.tags_label.set_text("No tags")
         self.window.set_title("No tags")
         self.tts_button.set_sensitive(False)
         self.renderer.render_html(self.question_text)
@@ -122,7 +117,7 @@ class ReviewWdgt(ReviewWidget):
     def update_show_button(self, text, default, enabled): 
         """Update Show button."""
 
-        self.answer_container.set_sensitive(enabled)
+        self.answer_text.set_sensitive(enabled)
         if enabled:
             self.renderer.render_hint(self.answer_text, text)
 
@@ -162,7 +157,7 @@ class ReviewWdgt(ReviewWidget):
         """Hook for 'Main menu' button."""
 
         # redefine 'delete-event'.
-        # Hide window instead of it destroying
+        # Hide window instead of destroying it
         self._main_widget.soundplayer.stop()
         widget.emit_stop_by_name('delete-event')
         widget.hide()

@@ -26,33 +26,31 @@ Hildon UI. Widgets for input mode.
 
 import os
 import gtk
+import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
 from mnemosyne.maemo_ui.widgets.common import create_tag_checkbox
 
 
-def create_input_ui(main_switcher, theme_path):
+def create_input_ui(theme_path):
     """Creates InputWidget UI."""
 
-    def create_text_block():
-        """Creates text field and text field container."""
-        container = gtk.Frame()
-        container.set_name('html_container')
-        text_widget = gtk.TextView()
-        text_widget.set_justification(gtk.JUSTIFY_CENTER)
-        text_widget.set_wrap_mode(gtk.WRAP_CHAR)
-        return container, text_widget
-
-    toplevel_table = gtk.Table(rows=1, columns=3)
     # create containers
-    toolbar_container = widgets.create_toolbar_container('toolbar_container')
-    toolbar_table = gtk.Table(rows=5, columns=1, homogeneous=True)
-    grades_container = widgets.create_toolbar_container('grades_container')
+    toplevel_table = gtk.Table(rows=1, columns=3)
+    toolbar_table = gtk.Table(rows=3, columns=1, homogeneous=True)
+    toolbar_table.set_row_spacings(2)
     grades_table = gtk.Table(rows=6, columns=1, homogeneous=True)
+
     # create toolbar buttons
-    card_type_button = widgets.create_button('undefined')
-    content_button = widgets.create_button('undefined')
-    tags_button = widgets.create_button('tags_button')
-    menu_button = widgets.create_button('main_menu_button')
+    def create_button(label):
+        button = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+            hildon.BUTTON_ARRANGEMENT_HORIZONTAL, label)
+        button.set_size_request(104, -1)
+        return button
+                                            
+    card_type_button = create_button('type')
+    content_button = create_button('cont')
+    tags_button = create_button('tags')
+    
     # create sound button
     sound_container = gtk.Frame()
     sound_container.set_name('html_container')
@@ -62,22 +60,29 @@ def create_input_ui(main_switcher, theme_path):
     sound_container.add(sound_button)
     sound_box = gtk.VBox()
     sound_box.set_homogeneous(True)
+    
     # create grades buttons
     grades = {}
     for num in range(6):
-        grades[num] = widgets.create_button('grade%s' % num)
+        grades[num] = create_button(str(num))
+        grades[num].set_name('grade%s' % num)
+
     # create text fields
-    question_container, question_text = create_text_block()
-    answer_container, answer_text = create_text_block()
-    foreign_container, foreign_text = create_text_block()
-    pronunciation_container, pronunciation_text = create_text_block()
-    translation_container, translation_text = create_text_block()
-    cloze_container, cloze_text = create_text_block()
+    def create_text_field():
+        """Creates TextView widget."""
+        text_widget = gtk.TextView()
+        text_widget.set_justification(gtk.JUSTIFY_CENTER)
+        text_widget.set_wrap_mode(gtk.WRAP_CHAR)
+        return text_widget
+
+    question_text = create_text_field()
+    answer_text = create_text_field()
+    foreign_text = create_text_field()
+    pronunciation_text = create_text_field()
+    translation_text = create_text_field()
+    cloze_text = create_text_field()
+
     # create new tag elements
-    tags_label = gtk.Label()
-    tags_label.set_name('tags_label')
-    tags_label.set_justify(gtk.JUSTIFY_LEFT)
-    tags_label.set_single_line_mode(True)
     tags_layout = gtk.VBox(spacing=26)
     new_tag_box = gtk.HBox()
     new_tag_label = gtk.Label()
@@ -103,63 +108,47 @@ def create_input_ui(main_switcher, theme_path):
     tags_viewport.set_shadow_type(gtk.SHADOW_NONE)
     tags_box = gtk.VBox()
     tags_box.set_homogeneous(True)
+
     # create other widgets
-    two_sided_box = gtk.VBox(spacing=10)
+    two_sided_box = gtk.VBox()
     two_sided_box.set_homogeneous(True)
-    three_sided_box = gtk.VBox(spacing=10)
+    three_sided_box = gtk.VBox()
     three_sided_box.set_homogeneous(True)
     cloze_box = gtk.VBox()
-    widgets_table = gtk.Table(rows=2, columns=1)
-    widgets_table.set_row_spacings(14)
     card_type_switcher = gtk.Notebook()
     card_type_switcher.set_show_tabs(False)
     card_type_switcher.set_show_border(False)
+    
     # packing widgets
-    toolbar_table.attach(card_type_button, 0, 1, 0, 1, \
-        xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toolbar_table.attach(content_button, 0, 1, 1, 2, \
-        xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toolbar_table.attach(tags_button, 0, 1, 2, 3, \
-        xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toolbar_table.attach(menu_button, 0, 1, 4, 5, \
-        xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    toolbar_container.add(toolbar_table)
+    toolbar_table.attach(card_type_button, 0, 1, 0, 1, xpadding=2)
+    toolbar_table.attach(content_button, 0, 1, 1, 2, xpadding=2)
+    toolbar_table.attach(tags_button, 0, 1, 2, 3, xpadding=2)
+        
     # packing grades buttons
     for pos in grades.keys():
-        grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, \
-            xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
-    grades_container.add(grades_table)
+        grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, xpadding=2)
+            
     # packing other widgets
-    toplevel_table.attach(toolbar_container, 0, 1, 0, 1, \
+    toplevel_table.attach(toolbar_table, 0, 1, 0, 1, xpadding=2, ypadding=2, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
-    toplevel_table.attach(grades_container, 3, 4, 0, 1, \
+    toplevel_table.attach(grades_table, 3, 4, 0, 1, xpadding=2, ypadding=2, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
-    widgets_table.attach(tags_label, 0, 1, 0, 1, \
-        xoptions=gtk.SHRINK, yoptions=gtk.FILL, xpadding=4)
-    widgets_table.attach(card_type_switcher, 0, 1, 1, 2, \
-        xoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND, \
-        yoptions=gtk.SHRINK|gtk.FILL|gtk.EXPAND)
+    toplevel_table.attach(card_type_switcher, 1, 2, 0, 1)
     card_type_switcher.append_page(two_sided_box)
     card_type_switcher.append_page(three_sided_box)
     card_type_switcher.append_page(cloze_box)
     card_type_switcher.append_page(tags_layout)
-    question_container.add(question_text)
     sound_box.pack_start(sound_container)
-    sound_box.pack_end(question_container)
-    answer_container.add(answer_text)
+    sound_box.pack_end(question_text)
     two_sided_box.pack_start(sound_box)
-    two_sided_box.pack_end(answer_container)
-    foreign_container.add(foreign_text)
-    pronunciation_container.add(pronunciation_text)
-    translation_container.add(translation_text)
-    three_sided_box.pack_start(foreign_container)
-    three_sided_box.pack_start(pronunciation_container)
-    three_sided_box.pack_end(translation_container)
-    cloze_container.add(cloze_text)
-    cloze_box.pack_start(cloze_container)
+    two_sided_box.pack_end(answer_text)
+    three_sided_box.pack_start(foreign_text)
+    three_sided_box.pack_start(pronunciation_text)
+    three_sided_box.pack_end(translation_text)
+    cloze_box.pack_start(cloze_text)
     new_tag_frame.add(new_tag_entry)
-    new_tag_box.pack_start(new_tag_label, expand=False, fill=False, padding=10)
-    new_tag_box.pack_start(new_tag_frame, expand=True, fill=True, padding=10)
+    new_tag_box.pack_start(new_tag_label, expand=False, fill=False, padding=0)
+    new_tag_box.pack_start(new_tag_frame, expand=True, fill=True, padding=0)
     new_tag_box.pack_end(new_tag_button, expand=False, fill=False)
     tags_viewport.add(tags_box)
     tags_scrolledwindow.add(tags_viewport)
@@ -167,18 +156,18 @@ def create_input_ui(main_switcher, theme_path):
     tags_frame.add(tags_eventbox)
     tags_layout.pack_start(new_tag_box, expand=False, fill=False)
     tags_layout.pack_end(tags_frame, expand=True, fill=True)
-    toplevel_table.attach(widgets_table, 1, 2, 0, 1, \
-        xoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, xpadding=30, \
-        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL, ypadding=30)
-    toplevel_table.show_all()
+    
+    window = hildon.StackableWindow()
+    window.add(toplevel_table)
+    window.show_all()
+
     # hide necessary widgets
     sound_container.hide()
-    return main_switcher.append_page(toplevel_table), card_type_button, \
-        content_button, menu_button, tags_button, sound_button, question_text, \
+    return window, card_type_button, \
+        content_button, tags_button, sound_button, question_text, \
         answer_text, foreign_text, pronunciation_text, translation_text, \
         cloze_text, new_tag_button, new_tag_entry, tags_box, \
-        card_type_switcher, sound_container, question_container, \
-        toolbar_container, grades, tags_label, tags_button
+        card_type_switcher, sound_container, question_text, grades, tags_button
 
 
 def create_media_dialog_ui():

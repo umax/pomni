@@ -37,9 +37,7 @@ class MenuWidget(UiComponent):
         UiComponent.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         # create widgets
-        #self.page, buttons = widgets.create_menu_ui(self._main_widget.switcher)
-        self.window, review_button = widgets.create_menu_ui(exit_callback)
-        """
+        self.window, buttons = widgets.create_menu_ui(exit_callback)
         # connect signals
         buttons['tags'].connect('clicked', self.tags_cb)
         buttons['review'].connect('clicked', self.review_cb)
@@ -49,9 +47,6 @@ class MenuWidget(UiComponent):
         buttons['import'].connect('clicked', self.importcards_cb)
         buttons['stats'].connect('clicked', self.statistics_cb)
         buttons['help'].connect('clicked', self.about_cb)
-        buttons['exit'].connect('clicked', self.exit_cb)
-        """
-        review_button.connect('clicked', self.review_cb)
         self._main_widget.window = self.window
 
     def activate(self):
@@ -59,7 +54,7 @@ class MenuWidget(UiComponent):
 
         #self._main_widget.switcher.set_current_page(self.page)
         #self.window.show_all()
-        print self._main_widget.widgets
+        print "MenuWidget:activate"
 
     # callbacks
     def tags_cb(self, widget):
@@ -71,13 +66,12 @@ class MenuWidget(UiComponent):
     def input_cb(self, widget):
         """Go to Input mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
+        #self._main_widget.switcher.remove_page(self.page)
         self._main_widget.input_()
 
     def review_cb(self, widget):
         """Go to Review mode."""
 
-        #self._main_widget.switcher.remove_page(self.page)
         self._main_widget.review_()
 
     def sync_cb(self, widget):

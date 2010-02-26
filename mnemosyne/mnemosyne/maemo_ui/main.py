@@ -52,7 +52,7 @@ class MainWdgt(MainWidget):
         """Basic UI setup."""
 
         # load styles
-        gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
+        #gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
         # create main window
         #self.window = widgets.create_main_ui()
         # fullscreen mode
@@ -145,7 +145,7 @@ class MainWdgt(MainWidget):
     def input_(self):
         """Activate input mode."""
        
-        self.kill_menu_object()
+        #self.kill_menu_object()
         if 'review' not in self.widgets:
             self.create_mode('review')
         #self.controller().add_cards()
@@ -163,8 +163,6 @@ class MainWdgt(MainWidget):
     def review_(self):
         """Activate review mode."""
 
-        #self.kill_menu_object()
-        print "MainWidget.review_"
         self.activate_mode('review')
 
     def statistics_(self):

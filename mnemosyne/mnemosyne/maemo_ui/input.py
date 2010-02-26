@@ -64,16 +64,15 @@ class InputWidget(UiComponent):
             cmp=numeric_string_cmp) or [self.default_tag_name]
         self._main_widget = self.main_widget()
         # create widgets
-        self.page, card_type_button, content_button, menu_button, tags_button, \
+        self.window, card_type_button, content_button, tags_button, \
             sound_button, question_text, answer_text, foreign_text, \
             pronunciation_text, translation_text, cloze_text, new_tag_button, \
             new_tag_entry, tags_box, card_type_switcher, sound_container, \
-            question_container, toolbar_container, self.grades, tags_label, \
-            tags_button = widgets.create_input_ui(self._main_widget.switcher, \
-                self.conf["theme_path"])
+            question_container, self.grades, tags_button = \
+            widgets.create_input_ui(self.conf["theme_path"])
         # connect signals
         content_button.connect('clicked', self.show_content_dialog_cb)
-        menu_button.connect('clicked', self.input_to_main_menu_cb)
+        #menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
         sound_button.connect('button-press-event', \
             self.preview_sound_in_input_cb)
@@ -96,7 +95,6 @@ class InputWidget(UiComponent):
             area.modify_font(font)
 
         self.widgets = {# Other widgets
-            "TagsLabel": tags_label,
             "TagsButton": tags_button,
             "NewTagEntry": new_tag_entry,
             "TagsBox": tags_box,
@@ -106,7 +104,7 @@ class InputWidget(UiComponent):
             "SoundContainer": sound_container,
             "SoundButton": sound_button,
             "QuestionContainer": question_container,
-            "ToolbarContainer": toolbar_container}
+            "ToolbarContainer": None}
 
         # card_id: {"page": page_id, "selector": selector_widget, 
         # "widgets": [(field_name:text_area_widget)...]}
@@ -175,7 +173,7 @@ class InputWidget(UiComponent):
         tags = ', '.join([tag.strip() for tag in self.selected_tags.split(',') \
             if tag.strip() in self.tags]) or self.default_tag_name
         self.selected_tags = tags
-        self.widgets["TagsLabel"].set_text(_('Current tags: ') + tags)
+        self.window.set_title(_('Tags: ') + tags)
 
     def check_complete_input(self):
         """Check for non empty fields."""
@@ -406,7 +404,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         self.set_content_type(self.conf["content_type_last_selected"])
         self.update_tags()
         self.clear_widgets()
-        self._main_widget.switcher.set_current_page(self.page)
+        #self._main_widget.switcher.set_current_page(self.page)
 
     def clear_text_cb(self, widget, event):
         """Clear textview content."""
@@ -504,7 +502,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
         self.set_widgets_data(self.fact)
         self.update_tags()
         self.show_snd_container()
-        self._main_widget.switcher.set_current_page(self.page)
+        #self._main_widget.switcher.set_current_page(self.page)
 
     def update_card_cb(self, widget):
         """Update card in the database."""
