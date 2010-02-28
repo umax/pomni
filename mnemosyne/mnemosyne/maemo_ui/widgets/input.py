@@ -219,43 +219,28 @@ def create_media_dialog_ui():
     return dialog, liststore, iconview_widget
 
 
-def create_card_type_dialog_ui(selectors, front_to_back_id, both_ways_id, \
-    three_sided_id, cloze_id, card_type_button, current_card_type, callback):
+def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     """Creates CardType dialog UI."""
+
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title('Select card type')
+    selector = hildon.TouchSelector(text=True)
+    selector.set_column_selection_mode( \
+        hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
+    dialog.set_selector(selector)
     
-    from mnemosyne.maemo_ui.widgets.common import create_radio_button
-
-    button = create_radio_button(None, 'front_to_back_cardtype_button', \
-        callback)
-    selectors[front_to_back_id]['selector'] = button
-    button = create_radio_button(button, 'both_ways_cardtype_button', callback)
-    selectors[both_ways_id]['selector'] = button
-    button = create_radio_button(button, 'three_sided_cardtype_button', \
-        callback)
-    selectors[three_sided_id]['selector'] = button
-    button = create_radio_button(button, 'cloze_cardtype_button', callback)
-    selectors[cloze_id]['selector'] = button
-    dialog = gtk.Dialog()
-    dialog.set_decorated(False)
-    dialog.set_name('dialog')
-    dialog.set_has_separator(False)
-    pos_x, pos_y = card_type_button.window.get_origin()
-    dialog.move(pos_x, pos_y)
-    buttons_table = gtk.Table(rows=1, columns=4, homogeneous=True)
-    buttons_table.set_col_spacings(16)
-    index = 0
-    for selector in selectors.values():
-        widget = selector['selector']
-        if current_card_type is selector['card_type']:
-            widget.set_active(True)
-        buttons_table.attach(widget, index, index + 1, 0, 1, \
-            xoptions=gtk.EXPAND, xpadding=6)
-        index += 1
-    dialog.vbox.pack_start(buttons_table, expand=True, fill=False, \
-        padding=12)
-    buttons_table.show_all()
+    # fill cardtypes list
+    for card_type in card_types_list:
+        selector.append_text(card_type.name)
+    
+    # activate current card type in cardtypes list
+    selector.set_active(0, card_types_list.index(current_card_type))
+    
     dialog.run()
-
+    selected_card_type_index = selector.get_active(0)
+    dialog.destroy()
+    return card_types_list[selected_card_type_index]
+                                                                        
 
 def create_content_dialog_ui(callback, content_button, toolbar_container, \
     current_card_type, front_to_back_id):

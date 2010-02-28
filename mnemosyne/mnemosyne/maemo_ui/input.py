@@ -154,11 +154,18 @@ class InputWidget(UiComponent):
         """Set current Card type value and changes UI."""
 
         self.card_type = card_type
-        # This trick need for set right image for CardType button from rcfile
-        self.widgets["CardTypeButton"].set_name("cardtype_%s" % card_type.id)
+        # FIXME: replace by setting necessary image
+        if card_type.id == FrontToBack.id:
+            self.widgets["CardTypeButton"].set_label('FtB')
+        elif card_type.id == BothWays.id:
+            self.widgets["CardTypeButton"].set_label('BW')
+        elif card_type.id == ThreeSided.id:
+            self.widgets["CardTypeButton"].set_label('3S')
+        else:
+            self.widgets["CardTypeButton"].set_label('Clz')
         self.widgets["CardTypeSwitcher"].set_current_page( \
             self.selectors[card_type.id]["page"])
-
+            
     def set_content_type(self, widget_name):
         """Set current Content type and changes UI."""
 
@@ -271,9 +278,14 @@ class InputWidget(UiComponent):
         """Open CardTypeDialog."""
 
         self._main_widget.soundplayer.stop()
-        widgets.create_card_type_dialog_ui(self.selectors, FrontToBack.id, \
-            BothWays.id, ThreeSided.id, Cloze.id, self.widgets[ \
-            'CardTypeButton'], self.card_type, self.set_card_type_cb)
+        selected_cardtype = widgets.create_card_type_dialog_ui(\
+            self.window, self.card_types(), self.card_type)
+        if selected_cardtype is not self.card_type:
+            self.set_card_type(selected_cardtype)
+            if self.card_type.id is not FrontToBack.id:
+                self.set_content_type("text")
+            self.show_snd_container()
+            self.clear_widgets()
 
     def show_content_dialog_cb(self, widget):
         """Open ContentDialog."""
@@ -282,20 +294,6 @@ class InputWidget(UiComponent):
         widgets.create_content_dialog_ui(self.set_content_type_cb,
             self.widgets["ContentButton"], self.widgets["ToolbarContainer"],
             self.card_type, FrontToBack.id)
-
-    def set_card_type_cb(self, widget):
-        """Sets current Card type and close CardTypesDialog."""
-
-        widget.get_parent().get_parent().get_parent().destroy()
-        for selector in self.selectors.values():
-            if selector['selector'].name == widget.name:
-                selected_cardtype = selector['card_type']
-                break
-        self.set_card_type(selected_cardtype)
-        if self.card_type.id is not FrontToBack.id:
-            self.set_content_type("text")
-        self.show_snd_container()
-        self.clear_widgets()
 
     def set_content_type_cb(self, widget):
         """Sets current content type and close ContentDialog."""
