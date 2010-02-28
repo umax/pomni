@@ -229,10 +229,10 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
         hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
     dialog.set_selector(selector)
     
-    # fill cardtypes list
+    # fill card types list
     for card_type in card_types_list:
         selector.append_text(card_type.name)
-    
+
     # activate current card type in cardtypes list
     selector.set_active(0, card_types_list.index(current_card_type))
     
@@ -242,38 +242,25 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     return card_types_list[selected_card_type_index]
                                                                         
 
-def create_content_dialog_ui(callback, content_button, toolbar_container, \
-    current_card_type, front_to_back_id):
+def create_content_dialog_ui(window, current_content_type):
     """Creates ContentDialog UI."""
+    
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title('Select content type')
+    selector = hildon.TouchSelector(text=True)
+    selector.set_column_selection_mode( \
+        hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
+    dialog.set_selector(selector)
 
-    from mnemosyne.maemo_ui.widgets.common import create_button
+    # fill content types list
+    content_types_list = ["text", "sound", "image"]
+    for content_type in content_types_list:
+        selector.append_text(content_type.capitalize())
+    
+    # activate current card type in cardtypes list
+    selector.set_active(0, content_types_list.index(current_content_type))
 
-    text_content_button = create_button('text_content_button', callback, \
-        width=72, height=72)
-    image_content_button = create_button('image_content_button', callback, \
-        width=72, height=72)
-    sound_content_button = create_button('sound_content_button', callback, \
-        width=72, height=72)
-    dialog = gtk.Dialog()
-    dialog.set_decorated(False)
-    dialog.set_name('dialog')
-    dialog.set_has_separator(False)
-    pos_x, pos_y = content_button.window.get_origin()
-    dialog.move(pos_x, pos_y + toolbar_container.get_size_request()[1]/5)
-    state = current_card_type.id in (front_to_back_id)
-    sound_content_button.set_sensitive(state)
-    image_content_button.set_sensitive(state)
-    buttons_table = gtk.Table(rows=1, columns=3, homogeneous=True)
-    buttons_table.set_col_spacings(16)
-    buttons_table.attach(text_content_button, 0, 1, 0, 1, \
-        xoptions=gtk.EXPAND, xpadding=10)
-    buttons_table.attach(sound_content_button, 1, 2, 0, 1, \
-        xoptions=gtk.EXPAND, xpadding=10)
-    buttons_table.attach(image_content_button, 2, 3, 0, 1, \
-        xoptions=gtk.EXPAND, xpadding=10)
-    buttons_table.show_all()
-    dialog.vbox.pack_start(buttons_table, expand=True, fill=False, \
-        padding=8)
     dialog.run()
-
-
+    selected_content_type = selector.get_active(0)
+    dialog.destroy()
+    return content_types_list[selected_content_type]

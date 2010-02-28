@@ -154,25 +154,34 @@ class InputWidget(UiComponent):
         """Set current Card type value and changes UI."""
 
         self.card_type = card_type
+        self.widgets["ContentButton"].set_sensitive(False)
+
         # FIXME: replace by setting necessary image
         if card_type.id == FrontToBack.id:
             self.widgets["CardTypeButton"].set_label('FtB')
+            self.widgets["ContentButton"].set_sensitive(True)
         elif card_type.id == BothWays.id:
             self.widgets["CardTypeButton"].set_label('BW')
         elif card_type.id == ThreeSided.id:
             self.widgets["CardTypeButton"].set_label('3S')
         else:
             self.widgets["CardTypeButton"].set_label('Clz')
+
         self.widgets["CardTypeSwitcher"].set_current_page( \
             self.selectors[card_type.id]["page"])
             
-    def set_content_type(self, widget_name):
+    def set_content_type(self, content_type):
         """Set current Content type and changes UI."""
 
-        self.content_type = widget_name.split('_')[0]
-        # This trick need for set right image for ContentType button from rcfile
-        self.widgets["ContentButton"].set_name( \
-            "contenttype_%s" % self.content_type)
+        self.content_type = content_type
+
+        # FIXME: replace by setting necessary image
+        if content_type == "text":
+            self.widgets["ContentButton"].set_label("Txt")
+        elif content_type == "sound":
+            self.widgets["ContentButton"].set_label("Snd")
+        else:
+            self.widgets["ContentButton"].set_label("Img")
 
     def update_tags(self):
         """Update active tags list."""
@@ -282,8 +291,6 @@ class InputWidget(UiComponent):
             self.window, self.card_types(), self.card_type)
         if selected_cardtype is not self.card_type:
             self.set_card_type(selected_cardtype)
-            if self.card_type.id is not FrontToBack.id:
-                self.set_content_type("text")
             self.show_snd_container()
             self.clear_widgets()
 
@@ -291,15 +298,9 @@ class InputWidget(UiComponent):
         """Open ContentDialog."""
 
         self._main_widget.soundplayer.stop()
-        widgets.create_content_dialog_ui(self.set_content_type_cb,
-            self.widgets["ContentButton"], self.widgets["ToolbarContainer"],
-            self.card_type, FrontToBack.id)
-
-    def set_content_type_cb(self, widget):
-        """Sets current content type and close ContentDialog."""
-
-        widget.get_parent().get_parent().get_parent().destroy()
-        self.set_content_type(widget.name)
+        selected_content_type = widgets.create_content_dialog_ui( \
+            self.window, self.content_type)
+        self.set_content_type(selected_content_type)
         self.areas['question'].get_buffer().set_text(_("<QUESTION>"))
         self.show_snd_container()
 
@@ -402,7 +403,6 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         self.set_content_type(self.conf["content_type_last_selected"])
         self.update_tags()
         self.clear_widgets()
-        #self._main_widget.switcher.set_current_page(self.page)
 
     def clear_text_cb(self, widget, event):
         """Clear textview content."""
