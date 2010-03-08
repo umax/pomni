@@ -38,12 +38,11 @@ class TagsWidget(ActivateCardsDialog):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         # create widgets
-        self.page, self.tags_box, menu_button, stat_button = \
-            widgets.create_tags_ui(self.main_widget().switcher)
-        self.tags_dict = {}
+        self.window, self.selector, button_stats, self.tags_dict = \
+            widgets.create_tags_ui(self.database())
         # connecting signals
-        stat_button.connect('clicked', self.stat_cb)
-        menu_button.connect('clicked', self.tags_to_main_menu_cb)
+        self.window.connect('destroy', self.tags_to_main_menu_cb)
+        button_stats.connect('clicked', self.stats_cb)
 
     def activate(self):
         """Activate 'ActivateCardsDialog'."""
@@ -51,33 +50,20 @@ class TagsWidget(ActivateCardsDialog):
         # this part is the first part of activate_cards from default controller
         self.stopwatch().pause()
 
-        self.main_widget().switcher.set_current_page(self.page)
-        self.display_criterion(self.database().current_activity_criterion())
-
-    def display_criterion(self, criterion):
-        """Display current criterion."""
-
-        tags_box = self.tags_box
-        for child in tags_box.get_children():
-            tags_box.remove(child)
-        for tag in self.database().get_tags():
-            self.tags_dict[tag.name] = tag._id
-            cards_count = self.database().total_card_count_for__tag_id(tag._id)
-            tags_box.pack_start(widgets.create_tag_checkbox(tag.name + \
-                unicode(" (%s cards)" % cards_count), \
-                tag._id in criterion.active_tag__ids))
-
     def get_criterion(self):
         """Build the criterion from the information the user entered."""
 
         criterion = DefaultCriterion(self.component_manager)
-        for hbox in self.tags_box.get_children():
-            children = hbox.get_children()
-            if children[0].get_active():
-                label = children[1].get_label()
-                tag_name = unicode( \
-                    re.search(r'(.+) \(\d+ cards\)', label).group(1))
-                criterion.active_tag__ids.add(self.tags_dict[tag_name])
+        indexes_of_selected_tags = [item[0] for item in \
+            self.selector.get_selected_rows(0)]
+        model = self.selector.get_model(0)
+        selected_tags = [unicode(model[index][0]) for index in \
+            indexes_of_selected_tags]
+            
+        for selected_tag in selected_tags:
+            tag_name = unicode(re.search(r'(.+) \(\d+ cards\)', \
+                selected_tag).group(1))
+            criterion.active_tag__ids.add(self.tags_dict[tag_name])
         return criterion
 
     def tags_to_main_menu_cb(self, widget):
@@ -91,12 +77,10 @@ class TagsWidget(ActivateCardsDialog):
         review_controller.reload_counters()
         self.stopwatch().unpause()
 
-        self.main_widget().switcher.remove_page(self.page)
         self.main_widget().menu_()
     
-    def stat_cb(self, widget):
+    def stats_cb(self, widget):
         """Go to main tag statistics."""
 
         self.config()["last_variant_for_statistics_page"] = 2
         self.controller().show_statistics()
-
