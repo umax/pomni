@@ -55,7 +55,6 @@ class InputWidget(UiComponent):
         self.content_type = None
         self.last_input_page = None
         self.fact = None
-        self.tag_mode = False
         self.sounddir = None
         self.imagedir = None
         self.card_type = None
@@ -74,7 +73,6 @@ class InputWidget(UiComponent):
         # connect signals
         self.window.connect('destroy', self.input_to_main_menu_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
-        #menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
         sound_button.connect('button-press-event', \
             self.preview_sound_in_input_cb)
@@ -97,34 +95,29 @@ class InputWidget(UiComponent):
             area.modify_font(font)
 
         self.widgets = {# Other widgets
-            "TagsButton": tags_button,
             "CardTypeButton": card_type_button,
             "ContentButton": content_button,
+            "TagsButton": tags_button,
             "CardTypeSwitcher": card_type_switcher,
             "SoundContainer": sound_container,
             "SoundButton": sound_button,
-            "QuestionContainer": question_container,
-            "ToolbarContainer": None}
+            "QuestionContainer": question_container}
 
-        # card_id: {"page": page_id, "selector": selector_widget, 
+        # card_id: {"page": page_id, "card_type": card_type, 
         # "widgets": [(field_name:text_area_widget)...]}
         self.selectors = {
             FrontToBack.id: {
                 "page": 0, 
-                "selector": None,
                 "widgets": [('q', question_text), ('a', answer_text)]},
             BothWays.id: {
                 "page": 0,
-                "selector": None,
                 "widgets": [('q', question_text), ('a', answer_text)]},
             ThreeSided.id: {
                 "page": 1,
-                "selector": None,
                 "widgets": [('f', foreign_text), ('t', translation_text),
                     ('p', pronunciation_text)]},
             Cloze.id: {
                 "page": 2,
-                "selector": None,
                 "widgets": [('text', self.areas["cloze"])]}
         }
 
@@ -349,7 +342,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         # gets last selected options
         try:
             self.selected_tags = [unicode(tag.strip()) for tag in \
-                self.conf["tags_of_last_added"].split(',')]            
+                self.conf["tags_of_last_added"]]            
         except:
             self.selected_tags = [self.default_tag_name]
 
@@ -411,7 +404,6 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         self.stopwatch().unpause()
 
         self._main_widget.soundplayer.stop()
-        self.window.destroy()
         self._main_widget.menu_()
 
 
@@ -422,17 +414,18 @@ class EditFactWidget(EditFactDialog, InputWidget):
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
         self.fact = self.review_controller().card.fact
-        self.selected_tags = self.database().cards_from_fact(self.fact)\
-            [0].tag_string()
+        self.selected_tags = [tag.name for tag in \
+            self.database().cards_from_fact(self.fact)[0].tags]
         # set grade of the current card active
         for num in range(6):
-            self.grades[num].set_name('grade%s_disabled' % num)
+            self.grades[num].set_sensitive(False)
         current_grade = self.review_controller().card.grade
         if current_grade == -1:
             current_grade = 0
-        self.grades[current_grade].set_name('grade%s' % current_grade)
+        self.grades[current_grade].set_sensitive(True)
         # connect signals
         self.grades[current_grade].connect('clicked', self.update_card_cb)
+        self.window.connect('destroy', self.input_to_main_menu_cb)
 
     def activate(self):
         """Activate Edit mode."""
@@ -457,7 +450,6 @@ class EditFactWidget(EditFactDialog, InputWidget):
         self.set_widgets_data(self.fact)
         self.update_tags()
         self.show_snd_container()
-        #self._main_widget.switcher.set_current_page(self.page)
 
     def update_card_cb(self, widget):
         """Update card in the database."""
@@ -468,7 +460,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
             return # Let the user try again to fill out the missing data.
 
         review_controller = self.review_controller()
-        new_tags = [tag.strip() for tag in self.selected_tags.split(',')]
+        new_tags = [unicode(tag.strip()) for tag in self.selected_tags]
         self.controller().update_related_cards(self.fact, fact_data,
           self.card_type, new_tags, None)
 
@@ -480,17 +472,14 @@ class EditFactWidget(EditFactDialog, InputWidget):
         review_controller.update_dialog(redraw_all=True)
         self.stopwatch().unpause()
 
-        self.input_to_main_menu_cb(None)
+        self.input_to_main_menu_cb()
 
-    def input_to_main_menu_cb(self, widget):
+    def input_to_main_menu_cb(self, widget=None):
         """Return to Review mode."""
 
-        if self.tag_mode:
-            self.selected_tags = self.hide_tags_dialog()
-        else:
-            self._main_widget.soundplayer.stop()
-            self._main_widget.switcher.remove_page(self.page)
-            self._main_widget.activate_mode('review')
+        self._main_widget.soundplayer.stop()
+        self.window.destroy()
+        self._main_widget.activate_mode('review')
 
 
 # Local Variables:
