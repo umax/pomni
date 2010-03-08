@@ -33,8 +33,9 @@ def create_menu_ui(exit_callback):
     toplevel_table = gtk.Table(rows=1, columns=1)
     # create Menu window
     window = hildon.StackableWindow()
-    window.set_title("Mnemosyne for Maemo")
+    window.set_title(unicode("Mnemosyne for Maemo"))
     window.connect("delete_event", exit_callback)
+
     # create menu buttons
     buttons_table = gtk.Table(rows=2, columns=2)
     buttons_table.set_row_spacings(4)
@@ -51,6 +52,7 @@ def create_menu_ui(exit_callback):
     buttons_table.attach(button_input, 1, 2, 0, 1)
     buttons_table.attach(button_tags, 0, 1, 1, 2)
     buttons_table.attach(button_stats, 1, 2, 1, 2)
+    
     # create AppMenu
     menu = hildon.AppMenu()
     button_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
@@ -66,11 +68,12 @@ def create_menu_ui(exit_callback):
     menu.append(button_help)
     menu.append(button_about)
     menu.show_all()
+    
     # packing window elements
     toplevel_table.attach(buttons_table, 0, 1, 0, 1, xpadding=6, ypadding=6)
     window.add(toplevel_table)
     window.set_app_menu(menu)
-    window.show_all()
+    
     return window, {'tags': button_tags, 'review': button_review, \
         'input': button_input, 'stats': button_stats, 'settings': \
         button_settings, 'import': button_import, 'help': button_help, \

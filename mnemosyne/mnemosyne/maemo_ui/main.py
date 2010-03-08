@@ -26,7 +26,6 @@ Main Widget.
 
 import os
 import gtk
-import hildon
 import mnemosyne.maemo_ui.widgets.main as widgets
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
@@ -36,10 +35,9 @@ class MainWdgt(MainWidget):
 
     def __init__(self, component_manager):
         MainWidget.__init__(self, component_manager)
-        self.window = None
+        self.review_window = None
         self.widgets = {}
         self._soundplayer = None
-        print 'MainWidget:init:ok'
 
     @property
     def soundplayer(self):
@@ -64,13 +62,11 @@ class MainWdgt(MainWidget):
         #self.window.connect('window-state-event', self.window_state_cb)
         #self.window.connect('key-press-event', self.window_keypress_cb)
         #self.window.show_all()
-        print 'MainWidget:activate:ok'
+        pass
 
     def activate_mode(self, mode):
         """Activate mode in lazy way."""
 
-        print 'MainWidget:activate_mode'
-        print 'mode=%s' % mode
         widget = self.create_mode(mode)
         widget.activate()
 
@@ -84,7 +80,7 @@ class MainWdgt(MainWidget):
                 widget = self.review_controller().widget
             elif mode == "menu":
                 from mnemosyne.maemo_ui.menu import MenuWidget
-                widget = MenuWidget(self.component_manager, self.exit_)
+                widget = MenuWidget(self.component_manager)
             elif mode == "sync":
                 from mnemosyne.maemo_ui.sync import SyncWidget
                 widget = SyncWidget(self.component_manager)
@@ -108,7 +104,6 @@ class MainWdgt(MainWidget):
     def start(self, mode):
         """UI entry point. Activates specified mode."""
 
-        print "MainWidget:start"
         if not mode:
             if self.config()['startup_with_review']:
                 self.review_()
@@ -117,45 +112,35 @@ class MainWdgt(MainWidget):
         gtk.main()
 
 
-    def kill_menu_object(self):
-        """Removes MenuWidget object from memory."""
-
-        if 'menu' in self.widgets:
-            del self.widgets['menu']
-
     # modes
     def menu_(self, mode=None):
         """Activate menu."""
 
-        print "MainWidget:menu_"
         if mode is not None:
             del self.widgets[mode]
+        if self.review_window is not None:
+            self.review_window.hide()
         self.activate_mode('menu')
 
     def tags_(self):
         """Activate 'Activate tags' mode."""
 
-        self.kill_menu_object()
         if 'review' not in self.widgets:
             self.create_mode('review')
-        #self.controller().activate_cards()
         self.component_manager.get_current("activate_cards_dialog")\
             (self.component_manager).activate()
 
     def input_(self):
         """Activate input mode."""
        
-        #self.kill_menu_object()
         if 'review' not in self.widgets:
             self.create_mode('review')
-        #self.controller().add_cards()
         self.component_manager.get_current("add_cards_dialog")\
             (self.component_manager).activate()
 
     def configure_(self):
         """Activate configure mode through main controller."""
 
-        self.kill_menu_object()
         if 'review' not in self.widgets:
             self.create_mode('review')
         self.controller().configure()
@@ -168,25 +153,21 @@ class MainWdgt(MainWidget):
     def statistics_(self):
         """Activate statistics mode."""
 
-        self.kill_menu_object()
         self.activate_mode('statistics')
 
     def import_(self):
         """Activate import mode."""
 
-        self.kill_menu_object()
         self.activate_mode('importcards')
 
     def sync_(self):
         """Activate sync mode."""
 
-        self.kill_menu_object()
         self.activate_mode('sync')
 
     def about_(self):
         """Activate about mode."""
 
-        self.kill_menu_object()
         self.activate_mode('about')
 
     @staticmethod
@@ -194,30 +175,12 @@ class MainWdgt(MainWidget):
         """Exit from main gtk loop."""
         gtk.main_quit()
 
-    # gtk window callbacks
-    def window_keypress_cb(self, widget, event, *args):
-        """Key pressed."""
-
-        if event.keyval == gtk.keysyms.F6:
-            # The "Full screen" hardware key has been pressed
-            if self.fullscreen:
-                self.window.unfullscreen()
-            else:
-                self.window.fullscreen()
-            self.fullscreen = not self.fullscreen
-
-
-    def window_state_cb(self, widget, event):
-        """Checking window state."""
-
-        self.fullscreen = bool(event.new_window_state & \
-            gtk.gdk.WINDOW_STATE_FULLSCREEN)
 
     # Main Widget API
     def information_box(self, message):
         """Show Information message."""
 
-        widgets.create_information_dialog(self.window, message)
+        widgets.create_information_dialog(self.review_window, message)
 
     def error_box(self, message):
         """Error message."""
@@ -227,7 +190,7 @@ class MainWdgt(MainWidget):
     def question_box(self, question, option0, option1, option2):
         """Show Question message."""
 
-        return widgets.create_question_dialog(self.window, question) 
+        return widgets.create_question_dialog(self.review_window, question) 
         
 
 

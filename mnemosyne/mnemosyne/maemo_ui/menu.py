@@ -25,7 +25,6 @@ Hildon UI. Menu widget.
 """
 
 import mnemosyne.maemo_ui.widgets.menu as widgets
-#import create_menu_ui
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 
 class MenuWidget(UiComponent):
@@ -33,40 +32,37 @@ class MenuWidget(UiComponent):
 
     component_type = "menu_widget"
 
-    def __init__(self, component_manager, exit_callback):
+    def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         # create widgets
-        self.window, buttons = widgets.create_menu_ui(exit_callback)
+        self.window, buttons = widgets.create_menu_ui(self._main_widget.exit_)
         # connect signals
         buttons['tags'].connect('clicked', self.tags_cb)
         buttons['review'].connect('clicked', self.review_cb)
         buttons['input'].connect('clicked', self.input_cb)
         buttons['settings'].connect('clicked', self.settings_cb)
-        #buttons['sync'].connect('clicked', self.sync_cb)
         buttons['import'].connect('clicked', self.importcards_cb)
         buttons['stats'].connect('clicked', self.statistics_cb)
-        buttons['help'].connect('clicked', self.about_cb)
-        self._main_widget.window = self.window
+        buttons['help'].connect('clicked', self.help_cb)
+        buttons['about'].connect('clicked', self.about_cb)
 
     def activate(self):
         """Activates necessary switcher page."""
 
-        #self._main_widget.switcher.set_current_page(self.page)
-        #self.window.show_all()
-        print "MenuWidget:activate"
+        self.window.show_all()
+
 
     # callbacks
+
     def tags_cb(self, widget):
         """Go to Tags mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.tags_()
 
     def input_cb(self, widget):
         """Go to Input mode."""
 
-        #self._main_widget.switcher.remove_page(self.page)
         self._main_widget.input_()
 
     def review_cb(self, widget):
@@ -77,32 +73,32 @@ class MenuWidget(UiComponent):
     def sync_cb(self, widget):
         """Go to Sync mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.sync_()
 
     def settings_cb(self, widget):
         """Go to Configuration mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.configure_()
 
     def statistics_cb(self, widget):
         """Go to Statistics mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.statistics_()
 
     def importcards_cb(self, widget):
-        """Go to import mode."""
+        """Go to Import mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.import_()
 
     def about_cb(self, widget):
         """Go to About mode."""
 
-        self._main_widget.switcher.remove_page(self.page)
         self._main_widget.about_()
+        
+    def help_cb(self, widget):
+        """Go to Help mode."""
+
+        self._main_widget.help_()
 
     def exit_cb(self, widget):
         """Exit program."""

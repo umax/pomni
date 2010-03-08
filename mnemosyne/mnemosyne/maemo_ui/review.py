@@ -45,6 +45,7 @@ class ReviewWdgt(ReviewWidget):
         self.window, self.question_text, self.answer_text, \
         self.grades_table, grades, button_stats, self.tts_button, \
         self.edit_button, self.del_button = widgets.create_review_ui()
+        self._main_widget.review_window = self.window
         self.tts_available = tts.is_available()
         self.tts_button.set_sensitive(False)
         # connect signals
@@ -78,7 +79,6 @@ class ReviewWdgt(ReviewWidget):
     def set_question(self, text):
         """Set question text."""
 
-        print 'set_question'
         self.tts_button.set_sensitive(False)
         self.is_sound_card = False
         self.question_text.set_size_request(-1, -1)
@@ -95,7 +95,7 @@ class ReviewWdgt(ReviewWidget):
                 self.tts_button.set_sensitive(self.tts_available)
             self.renderer.render_html(self.question_text, text)
         tags = [tag.name for tag in self._review_controller.card.tags]
-        self.window.set_title("Card tags: " + ', '.join(tags))
+        self.window.set_title("Tags: " + ', '.join(tags))
 
     def set_answer(self, text):
         """Set answer text."""
@@ -105,7 +105,7 @@ class ReviewWdgt(ReviewWidget):
     def clear_question(self): 
         """Clear question text."""
 
-        self.window.set_title("No tags")
+        self.window.set_title("Review mode")
         self.tts_button.set_sensitive(False)
         self.renderer.render_html(self.question_text)
 
