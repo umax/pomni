@@ -51,7 +51,7 @@ class InputWidget(UiComponent):
 
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
-        self.default_tag_name = _("<default>")
+        self.default_tag_name = unicode(_("<default>"))
         self.content_type = None
         self.last_input_page = None
         self.fact = None
@@ -60,17 +60,19 @@ class InputWidget(UiComponent):
         self.imagedir = None
         self.card_type = None
         self.selected_tags = None
-        self.tags = sorted(self.database().get_tag_names(), \
-            cmp=numeric_string_cmp) or [self.default_tag_name]
+        self.tags = [unicode(tag) for tag in sorted( \
+            self.database().get_tag_names(), cmp=numeric_string_cmp) or \
+            [self.default_tag_name]]
         self._main_widget = self.main_widget()
         # create widgets
         self.window, card_type_button, content_button, tags_button, \
             sound_button, question_text, answer_text, foreign_text, \
             pronunciation_text, translation_text, cloze_text, new_tag_button, \
-            new_tag_entry, tags_box, card_type_switcher, sound_container, \
-            question_container, self.grades, tags_button = \
-            widgets.create_input_ui(self.conf["theme_path"])
+            card_type_switcher, sound_container, question_container, \
+            self.grades, tags_button = widgets.create_input_ui( \
+                self.conf["theme_path"])
         # connect signals
+        self.window.connect('destroy', self.input_to_main_menu_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
         #menu_button.connect('clicked', self.input_to_main_menu_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
@@ -96,8 +98,6 @@ class InputWidget(UiComponent):
 
         self.widgets = {# Other widgets
             "TagsButton": tags_button,
-            "NewTagEntry": new_tag_entry,
-            "TagsBox": tags_box,
             "CardTypeButton": card_type_button,
             "ContentButton": content_button,
             "CardTypeSwitcher": card_type_switcher,
@@ -186,9 +186,8 @@ class InputWidget(UiComponent):
     def update_tags(self):
         """Update active tags list."""
 
-        tags = ', '.join([tag.strip() for tag in self.selected_tags.split(',') \
+        tags = ', '.join([tag.strip() for tag in self.selected_tags \
             if tag.strip() in self.tags]) or self.default_tag_name
-        self.selected_tags = tags
         self.window.set_title(_('Tags: ') + tags)
 
     def check_complete_input(self):
@@ -233,55 +232,24 @@ class InputWidget(UiComponent):
         start, end = widget.get_buffer().get_bounds()
         return widget.get_buffer().get_text(start, end)
 
-    def hide_tags_dialog(self):
-        """Close TagsDialog."""
-
-        self.tag_mode = False
-        selected_tags = ', '.join([hbox.get_children()[1].get_label() for \
-            hbox in self.widgets["TagsBox"].get_children() if \
-            hbox.get_children()[0].get_active()]) or self.default_tag_name
-        self.widgets["TagsLabel"].set_text(_('Current tags: ') + selected_tags)
-        self.widgets["TagsLabel"].show()
-        self.widgets["CardTypeSwitcher"].set_current_page(self.last_input_page)
-        for widget in ("CardTypeButton", "ContentButton", "TagsButton"):
-            self.widgets[widget].set_sensitive(True)
-        for widget in self.grades.values():
-            widget.set_sensitive(True)
-        return selected_tags
 
     # Callbacks
 
     def show_tags_dialog_cb(self, widget):
-        """Show TagsDialog."""
+        """Show TagsSelectionDialog."""
 
-        self.tag_mode = True
-        tags_box = self.widgets["TagsBox"]
-        self.widgets["TagsLabel"].hide()
-        self.last_input_page = self.widgets["CardTypeSwitcher"]. \
-            get_current_page()
-        self.widgets["CardTypeSwitcher"].set_current_page(3)
-        for widget in ("CardTypeButton", "ContentButton", "TagsButton"):
-            self.widgets[widget].set_sensitive(False)
-        for widget in self.grades.values():
-            widget.set_sensitive(False)
-        for child in tags_box.get_children():
-            tags_box.remove(child)
-        for tag in self.tags:
-            tags_box.pack_start(widgets.create_tag_checkbox( \
-                tag, tag in self.selected_tags))
+        self.selected_tags = widgets.create_tags_dialog_ui( \
+            self.window, self.tags, self.selected_tags)
+        self.update_tags()
 
     def add_new_tag_cb(self, widget):
         """Create new tag."""
 
-        tag_entry = self.widgets["NewTagEntry"]
-        tag = tag_entry.get_text()
-        tags_box = self.widgets["TagsBox"]
+        tag = unicode(widgets.create_new_tag_dialog_ui())
         if tag and not tag in self.tags:
+            self.selected_tags.append(tag)
             self.tags.append(tag)
-            tag_widget = widgets.create_tag_checkbox(tag, True)
-            tags_box.pack_start(tag_widget)
-            tags_box.reorder_child(tag_widget, 0)
-            tag_entry.set_text("")
+            self.update_tags()
 
     def show_cardtype_dialog_cb(self, widget):
         """Open CardTypeDialog."""
@@ -303,11 +271,6 @@ class InputWidget(UiComponent):
         self.set_content_type(selected_content_type)
         self.areas['question'].get_buffer().set_text(_("<QUESTION>"))
         self.show_snd_container()
-
-    def set_current_grade_cb(self, widget):
-        """Sets current grade value."""
-
-        self.set_current_grade(int(widget.name[5]))
 
     def show_media_dialog_cb(self, widget, event):
         """Open MediaDialog."""
@@ -385,11 +348,10 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             self.areas[name].connect('button_press_event', self.clear_text_cb)
         # gets last selected options
         try:
-            self.selected_tags = self.conf["tags_of_last_added"]
-            self.last_selected_grade = self.conf['last_selected_grade']
+            self.selected_tags = [unicode(tag.strip()) for tag in \
+                self.conf["tags_of_last_added"].split(',')]            
         except:
-            self.selected_tags = self.default_tag_name
-            self.last_selected_grade = 0
+            self.selected_tags = [self.default_tag_name]
 
     def activate(self):
         """Activate input mode."""
@@ -427,8 +389,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         if grade in (0, 1):
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
-            [unicode(tag).strip() for tag in self.selected_tags.split(',')], \
-            save=True)
+            [unicode(tag).strip() for tag in self.selected_tags], save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
         self.show_snd_container()
@@ -436,26 +397,22 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def input_to_main_menu_cb(self, widget):
         """Return to main menu."""
 
-        if self.tag_mode:
-            self.selected_tags = self.hide_tags_dialog()            
-        else:
-            self.conf["tags_of_last_added"] = self.selected_tags
-            self.conf["last_selected_grade"] = self.last_selected_grade
-            self.conf["card_type_last_selected"] = self.card_type.id
-            self.conf["content_type_last_selected"] = self.content_type
-            self.conf.save()
+        self.conf["tags_of_last_added"] = self.selected_tags
+        self.conf["card_type_last_selected"] = self.card_type.id
+        self.conf["content_type_last_selected"] = self.content_type
+        self.conf.save()
 
-            # this part is called from add_card_cb, when card is added
-            self.database().save()
-            review_controller = self.review_controller()
-            review_controller.reload_counters()
-            if review_controller.card is None:
-                review_controller.new_question()
-            self.stopwatch().unpause()
+        # this part is called from add_card_cb, when card is added
+        self.database().save()
+        review_controller = self.review_controller()
+        review_controller.reload_counters()
+        if review_controller.card is None:
+            review_controller.new_question()
+        self.stopwatch().unpause()
 
-            self._main_widget.soundplayer.stop()
-            self._main_widget.switcher.remove_page(self.page)
-            self._main_widget.menu_()
+        self._main_widget.soundplayer.stop()
+        self.window.destroy()
+        self._main_widget.menu_()
 
 
 

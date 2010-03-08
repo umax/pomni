@@ -28,7 +28,6 @@ import os
 import gtk
 import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
-from mnemosyne.maemo_ui.widgets.common import create_tag_checkbox
 
 
 def create_input_ui(theme_path):
@@ -82,33 +81,6 @@ def create_input_ui(theme_path):
     translation_text = create_text_field()
     cloze_text = create_text_field()
 
-    # create new tag elements
-    tags_layout = gtk.VBox(spacing=26)
-    new_tag_box = gtk.HBox()
-    new_tag_label = gtk.Label()
-    new_tag_label.set_text('New tag: ')
-    new_tag_label.set_name('white_label')
-    new_tag_button = widgets.create_button('plus_button', width=60, height=60)
-    new_tag_frame = gtk.Frame()
-    new_tag_frame.set_name('html_container')
-    new_tag_entry = gtk.Entry()
-    new_tag_entry.set_name('entry_widget')
-    # creates 'tags list' elements
-    tags_frame = gtk.Frame()
-    tags_frame.set_name('html_container')
-    tags_eventbox = gtk.EventBox()
-    tags_eventbox.set_visible_window(True)
-    tags_eventbox.set_name('viewport_widget')
-    tags_scrolledwindow = gtk.ScrolledWindow()
-    tags_scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, \
-        gtk.POLICY_AUTOMATIC)
-    tags_scrolledwindow.set_name('scrolled_window')
-    tags_viewport = gtk.Viewport()
-    tags_viewport.set_name('viewport_widget')
-    tags_viewport.set_shadow_type(gtk.SHADOW_NONE)
-    tags_box = gtk.VBox()
-    tags_box.set_homogeneous(True)
-
     # create other widgets
     two_sided_box = gtk.VBox()
     two_sided_box.set_homogeneous(True)
@@ -137,7 +109,6 @@ def create_input_ui(theme_path):
     card_type_switcher.append_page(two_sided_box)
     card_type_switcher.append_page(three_sided_box)
     card_type_switcher.append_page(cloze_box)
-    card_type_switcher.append_page(tags_layout)
     sound_box.pack_start(sound_container)
     sound_box.pack_end(question_text)
     two_sided_box.pack_start(sound_box)
@@ -146,28 +117,28 @@ def create_input_ui(theme_path):
     three_sided_box.pack_start(pronunciation_text)
     three_sided_box.pack_end(translation_text)
     cloze_box.pack_start(cloze_text)
-    new_tag_frame.add(new_tag_entry)
-    new_tag_box.pack_start(new_tag_label, expand=False, fill=False, padding=0)
-    new_tag_box.pack_start(new_tag_frame, expand=True, fill=True, padding=0)
-    new_tag_box.pack_end(new_tag_button, expand=False, fill=False)
-    tags_viewport.add(tags_box)
-    tags_scrolledwindow.add(tags_viewport)
-    tags_eventbox.add(tags_scrolledwindow)
-    tags_frame.add(tags_eventbox)
-    tags_layout.pack_start(new_tag_box, expand=False, fill=False)
-    tags_layout.pack_end(tags_frame, expand=True, fill=True)
-    
+   
+    # create StackableWindow
     window = hildon.StackableWindow()
     window.add(toplevel_table)
+
+    # create AppMenu
+    menu = hildon.AppMenu()
+    button_new_tag = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Add new tag")
+    menu.append(button_new_tag)
+    menu.show_all()
+    window.set_app_menu(menu)
     window.show_all()
 
     # hide necessary widgets
     sound_container.hide()
+
     return window, card_type_button, \
         content_button, tags_button, sound_button, question_text, \
         answer_text, foreign_text, pronunciation_text, translation_text, \
-        cloze_text, new_tag_button, new_tag_entry, tags_box, \
-        card_type_switcher, sound_container, question_text, grades, tags_button
+        cloze_text, button_new_tag, card_type_switcher, sound_container, \
+        question_text, grades, tags_button
 
 
 def create_media_dialog_ui():
@@ -222,11 +193,9 @@ def create_media_dialog_ui():
 def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     """Creates CardType dialog UI."""
 
-    dialog = hildon.PickerDialog(window)
-    dialog.set_title('Select card type')
     selector = hildon.TouchSelector(text=True)
-    selector.set_column_selection_mode( \
-        hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title(unicode('Card type'))
     dialog.set_selector(selector)
     
     # fill card types list
@@ -243,13 +212,11 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
                                                                         
 
 def create_content_dialog_ui(window, current_content_type):
-    """Creates ContentDialog UI."""
+    """Creates Content dialog UI."""
     
-    dialog = hildon.PickerDialog(window)
-    dialog.set_title('Select content type')
     selector = hildon.TouchSelector(text=True)
-    selector.set_column_selection_mode( \
-        hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title(unicode('Content type'))
     dialog.set_selector(selector)
 
     # fill content types list
@@ -264,3 +231,50 @@ def create_content_dialog_ui(window, current_content_type):
     selected_content_type = selector.get_active(0)
     dialog.destroy()
     return content_types_list[selected_content_type]
+
+
+def create_tags_dialog_ui(window, tags, selected_tags):
+    """Creates TagsSelection dialog UI."""
+
+    selector = hildon.TouchSelector(text=True) 
+
+    # fill tags list
+    for tag in tags:
+        selector.append_text(tag)
+    
+    selector.set_column_selection_mode( \
+        hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
+    
+    # mark selected tags
+    selector.unselect_all(0)
+    model = selector.get_model(0)
+    for i in range(len(tags)):
+        if model[i][0] in selected_tags:
+            selector.select_iter(0, model.get_iter(i), False)
+        
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title(unicode("Tags for new card"))
+    dialog.set_selector(selector)
+    dialog.run()
+    indexes_of_selected_tags = [item[0] for item in \
+        selector.get_selected_rows(0)]
+    model = selector.get_model(0)
+    selected_tags = [unicode(model[index][0]) for index in \
+        indexes_of_selected_tags]
+    dialog.destroy()
+    return selected_tags
+
+
+def create_new_tag_dialog_ui():
+    """Creates NewTagDialog UI."""
+    
+    dialog = hildon.Dialog()
+    dialog.set_title(unicode("New tag"))
+    entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)
+    entry.show()
+    dialog.vbox.pack_start(entry)
+    dialog.add_button("Add", gtk.RESPONSE_OK)
+    dialog.run()
+    tag_name = entry.get_text()
+    dialog.destroy()
+    return tag_name
