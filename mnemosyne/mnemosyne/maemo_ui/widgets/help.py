@@ -21,15 +21,15 @@
 #
 
 """
-Hildon UI. Widgets for about mode.
+Hildon UI. Widgets for Help mode.
 """
 
 import gtk
 
 import mnemosyne.maemo_ui.widgets.common as widgets
 
-def create_about_ui(main_switcher, image_name):
-    """Creates AboutWidget UI."""
+def create_help_ui(main_switcher, image_name):
+    """Creates HelpWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=2)
     # create toolbar container

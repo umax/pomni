@@ -21,16 +21,16 @@
 #
 
 """
-Hildon UI. About Widget.
+Hildon UI. Help Widget.
 """
 
 import os
-import mnemosyne.maemo_ui.widgets.about as widgets
+import mnemosyne.maemo_ui.widgets.help as widgets
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 
 
-class AboutWidget(UiComponent):
-    """About Widget."""
+class HelpWidget(UiComponent):
+    """Help Widget."""
 
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager, )

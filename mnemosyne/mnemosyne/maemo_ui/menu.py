@@ -93,7 +93,9 @@ class MenuWidget(UiComponent):
     def about_cb(self, widget):
         """Go to About mode."""
 
-        self._main_widget.about_()
+        #self._main_widget.about_()
+        # FIXME: show About dialog
+        print 'showing abot dialog'
         
     def help_cb(self, widget):
         """Go to Help mode."""

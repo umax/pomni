@@ -84,9 +84,9 @@ class MainWdgt(MainWidget):
             elif mode == "sync":
                 from mnemosyne.maemo_ui.sync import SyncWidget
                 widget = SyncWidget(self.component_manager)
-            elif mode == "about":
-                from mnemosyne.maemo_ui.about import AboutWidget
-                widget = AboutWidget(self.component_manager)
+            elif mode == "help":
+                from mnemosyne.maemo_ui.help import HelpWidget
+                widget = HelpWidget(self.component_manager)
             elif mode == "tags":
                 from mnemosyne.maemo_ui.tags import TagsWidget
                 widget = TagsWidget(self.component_manager)
@@ -146,29 +146,29 @@ class MainWdgt(MainWidget):
         self.controller().configure()
 
     def review_(self):
-        """Activate review mode."""
+        """Activate Review mode."""
 
         self.activate_mode('review')
 
     def statistics_(self):
-        """Activate statistics mode."""
+        """Activate Statistics mode."""
 
         self.activate_mode('statistics')
 
     def import_(self):
-        """Activate import mode."""
+        """Activate Import mode."""
 
         self.activate_mode('importcards')
 
     def sync_(self):
-        """Activate sync mode."""
+        """Activate Sync mode."""
 
         self.activate_mode('sync')
 
-    def about_(self):
-        """Activate about mode."""
+    def help_(self):
+        """Activate Help mode."""
 
-        self.activate_mode('about')
+        self.activate_mode('help')
 
     @staticmethod
     def exit_(window=None, event=None):
