@@ -51,20 +51,24 @@ def create_tags_ui(database):
         tags_names.append(tag.name)
         cards_count = database.total_card_count_for__tag_id(tag._id)
         selector.append_text(unicode(tag.name + " (%s cards)" % cards_count))
-    
-    if len(tags_names) > 1:
-        selector.set_column_selection_mode( \
-            hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
-        #mark active tags
-        selector.unselect_all(0)
-        model = selector.get_model(0)
-        criterion = database.current_activity_criterion()
-        for i in range(len(tags_names)):
-            if tags_dict[tags_names[i]] in criterion.active_tag__ids:
-                selector.select_iter(0, model.get_iter(i), False)
-    
+
+    if tags_names:
+        if len(tags_names) > 1:
+            selector.set_column_selection_mode( \
+                hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
+            #mark active tags
+            selector.unselect_all(0)
+            model = selector.get_model(0)
+            criterion = database.current_activity_criterion()
+            for i in range(len(tags_names)):
+                if tags_dict[tags_names[i]] in criterion.active_tag__ids:
+                    selector.select_iter(0, model.get_iter(i), False)
+        window.add(selector)
+    else:
+        label = gtk.Label('There are no tags')
+        window.add(label)
+              
     window.set_app_menu(menu)
-    window.add(selector)
     window.show_all()
     
     return window, selector, button_stats, tags_dict
