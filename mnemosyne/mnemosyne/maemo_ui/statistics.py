@@ -26,69 +26,60 @@ Hildon UI. Statistics widget.
 
 import time
 from mnemosyne.libmnemosyne.ui_components.dialogs import StatisticsDialog
-from mnemosyne.maemo_ui.widgets.statistics import create_statistics_ui
+import mnemosyne.maemo_ui.widgets.statistics as widgets
 
 DAY = 24 * 60 * 60 # Seconds in a day.
 
 class MaemoStatisticsWidget(StatisticsDialog):
     """Statistics Widget."""
 
-    def __init__(self, component_manager, previous_mode=None):
+    def __init__(self, component_manager, mode=None):
         StatisticsDialog.__init__(self, component_manager)
         self.renderer = self.component_manager.get_current('renderer')
-        self.previous_mode = previous_mode
+        self.statistics_page = None
         self.html = '<html><head><meta http-equiv="Content-Type" content='\
         '"text/html;charset=UTF-8"><style type="text/css">*{font-size:28px;'\
         'font-family:Nokia Sans} table {height:100%;margin-left:auto;margin-'\
-        'right:auto;text-align:center} body{ background-color:white;margin:0;'\
+        'right:auto;text-align:center} body{ background-color:black;margin:0;'\
         'padding:0;}</style></head><body><table>'
         # create widgets
-        self.page, self.mode_statistics_switcher, menu_button, \
-            current_card_button, common_card_button, tags_card_button, \
-            self.current_card_html_widget, self.total_card_html_widget, \
-            self.tags_html_widget = create_statistics_ui( \
-                self.main_widget().switcher)
+        self.window, self.current_stats_button, self.common_stats_button, \
+            self.tags_stats_button, self.html_widget = \
+                widgets.create_statistics_ui()
         # connect signals
-        menu_button.connect('clicked', self.back_to_previous_mode_cb)
-        current_card_button.connect('released', self.current_card_statistics_cb)
-        common_card_button.connect('released', self.common_statistics_cb)
-        tags_card_button.connect('released', self.tags_statistics_cb)
+        self.window.connect('destroy', self.back_to_previous_mode_cb)
+        self.current_stats_button.connect('clicked', \
+            self.current_card_statistics_cb)
+        self.common_stats_button.connect('clicked', self.common_statistics_cb)
+        self.tags_stats_button.connect('clicked', self.tags_statistics_cb)
 
-        # change current statistics page
-        try:
-            statistics_page = self.config()["last_variant_for_statistics_page"] 
-        except KeyError:
-            statistics_page = 2
-
-        if statistics_page == 0:
-            current_card_button.set_active(True)
-            self.current_card_statistics_cb(None)
-        elif statistics_page == 1:
-            common_card_button.set_active(True)
-            self.common_statistics_cb(None) 
-        else:
-            tags_card_button.set_active(True)
-            self.tags_statistics_cb(None) 
- 
     def activate(self):
         """Set necessary switcher page."""
 
-        self.main_widget().switcher.set_current_page(self.page)
+        # change current statistics page
+        try:
+            self.statistics_page = \
+                self.config()["last_variant_for_statistics_page"] 
+        except KeyError:
+            self.statistics_page = 2
 
-    def back_to_previous_mode_cb(self, widget):
-        """Returns to previous mode."""
-
-        self.config()["last_variant_for_statistics_page"] = \
-            self.mode_statistics_switcher.get_current_page()
-        self.main_widget().switcher.remove_page(self.page)
-        if self.previous_mode is not None:
-            self.main_widget().menu_('statistics')
-
+        if self.statistics_page == 0:
+            self.current_stats_button.set_active(True)
+            self.current_card_statistics_cb(None)
+        elif self.statistics_page == 1:
+            self.common_stats_button.set_active(True)
+            self.common_statistics_cb(None) 
+        else:
+            self.tags_stats_button.set_active(True)
+            self.tags_statistics_cb(None)
+ 
 
     # callbacks
+
     def current_card_statistics_cb(self, widget):
         """Switches to the current card statistics page."""
 
+        self.statistics_page = 0
         card = self.review_controller().card
         html = self.html
         if not card:
@@ -115,12 +106,12 @@ class MaemoStatisticsWidget(StatisticsDialog):
                 % self.database().total_thinking_time(card)
         html += "</table></body></html>"
         html = self.renderer.change_font_size(html)
-        self.renderer.render_html(self.current_card_html_widget, html)
-        self.mode_statistics_switcher.set_current_page(0)
+        self.renderer.render_html(self.html_widget, html)
 
     def common_statistics_cb(self, widget):
         """Switches to the common card statistics page."""
 
+        self.statistics_page = 1
         html = self.html
         html += "<tr><td><b>Total cards statistics</b></td></tr>"
         database = self.database()
@@ -133,12 +124,12 @@ class MaemoStatisticsWidget(StatisticsDialog):
                 (grade, self.database().total_card_count_for_grade(grade))
         html += "</table></body></html>"
         html = self.renderer.change_font_size(html)
-        self.renderer.render_html(self.total_card_html_widget, html)
-        self.mode_statistics_switcher.set_current_page(1)
+        self.renderer.render_html(self.html_widget, html)
         
     def tags_statistics_cb(self, widget):
         """Switches to the tags statistics page."""
 
+        self.statistics_page = 2
         html = self.html
         html += "<tr><td><b>Tags statistics<br></b></td></tr>"
         for _id, name in self.database().get_tags__id_and_name():
@@ -150,6 +141,14 @@ class MaemoStatisticsWidget(StatisticsDialog):
                     grade, _id))
         html += "</table></body></html>"
         html = self.renderer.change_font_size(html)
-        self.renderer.render_html(self.tags_html_widget, html)
-        self.mode_statistics_switcher.set_current_page(2)
+        self.renderer.render_html(self.html_widget, html)
+
+    def back_to_previous_mode_cb(self, widget):
+        """Returns to previous mode."""
+
+        self.config()["last_variant_for_statistics_page"] = \
+            self.statistics_page 
+        # FIXME: looks bad
+        self.main_widget().widgets['statistics'] = None
+        del self.main_widget().widgets['statistics']
 

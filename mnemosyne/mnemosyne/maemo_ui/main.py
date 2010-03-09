@@ -92,7 +92,7 @@ class MainWdgt(MainWidget):
                 widget = TagsWidget(self.component_manager)
             elif mode == "statistics":
                 from mnemosyne.maemo_ui.statistics import MaemoStatisticsWidget
-                widget = MaemoStatisticsWidget(self.component_manager, "Menu")
+                widget = MaemoStatisticsWidget(self.component_manager)
             elif mode == "importcards":
                 from mnemosyne.maemo_ui.importcards import ImportCardsWidget 
                 self.review_controller().reset()
