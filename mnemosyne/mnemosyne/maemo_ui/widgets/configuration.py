@@ -25,11 +25,50 @@ Hildon UI. Widgets for configuration mode.
 """
 
 import gtk
-import mnemosyne.maemo_ui.widgets.common as widgets
+import hildon
 
-def create_configuration_ui(main_switcher):
+def show_general_settings_dialog():
     """Creates ConfigureWidget UI."""
 
+    dialog = hildon.Dialog()
+    dialog.set_title("General settings")
+
+    # create widgets
+    general_settings_box = gtk.VBox()
+    general_settings_box.set_spacing(4)
+    sound_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        "Sound directory", "/home/sounds") 
+    general_settings_box.pack_start(sound_button, expand=False, fill=False)
+    
+    image_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        "Image directory", "/home/images")
+    general_settings_box.pack_start(image_button, expand=False, fill=False)
+
+    fullscreen_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT)
+    fullscreen_button.set_label("Start in fullscreen mode")
+    general_settings_box.pack_start(fullscreen_button, expand=False, fill=False)
+
+    open_review_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT)
+    open_review_button.set_label("Open Review mode at startup")
+    general_settings_box.pack_start(open_review_button, expand=False, fill=False)
+    
+    general_settings_box.show_all()
+    
+    dialog.vbox.add(general_settings_box) 
+    dialog.add_button("Save", gtk.RESPONSE_OK)
+    
+    response = dialog.run()
+    dialog.destroy()
+
+    return response
+            
+
+
+    """
     toplevel_table = gtk.Table(rows=1, columns=2)
     # create containers
     toolbar_container = widgets.create_toolbar_container('toolbar_container')
@@ -43,10 +82,6 @@ def create_configuration_ui(main_switcher):
         'config_toolbar_tts_settings_button', None, width=80, height=80)
     menu_button = widgets.create_button('main_menu_button', None)
     # create settings switcher
-    mode_settings_switcher = gtk.Notebook()
-    mode_settings_switcher.set_show_tabs(False)
-    mode_settings_switcher.set_show_border(False)
-    mode_settings_switcher.set_name('config_mode_settings_switcher')
     # create widgets for General settings
     general_settings_table = gtk.Table(rows=2, columns=1, homogeneous=True)
     general_settings_table.set_row_spacings(10)
@@ -245,3 +280,4 @@ def create_configuration_ui(main_switcher):
         tts_lang_prev_button, tts_lang_next_button, menu_button, \
         font_size_decrease_button, font_size_increase_button, \
         tts_voice_prev_button, tts_voice_next_button
+    """

@@ -27,6 +27,7 @@ Main Widget.
 import os
 import gtk
 import mnemosyne.maemo_ui.widgets.main as widgets
+import mnemosyne.maemo_ui.widgets.configuration as dialogs
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
 
@@ -105,10 +106,8 @@ class MainWdgt(MainWidget):
         """UI entry point. Activates specified mode."""
 
         if not mode:
-            if self.config()['startup_with_review']:
-                self.review_()
-            else:
-                self.menu_()
+            self.review_() if self.config()['startup_with_review'] \
+                else self.menu_()
         gtk.main()
 
 
@@ -143,7 +142,8 @@ class MainWdgt(MainWidget):
 
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.controller().configure()
+        #self.controller().configure()
+        dialogs.show_general_settings_dialog()
 
     def review_(self):
         """Activate Review mode."""

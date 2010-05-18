@@ -31,6 +31,7 @@ def create_menu_ui(exit_callback):
     """Creates MenuWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=1)
+    
     # create Menu window
     window = hildon.StackableWindow()
     window.set_title(unicode("Mnemosyne for Maemo"))
@@ -55,16 +56,22 @@ def create_menu_ui(exit_callback):
     
     # create AppMenu
     menu = hildon.AppMenu()
-    button_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Settings")
+    button_general_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "General settings")
+    button_tts_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "TTS settings")
     button_import = hildon.Button(gtk.HILDON_SIZE_AUTO, \
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Import")
+    button_sync = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Sync")
     button_help = hildon.Button(gtk.HILDON_SIZE_AUTO, \
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Help")
     button_about = hildon.Button(gtk.HILDON_SIZE_AUTO, \
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "About")
-    menu.append(button_settings)
+    menu.append(button_general_settings)
+    menu.append(button_tts_settings)
     menu.append(button_import)
+    menu.append(button_sync)
     menu.append(button_help)
     menu.append(button_about)
     menu.show_all()
@@ -75,6 +82,7 @@ def create_menu_ui(exit_callback):
     window.set_app_menu(menu)
     
     return window, {'tags': button_tags, 'review': button_review, \
-        'input': button_input, 'stats': button_stats, 'settings': \
-        button_settings, 'import': button_import, 'help': button_help, \
-        'about': button_about}
+        'input': button_input, 'stats': button_stats, 'gen_settings': \
+        button_general_settings, 'tts_settings': button_tts_settings, \
+        'import': button_import, 'help': button_help, 'about': button_about, \
+        'sync': button_sync}

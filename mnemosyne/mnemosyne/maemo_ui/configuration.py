@@ -39,7 +39,9 @@ class ConfigurationWidget(ConfigurationDialog):
         self.current_size = self.conf['font_size']
         self.languages = []
         self.renderer = self.component_manager.get_current('renderer')
-        # create widgets
+        # cireate widgets
+        self.window = widgets.create_configuration_ui()
+        """
         self.page, tts_settings_button, general_settings_button, \
             skin_settings_button, self.mode_settings_switcher, \
             self.checkbox_fullscreen_mode, self.checkbox_start_with_review, \
@@ -49,8 +51,10 @@ class ConfigurationWidget(ConfigurationDialog):
             self.tts_lang_prev_button, tts_lang_next_button, menu_button, \
             font_size_decrease_button, font_size_increase_button, \
             tts_voice_prev_button, tts_voice_next_button = \
-                widgets.create_configuration_ui(self.main_widget().switcher)
+                widgets.create_configuration_ui(self.miain_widget().switcher)
+        """
         # connect signals
+        """
         general_settings_button.connect('released', \
             self.show_general_settings_cb)
         skin_settings_button.connect('released', \
@@ -87,11 +91,13 @@ class ConfigurationWidget(ConfigurationDialog):
             general_settings_button.set_active(True)
             tts_settings_button.set_sensitive(False)
             self.show_general_settings_cb(None)
+        """
 
     def activate(self):
         """Select necessary switcher page."""
 
-        self.main_widget().switcher.set_current_page(self.page)
+        #self.main_widget().switcher.set_current_page(self.page)
+        pass
 
     def change_font_size(self):
         """Changes font size."""

@@ -24,6 +24,8 @@
 Hildon UI. Menu widget.
 """
 
+import os
+import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 import mnemosyne.maemo_ui.widgets.menu as widgets
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 
@@ -41,14 +43,14 @@ class MenuWidget(UiComponent):
         buttons['tags'].connect('clicked', self.tags_cb)
         buttons['review'].connect('clicked', self.review_cb)
         buttons['input'].connect('clicked', self.input_cb)
-        buttons['settings'].connect('clicked', self.settings_cb)
+        buttons['gen_settings'].connect('clicked', self.gen_settings_cb)
         buttons['import'].connect('clicked', self.importcards_cb)
         buttons['stats'].connect('clicked', self.statistics_cb)
         buttons['help'].connect('clicked', self.help_cb)
         buttons['about'].connect('clicked', self.about_cb)
 
     def activate(self):
-        """Activates necessary switcher page."""
+        """Activates Menu mode."""
 
         self.window.show_all()
 
@@ -75,10 +77,11 @@ class MenuWidget(UiComponent):
 
         self._main_widget.sync_()
 
-    def settings_cb(self, widget):
-        """Go to Configuration mode."""
+    def gen_settings_cb(self, widget):
+        """Show general settings dialog."""
 
-        self._main_widget.configure_()
+        #self._main_widget.configure_()
+        dialogs.show_general_settings_dialog(self.config())
 
     def statistics_cb(self, widget):
         """Go to Statistics mode."""
@@ -93,9 +96,8 @@ class MenuWidget(UiComponent):
     def about_cb(self, widget):
         """Go to About mode."""
 
-        #self._main_widget.about_()
-        # FIXME: show About dialog
-        print 'showing abot dialog'
+        widgets.create_about_dialog_ui(os.path.join( \
+            self.config()['theme_path'], "mnemosyne.png"))
         
     def help_cb(self, widget):
         """Go to Help mode."""
