@@ -165,7 +165,7 @@ def show_general_settings_dialog(config):
 def show_tts_settings_dialog(config):
     """Shows TTS settings dialog."""
 
-    import tts
+    import mnemosyne.maemo_ui.tts as tts
     
     dialog = hildon.Dialog()
     dialog.set_title(_('TTS settings'))
