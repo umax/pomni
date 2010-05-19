@@ -286,3 +286,36 @@ def show_tts_settings_dialog(config):
         config['tts_speed'] = int(speed_button.get_value())
         config['tts_pitch'] = int(pitch_button.get_value())
     dialog.destroy()
+
+
+def show_import_dialog():
+    """Shows ImportCards dialog."""
+
+    dialog = hildon.Dialog()
+    dialog.set_title(_('Import cards'))
+    
+    label = gtk.Label("\nImport cards feature is not implemented yet :(\n" \
+        "It will be available soon!\n")
+    label.set_justify(gtk.JUSTIFY_CENTER)
+    dialog.vbox.pack_start(label)
+    dialog.vbox.show_all()
+
+    dialog.run()
+    dialog.destroy()
+    
+    
+def show_sync_dialog():
+    """Shows Sync dialog."""
+
+    dialog = hildon.Dialog()
+    dialog.set_title(_('Sync'))
+      
+    label = gtk.Label("\nSync feature is not implemented yet :(\n" \
+        "It will be available soon!\n")
+    label.set_justify(gtk.JUSTIFY_CENTER)
+    dialog.vbox.pack_start(label)
+    dialog.vbox.show_all()
+
+    dialog.run()
+    dialog.destroy()
+    

@@ -49,6 +49,7 @@ class MenuWidget(UiComponent):
         buttons['stats'].connect('clicked', self.statistics_cb)
         buttons['help'].connect('clicked', self.help_cb)
         buttons['about'].connect('clicked', self.about_cb)
+        buttons['sync'].connect('clicked', self.sync_cb)
 
     def activate(self):
         """Shows 'Menu' window."""
@@ -76,7 +77,8 @@ class MenuWidget(UiComponent):
     def sync_cb(self, widget):
         """Go to 'Sync' mode."""
 
-        self._main_widget.sync_()
+        #self._main_widget.sync_()
+        dialogs.show_sync_dialog()
 
     def gen_settings_cb(self, widget):
         """Show 'General settings' dialog."""
@@ -96,7 +98,8 @@ class MenuWidget(UiComponent):
     def importcards_cb(self, widget):
         """Go to 'Import' mode."""
 
-        self._main_widget.import_()
+        #self._main_widget.import_()
+        dialogs.show_import_dialog()
 
     def about_cb(self, widget):
         """Show 'About' dialog."""
