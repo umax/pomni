@@ -28,6 +28,11 @@ import commands
 import os
 import StringIO
 
+MIN_SPEED_VALUE = 30
+MAX_SPEED_VALUE = 200
+MIN_PITCH_VALUE = 0
+MAX_PITCH_VALUE = 100
+
 def is_available():
     """Checks espeak available on system."""
 
