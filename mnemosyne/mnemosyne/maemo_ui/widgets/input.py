@@ -216,7 +216,7 @@ def create_content_dialog_ui(window, current_content_type):
     
     selector = hildon.TouchSelector(text=True)
     dialog = hildon.PickerDialog(window)
-    dialog.set_title(unicode('Content type'))
+    dialog.set_title(unicode('Question type'))
     dialog.set_selector(selector)
 
     # fill content types list

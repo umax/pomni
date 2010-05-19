@@ -44,6 +44,7 @@ class MenuWidget(UiComponent):
         buttons['review'].connect('clicked', self.review_cb)
         buttons['input'].connect('clicked', self.input_cb)
         buttons['gen_settings'].connect('clicked', self.gen_settings_cb)
+        buttons['tts_settings'].connect('clicked', self.tts_settings_cb)
         buttons['import'].connect('clicked', self.importcards_cb)
         buttons['stats'].connect('clicked', self.statistics_cb)
         buttons['help'].connect('clicked', self.help_cb)
@@ -83,6 +84,12 @@ class MenuWidget(UiComponent):
         #self._main_widget.configure_()
         dialogs.show_general_settings_dialog(self.config())
 
+    def tts_settings_cb(self, widget):
+        """Show ttes settings dialog."""
+
+        #self._main_widget.configure_()
+        dialogs.show_tts_settings_dialog(self.config())
+        
     def statistics_cb(self, widget):
         """Go to Statistics mode."""
 
