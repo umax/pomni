@@ -82,8 +82,6 @@ def show_about_dialog():
     dialog.vbox.pack_start(pannable_area)
     dialog.vbox.set_spacing(10)
     dialog.vbox.show_all()
-    dialog.add_button(_('Visit website'), gtk.RESPONSE_OK)
-    dialog.add_button(_('Report bug'), gtk.RESPONSE_OK)
     dialog.run()
     dialog.destroy()
 
