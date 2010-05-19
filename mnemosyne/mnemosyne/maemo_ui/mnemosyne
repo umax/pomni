@@ -37,9 +37,8 @@ if os.path.basename(sys.argv[0]).endswith("debug"):
 #importer.install()
 
 from optparse import OptionParser
-from mnemosyne.maemo_ui.factory import app_factory
-from mnemosyne.maemo_ui.dbfixer import DBFixer
 from mnemosyne.version import version
+from mnemosyne.maemo_ui.factory import app_factory
 
 # register OSSO DBUS service if applicable
 try:
@@ -47,8 +46,7 @@ try:
 except ImportError:
     pass
 else:
-    #SERV = osso.Context("org.mnemosyneproj.mnemosyne", version, False)
-    pass
+    SERV = osso.Context("org.mnemosyneproj.mnemosyne", version, False)
 
 def parse_commandline(argv):
     """ Parse commandline, check options """
@@ -79,10 +77,6 @@ def main(argv):
 
     app = app_factory(opts.ui)
     app.initialise(basedir)
-    # checking database format and convert to current format if needed.
-    #fixer = DBFixer(app.database(), app.component_manager)
-    #fixer.fix()
-    #del fixer
     app.main_widget().start(opts.mode)
     app.finalise()
 
