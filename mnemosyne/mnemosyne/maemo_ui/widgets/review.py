@@ -24,9 +24,12 @@
 Hildon UI. Widgets for review.
 """
 
+import os
 import gtk
 import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
+
+ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 
 def create_review_ui():
     """Creates ReviewWidget UI."""
@@ -44,16 +47,20 @@ def create_review_ui():
     question_text = widgets.create_gtkhtml()
 
     # create toolbar buttons
-    def create_button(label):
+    def create_button(label=None, image=None):
         button = hildon.Button(gtk.HILDON_SIZE_AUTO, \
             hildon.BUTTON_ARRANGEMENT_HORIZONTAL, label)
         button.set_size_request(104, -1)
+        if image is not None:
+            button.set_image(gtk.image_new_from_file( \
+                os.path.join(ICONS_PATH, image)))
+            button.set_alignment(0.8, 0.5, 0, 0)
         return button
     
-    button_stats = create_button('stats')
-    button_speak = create_button('tts')
-    button_edit = create_button('edit')
-    button_delete = create_button('del')
+    button_stats = create_button(image='calendar_todo.png')
+    button_speak = create_button(image='general_speaker.png')
+    button_edit = create_button(image='general_sketch.png')
+    button_delete = create_button(image='general_delete.png')
     
     # create grades buttons
     grades = {}
