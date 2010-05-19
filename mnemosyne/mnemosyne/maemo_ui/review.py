@@ -174,7 +174,7 @@ class ReviewWdgt(ReviewWidget):
     def statistics_card_cb(self, widget):
         """Hook for 'Statistics' button."""
 
-        self.config()["last_variant_for_statistics_page"] = 0
+        self.config()["last_variant_for_statistics_page"] = 2
         self.controller().show_statistics()
 
     def delete_card_cb(self, widget):

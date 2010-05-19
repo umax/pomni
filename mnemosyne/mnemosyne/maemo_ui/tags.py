@@ -82,5 +82,5 @@ class TagsWidget(ActivateCardsDialog):
     def stats_cb(self, widget):
         """Go to main tag statistics."""
 
-        self.config()["last_variant_for_statistics_page"] = 2
+        self.config()["last_variant_for_statistics_page"] = 0
         self.controller().show_statistics()
