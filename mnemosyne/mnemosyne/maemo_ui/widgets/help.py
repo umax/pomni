@@ -35,7 +35,7 @@ def create_help_ui():
     """Creates HelpWidget UI."""
 
     window = hildon.StackableWindow()
-    window.set_title(_('Help mode'))
+    window.set_title(_('Help'))
     html_widget = widgets.create_gtkhtml()
     pannable_area = hildon.PannableArea()
     pannable_area.add(html_widget)

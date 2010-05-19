@@ -26,18 +26,21 @@ Hildon UI. Widgets for Tags mode.
 
 import gtk
 import hildon
+import gettext
+
+_ = gettext.gettext
 
 
 def create_tags_ui(database):
     """Creates TagsWidget UI."""
 
     window = hildon.StackableWindow()
-    window.set_title(unicode("Tags mode"))
+    window.set_title(_('Tags'))
 
     # create AppMenu
     menu = hildon.AppMenu()
     button_stats = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Tags statistics")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Tags statistics'))
     menu.append(button_stats)
     menu.show_all()
 
@@ -65,7 +68,7 @@ def create_tags_ui(database):
                     selector.select_iter(0, model.get_iter(i), False)
         window.add(selector)
     else:
-        label = gtk.Label('There are no tags')
+        label = gtk.Label(_('There are no tags'))
         window.add(label)
               
     window.set_app_menu(menu)

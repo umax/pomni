@@ -108,7 +108,7 @@ class ReviewWdgt(ReviewWidget):
     def clear_question(self): 
         """Clear question text."""
 
-        self.window.set_title(_("Review mode"))
+        self.window.set_title(_('Review'))
         self.tts_button.set_sensitive(False)
         self.renderer.render_html(self.question_text)
 
