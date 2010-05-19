@@ -24,8 +24,8 @@
 Hildon UI. Menu widget.
 """
 
-import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 import mnemosyne.maemo_ui.widgets.menu as widgets
+import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 
 class MenuWidget(UiComponent):

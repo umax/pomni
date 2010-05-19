@@ -33,49 +33,15 @@ class HelpWidget(UiComponent):
     """Help Widget."""
 
     def __init__(self, component_manager):
-        UiComponent.__init__(self, component_manager, )
-        self.is_html_loaded = False
+        UiComponent.__init__(self, component_manager)
         # create widgets
-        self.page, self.switcher, menu_button, about_button, help_button, \
-        self.help_html = widgets.create_about_ui(self.main_widget().switcher, \
-            os.path.join(self.config()['theme_path'], "mnemosyne.png"))
-            #    os.path.join(self.config()['help_path'], "help.html"))
-        # connect signals
-        menu_button.connect('clicked', self.about_to_main_menu_cb)
-        about_button.connect('released', self.show_about_cb)
-        help_button.connect('released', self.show_help_cb)
-        if self.config()['last_about_page'] == 0:
-            about_button.set_active(True)
-            self.show_about_cb(None)
-        else:
-            help_button.set_active(True)
-            self.show_help_cb(None)
-
+        self.window, self.help_html = widgets.create_help_ui()
+        renderer = self.component_manager.get_current('renderer')
+        renderer.render_html(self.help_html, open(os.path.join( \
+            self.config()['help_path'], "help.html")).read())
+      
     def activate(self):
-        """Set necessary switcher page."""
+        """Shows window."""
 
-        self.main_widget().switcher.set_current_page(self.page)
+        self.window.show_all()
 
-    def show_about_cb(self, widget):
-        """Show program about information."""
-        
-        self.switcher.set_current_page(0)
-
-    def show_help_cb(self, widget):
-        """Show program documentation."""
-        
-        self.switcher.set_current_page(1)
-        if not self.is_html_loaded:
-            self.is_html_loaded = True
-            renderer = self.component_manager.get_current('renderer')
-            renderer.render_html(self.help_html, open(os.path.join( \
-                self.config()['help_path'], "help.html")).read())
-
-    def about_to_main_menu_cb(self, widget):
-        """Returns to main menu."""
-
-        self.config()['last_about_page'] = self.switcher.get_current_page()
-        self.config().save()
-        self.main_widget().switcher.remove_page(self.page)
-        self.main_widget().menu_('about')
-       

@@ -137,13 +137,13 @@ class MainWdgt(MainWidget):
         self.component_manager.get_current("add_cards_dialog")\
             (self.component_manager).activate()
 
-    def configure_(self):
-        """Activate configure mode through main controller."""
-
-        if 'review' not in self.widgets:
-            self.create_mode('review')
-        #self.controller().configure()
-        dialogs.show_general_settings_dialog()
+    #def configure_(self):
+    #    """Activate configure mode through main controller."""
+    #
+    #    if 'review' not in self.widgets:
+    #        self.create_mode('review')
+    #    #self.controller().configure()
+    #    dialogs.show_general_settings_dialog()
 
     def review_(self):
         """Activate Review mode."""
