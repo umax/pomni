@@ -35,27 +35,18 @@ MIN_FONT_SIZE = 10
 MAX_FONT_SIZE = 60
 
 
-def show_about_dialog(image_name):
+def show_about_dialog():
     """SHows About dialog."""
     
     dialog = hildon.Dialog()
     dialog.set_title(_('About'))
     
-    widgets_box = gtk.VBox()
-    widgets_box.set_spacing(8)
-    program_box = gtk.HBox()
-    
-    program_logo = gtk.Image()
-    program_logo.set_from_file(image_name)
     program_name_label = gtk.Label()
     program_name_label.set_justify(gtk.JUSTIFY_CENTER)
     program_name_label.set_use_markup(True)
     program_name_label.set_markup("<span foreground='white' size='medium'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'small'>version 2.0.0~beta11</span>")
-    
-    program_box.pack_start(program_logo)
-    program_box.pack_start(program_name_label)
+        "'small'>version 2.0.0~beta11</span>\n")
     
     pannable_area = hildon.PannableArea()
     pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
@@ -73,14 +64,26 @@ def show_about_dialog(image_name):
         "size='small'>Andrew Zhilin |</span> <span foreground='#299BFC' " \
         "size='small'>drew.zhilin@gmail.com</span>\n\n<span foreground=" \
         "'white' size='small'><b>Development team:</b></span>\n<span " \
-        "foreground='#299BFC' size='small'>pomni@googlegroups.com</span>")
+        "foreground='#299BFC' size='small'>pomni@googlegroups.com</span>"
+        "<span foreground='white' size='small'><b>" \
+        "\n\nSpecial Thanks To:</b></span>\n<span foreground='white' size=" \
+        "'small'>Peter Bienstman</span>\n<span foreground='#299BFC' size=" \
+        "'small'>Peter.Bienstman@ugent.be</span>\n<span foreground=" \
+        "'#299BFC' size='small'>http://www.mnemosyne-proj.org/</span>" \
+        "\n<span size='x-large'></span><span foreground='white' size=" \
+        "'small'>\nGSoC 2009</span>\n<span foreground='#299BFC' size='"\
+        "small'>http://socghop.appspot.com/</span>\n<span size='x-large'>" \
+        "</span><span foreground='white' size='small'>\nMaemo community" \
+        "</span>\n<span foreground='#299BFC' size='small'>" \
+        "http://maemo.org/</span>")
     pannable_area.add_with_viewport(developers_label)
     
-    widgets_box.pack_start(program_box)
-    widgets_box.pack_start(pannable_area)
-    widgets_box.show_all()
-    
-    dialog.vbox.pack_start(widgets_box)
+    dialog.vbox.pack_start(program_name_label, expand=False, fill=True)
+    dialog.vbox.pack_start(pannable_area)
+    dialog.vbox.set_spacing(10)
+    dialog.vbox.show_all()
+    dialog.add_button(_('Visit website'), gtk.RESPONSE_OK)
+    dialog.add_button(_('Report bug'), gtk.RESPONSE_OK)
     dialog.run()
     dialog.destroy()
 

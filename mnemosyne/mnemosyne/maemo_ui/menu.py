@@ -24,7 +24,6 @@
 Hildon UI. Menu widget.
 """
 
-import os
 import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 import mnemosyne.maemo_ui.widgets.menu as widgets
 from mnemosyne.libmnemosyne.ui_component import UiComponent
@@ -103,8 +102,7 @@ class MenuWidget(UiComponent):
     def about_cb(self, widget):
         """Shows About dialog."""
 
-        dialogs.show_about_dialog(os.path.join( \
-            self.config()['theme_path'], "mnemosyne.png"))
+        dialogs.show_about_dialog()
         
     def help_cb(self, widget):
         """Go to Help mode."""
