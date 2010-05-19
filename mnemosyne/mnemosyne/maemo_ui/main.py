@@ -24,10 +24,8 @@
 Main Widget.
 """
 
-import os
 import gtk
 import mnemosyne.maemo_ui.widgets.main as widgets
-import mnemosyne.maemo_ui.widgets.configuration as dialogs
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
 
@@ -48,21 +46,8 @@ class MainWdgt(MainWidget):
         return self._soundplayer
 
     def activate(self):
-        """Basic UI setup."""
+        """Activates Main widget."""
 
-        # load styles
-        #gtk.rc_parse(os.path.join(self.config()["theme_path"], "rcfile"))
-        # create main window
-        #self.window = widgets.create_main_ui()
-        # fullscreen mode
-        #fullscreen = self.config()['fullscreen']
-        #if fullscreen:
-        #    self.window.fullscreen()
-        # connect signals to methods
-        #self.window.connect("delete_event", self.exit_)
-        #self.window.connect('window-state-event', self.window_state_cb)
-        #self.window.connect('key-press-event', self.window_keypress_cb)
-        #self.window.show_all()
         pass
 
     def activate_mode(self, mode):
@@ -106,14 +91,15 @@ class MainWdgt(MainWidget):
         """UI entry point. Activates specified mode."""
 
         if not mode:
-            self.review_() if self.config()['startup_with_review'] \
-                else self.menu_()
+            self.menu_()
+            if self.config()['startup_with_review']:
+                self.review_()
         gtk.main()
 
 
     # modes
     def menu_(self, mode=None):
-        """Activate menu."""
+        """Activates 'Menu' mode."""
 
         if mode is not None:
             del self.widgets[mode]
@@ -122,7 +108,7 @@ class MainWdgt(MainWidget):
         self.activate_mode('menu')
 
     def tags_(self):
-        """Activate 'Activate tags' mode."""
+        """Activates 'Tags' mode."""
 
         if 'review' not in self.widgets:
             self.create_mode('review')
@@ -130,49 +116,42 @@ class MainWdgt(MainWidget):
             (self.component_manager).activate()
 
     def input_(self):
-        """Activate input mode."""
+        """Activates 'Input' mode."""
        
         if 'review' not in self.widgets:
             self.create_mode('review')
         self.component_manager.get_current("add_cards_dialog")\
             (self.component_manager).activate()
 
-    #def configure_(self):
-    #    """Activate configure mode through main controller."""
-    #
-    #    if 'review' not in self.widgets:
-    #        self.create_mode('review')
-    #    #self.controller().configure()
-    #    dialogs.show_general_settings_dialog()
-
     def review_(self):
-        """Activate Review mode."""
+        """Activates 'Review' mode."""
 
         self.activate_mode('review')
 
     def statistics_(self):
-        """Activate Statistics mode."""
+        """Activates 'Statistics' mode."""
 
         self.activate_mode('statistics')
 
     def import_(self):
-        """Activate Import mode."""
+        """Activates 'Import' mode."""
 
         self.activate_mode('importcards')
 
     def sync_(self):
-        """Activate Sync mode."""
+        """Activates 'Sync' mode."""
 
         self.activate_mode('sync')
 
     def help_(self):
-        """Activate Help mode."""
+        """Activates 'Help' mode."""
 
         self.activate_mode('help')
 
     @staticmethod
     def exit_(window=None, event=None):
         """Exit from main gtk loop."""
+        
         gtk.main_quit()
 
 
