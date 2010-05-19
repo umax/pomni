@@ -37,8 +37,9 @@ class MenuWidget(UiComponent):
         UiComponent.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         # create widgets
-        self.window, buttons = widgets.create_menu_ui(self._main_widget.exit_)
+        self.window, buttons = widgets.create_menu_ui()
         # connect signals
+        self.window.connect('delete_event', self.exit_cb)
         buttons['tags'].connect('clicked', self.tags_cb)
         buttons['review'].connect('clicked', self.review_cb)
         buttons['input'].connect('clicked', self.input_cb)
@@ -50,7 +51,7 @@ class MenuWidget(UiComponent):
         buttons['about'].connect('clicked', self.about_cb)
 
     def activate(self):
-        """Activates Menu mode."""
+        """Shows 'Menu' window."""
 
         self.window.show_all()
 
@@ -58,58 +59,56 @@ class MenuWidget(UiComponent):
     # callbacks
 
     def tags_cb(self, widget):
-        """Go to Tags mode."""
+        """Go to 'Tags' mode."""
 
         self._main_widget.tags_()
 
     def input_cb(self, widget):
-        """Go to Input mode."""
+        """Go to 'Input' mode."""
 
         self._main_widget.input_()
 
     def review_cb(self, widget):
-        """Go to Review mode."""
+        """Go to 'Review' mode."""
 
         self._main_widget.review_()
 
     def sync_cb(self, widget):
-        """Go to Sync mode."""
+        """Go to 'Sync' mode."""
 
         self._main_widget.sync_()
 
     def gen_settings_cb(self, widget):
-        """Shows General settings dialog."""
+        """Show 'General settings' dialog."""
 
-        #self._main_widget.configure_()
         dialogs.show_general_settings_dialog(self.config())
 
     def tts_settings_cb(self, widget):
-        """Shows TTS settings dialog."""
+        """Show 'TTS settings' dialog."""
 
-        #self._main_widget.configure_()
         dialogs.show_tts_settings_dialog(self.config())
         
     def statistics_cb(self, widget):
-        """Go to Statistics mode."""
+        """Go to 'Statistics' mode."""
 
         self._main_widget.statistics_()
 
     def importcards_cb(self, widget):
-        """Go to Import mode."""
+        """Go to 'Import' mode."""
 
         self._main_widget.import_()
 
     def about_cb(self, widget):
-        """Shows About dialog."""
+        """Show 'About' dialog."""
 
         dialogs.show_about_dialog()
         
     def help_cb(self, widget):
-        """Go to Help mode."""
+        """Go to 'Help' mode."""
 
         self._main_widget.help_()
 
-    def exit_cb(self, widget):
+    def exit_cb(self, widget, event):
         """Exit program."""
 
         self._main_widget.exit_()

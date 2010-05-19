@@ -26,8 +26,11 @@ Hildon UI. Widgets for menu.
 
 import gtk
 import hildon
+import gettext
 
-def create_menu_ui(exit_callback):
+_ = gettext.gettext
+
+def create_menu_ui():
     """Creates MenuWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=1)
@@ -35,7 +38,6 @@ def create_menu_ui(exit_callback):
     # create Menu window
     window = hildon.StackableWindow()
     window.set_title(unicode("Mnemosyne for Maemo"))
-    window.connect("delete_event", exit_callback)
 
     # create menu buttons
     buttons_table = gtk.Table(rows=2, columns=2)
@@ -57,17 +59,17 @@ def create_menu_ui(exit_callback):
     # create AppMenu
     menu = hildon.AppMenu()
     button_general_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "General settings")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('General settings'))
     button_tts_settings = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "TTS settings")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('TTS settings'))
     button_import = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Import")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Import'))
     button_sync = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Sync")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Sync'))
     button_help = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Help")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Help'))
     button_about = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "About")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('About'))
     menu.append(button_general_settings)
     menu.append(button_tts_settings)
     menu.append(button_import)

@@ -25,7 +25,6 @@ Main Widget.
 """
 
 import gtk
-import mnemosyne.maemo_ui.widgets.main as widgets
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
 
