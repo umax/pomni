@@ -27,6 +27,9 @@ Hildon UI. Review widget.
 from mnemosyne.libmnemosyne.ui_components.review_widget import ReviewWidget
 import mnemosyne.maemo_ui.widgets.review as widgets
 from mnemosyne.maemo_ui import tts
+import gettext
+
+_ = gettext.gettext
 
 LARGE_CONTAINER_HEIGHT = 140
 
@@ -95,7 +98,7 @@ class ReviewWdgt(ReviewWidget):
                 self.tts_button.set_sensitive(self.tts_available)
             self.renderer.render_html(self.question_text, text)
         tags = [tag.name for tag in self._review_controller.card.tags]
-        self.window.set_title("Tags: " + ', '.join(tags))
+        self.window.set_title(_("Tags: ") + ', '.join(tags))
 
     def set_answer(self, text):
         """Set answer text."""
@@ -105,7 +108,7 @@ class ReviewWdgt(ReviewWidget):
     def clear_question(self): 
         """Clear question text."""
 
-        self.window.set_title("Review mode")
+        self.window.set_title(_("Review mode"))
         self.tts_button.set_sensitive(False)
         self.renderer.render_html(self.question_text)
 
