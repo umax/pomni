@@ -79,13 +79,13 @@ class MenuWidget(UiComponent):
         self._main_widget.sync_()
 
     def gen_settings_cb(self, widget):
-        """Show general settings dialog."""
+        """Shows General settings dialog."""
 
         #self._main_widget.configure_()
         dialogs.show_general_settings_dialog(self.config())
 
     def tts_settings_cb(self, widget):
-        """Show ttes settings dialog."""
+        """Shows TTS settings dialog."""
 
         #self._main_widget.configure_()
         dialogs.show_tts_settings_dialog(self.config())
@@ -101,9 +101,9 @@ class MenuWidget(UiComponent):
         self._main_widget.import_()
 
     def about_cb(self, widget):
-        """Go to About mode."""
+        """Shows About dialog."""
 
-        widgets.create_about_dialog_ui(os.path.join( \
+        dialogs.show_about_dialog(os.path.join( \
             self.config()['theme_path'], "mnemosyne.png"))
         
     def help_cb(self, widget):

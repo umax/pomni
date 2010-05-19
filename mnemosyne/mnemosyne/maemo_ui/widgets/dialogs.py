@@ -27,6 +27,7 @@ Hildon UI. Dialogs.
 import gtk
 import hildon
 import gettext
+import mnemosyne.maemo_ui.widgets.common as widgets
 
 _ = gettext.gettext
 
@@ -35,21 +36,51 @@ MAX_FONT_SIZE = 60
 
 
 def show_about_dialog(image_name):
+    """SHows About dialog."""
+    
     dialog = hildon.Dialog()
-    dialog.set_title('About')
+    dialog.set_title(_('About'))
+    
+    widgets_box = gtk.VBox()
+    widgets_box.set_spacing(8)
     program_box = gtk.HBox()
+    
     program_logo = gtk.Image()
     program_logo.set_from_file(image_name)
     program_name_label = gtk.Label()
     program_name_label.set_justify(gtk.JUSTIFY_CENTER)
     program_name_label.set_use_markup(True)
-    program_name_label.set_markup("<span foreground='white' size='large'><b>" \
+    program_name_label.set_markup("<span foreground='white' size='medium'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'large'>version 2.0.0~beta11</span>")
+        "'small'>version 2.0.0~beta11</span>")
+    
     program_box.pack_start(program_logo)
     program_box.pack_start(program_name_label)
-    program_box.show_all()
-    dialog.vbox.add(program_box)
+    
+    pannable_area = hildon.PannableArea()
+    pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
+    developers_label = gtk.Label()
+    developers_label.set_use_markup(True)
+    developers_label.set_markup("<span foreground='white' size='small'><b>" \
+        "Developers:</b></span>\n<span foreground='white' size='small'>" \
+        "Max Usachev |</span> <span foreground='#299BFC' size='small'>" \
+        "maxusachev@gmail.com</span>\n<span foreground='white' size=" \
+        "'small'>Ed Bartosh |</span> <span foreground='#299BFC' size=" \
+        "'small'>bartosh@gmail.com</span>\n<span foreground='white' " \
+        "size='small'>Vlad Vasiliev |</span> <span foreground='#299BFC' " \
+        "size='small'>vlad@gas.by</span>\n\n<span foreground='white' " \
+        "size='small'><b>Designer:</b>\n</span><span foreground='white' " \
+        "size='small'>Andrew Zhilin |</span> <span foreground='#299BFC' " \
+        "size='small'>drew.zhilin@gmail.com</span>\n\n<span foreground=" \
+        "'white' size='small'><b>Development team:</b></span>\n<span " \
+        "foreground='#299BFC' size='small'>pomni@googlegroups.com</span>")
+    pannable_area.add_with_viewport(developers_label)
+    
+    widgets_box.pack_start(program_box)
+    widgets_box.pack_start(pannable_area)
+    widgets_box.show_all()
+    
+    dialog.vbox.pack_start(widgets_box)
     dialog.run()
     dialog.destroy()
 
