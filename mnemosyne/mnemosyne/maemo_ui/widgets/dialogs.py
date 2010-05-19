@@ -167,12 +167,6 @@ def show_general_settings_dialog(config):
     font_size_button.set_alignment(0, 0, 0, 0)
     widgets_box.pack_start(font_size_button, expand=False, fill=False)
     
-    fullscreen_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT)
-    fullscreen_button.set_label(_('Start in fullscreen mode'))
-    fullscreen_button.set_active(config['fullscreen'])
-    widgets_box.pack_start(fullscreen_button, expand=False, fill=False)
-
     open_review_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT)
     open_review_button.set_label(_('Open Review mode at startup'))
@@ -189,7 +183,6 @@ def show_general_settings_dialog(config):
         config['sounddir'] = sound_button.get_value()
         config['imagedir'] = image_button.get_value()
         config['font_size'] = int(font_size_button.get_value())
-        config['fullscreen'] = fullscreen_button.get_active()
         config['startup_with_review'] = open_review_button.get_active()
         config.save()
     

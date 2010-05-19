@@ -37,7 +37,6 @@ class ConfigHook(Component):
         for key, value in {\
             "theme_path": "/usr/share/mnemosyne/hildon-UI/dark",
             "help_path": "/usr/share/mnemosyne/help",
-            "fullscreen": True,
             "font_size": 30.0,
             "startup_with_review": False,
             "upload_logs": False,
