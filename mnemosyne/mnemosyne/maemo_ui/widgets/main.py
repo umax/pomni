@@ -26,20 +26,23 @@ Hildon UI. Widgets for main.
 
 import gtk
 import hildon
+import gettext
+
+_ = gettext.gettext
 
 
 def create_question_dialog(window, text):
     """Create QuestionDialog UI."""
 
     if 'Activate cards' in text:
-        text = 'Delete this card and 1 related card?'
+        text = _('Delete this card and 1 related card?')
     label = gtk.Label(text)
     dialog = hildon.Dialog()
-    dialog.set_title('')
+    dialog.set_title(_('Card deletion'))
     dialog.vbox.add(label)
     label.show()
-    dialog.add_button("Yes", gtk.RESPONSE_YES)
-    dialog.add_button("No", gtk.RESPONSE_NO)
+    dialog.add_button(_('Yes'), gtk.RESPONSE_YES)
+    dialog.add_button(_('No'), gtk.RESPONSE_NO)
     response = dialog.run()
     dialog.destroy()
     if response == gtk.RESPONSE_YES:
