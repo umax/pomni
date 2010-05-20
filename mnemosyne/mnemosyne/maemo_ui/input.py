@@ -167,14 +167,8 @@ class InputWidget(UiComponent):
         """Set current Content type and changes UI."""
 
         self.content_type = content_type
-
-        # FIXME: replace by setting necessary image
-        if content_type == "text":
-            self.widgets["ContentButton"].set_label("Txt")
-        elif content_type == "sound":
-            self.widgets["ContentButton"].set_label("Snd")
-        else:
-            self.widgets["ContentButton"].set_label("Img")
+        widgets.change_content_button_image(self.widgets['ContentButton'], \
+            content_type)
 
     def update_tags(self):
         """Update active tags list."""

@@ -29,6 +29,8 @@ import gtk
 import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
 
+ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
+
 
 def create_input_ui(theme_path):
     """Creates InputWidget UI."""
@@ -40,15 +42,19 @@ def create_input_ui(theme_path):
     grades_table = gtk.Table(rows=6, columns=1, homogeneous=True)
 
     # create toolbar buttons
-    def create_button(label):
+    def create_button(label=None, image=None):
         button = hildon.Button(gtk.HILDON_SIZE_AUTO, \
             hildon.BUTTON_ARRANGEMENT_HORIZONTAL, label)
         button.set_size_request(104, -1)
+        if image is not None:
+            button.set_image(gtk.image_new_from_file( \
+                os.path.join(ICONS_PATH, image)))
+            button.set_alignment(0.8, 0.5, 0, 0)                                    
         return button
                                             
     card_type_button = create_button('type')
-    content_button = create_button('cont')
-    tags_button = create_button('tags')
+    content_button = create_button()
+    tags_button = create_button(image='general_tag.png')
     
     # create sound button
     sound_container = gtk.Frame()
@@ -139,6 +145,16 @@ def create_input_ui(theme_path):
         answer_text, foreign_text, pronunciation_text, translation_text, \
         cloze_text, button_new_tag, card_type_switcher, sound_container, \
         question_text, grades, tags_button
+
+
+def change_content_button_image(button, type):
+    """Changes current image for Content button."""
+
+    types_dict = {'text': 'control_pen_input.png', 'image': \
+        'general_image.png', 'sound': 'general_audio_file.png'}
+    button.set_image(gtk.image_new_from_file( \
+        os.path.join(ICONS_PATH, types_dict[type])))
+    button.set_alignment(0.8, 0.5, 0, 0)                                    
 
 
 def create_media_dialog_ui():
