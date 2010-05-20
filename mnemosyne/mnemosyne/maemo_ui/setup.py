@@ -18,21 +18,24 @@ setup(name=PKG,
     license='GPL 2',
     packages=["mnemosyne.maemo_ui", "mnemosyne.maemo_ui.widgets"],
     package_dir={'mnemosyne.maemo_ui': ''},
-    data_files = [(os.path.join('share/%s/' % PKG, path), \
-        [os.path.join(path, fname) for fname in files]) \
+    data_files = #[(os.path.join('share/%s/' % PKG, path), \
+        #[os.path.join(path, fname) for fname in files]) \
         #for path, dirs, files in os.walk('hildon-UI/rainbow')] + \
         #[(os.path.join('share/%s/' % PKG, path), \
         #    [os.path.join(path, fname) for fname in files]) \
-        for path, dirs, files in os.walk('hildon-UI/dark')] + \
-       [('share/dbus-1/services', ['maemo/%s.service' % PKG]),
+        #for path, dirs, files in os.walk('hildon-UI/dark')] + \
+	[('share/%s/hildon-UI' % PKG, [os.path.join('hildon-UI', fname) \
+	    for fname in os.listdir('hildon-UI') if os.path.isfile( \
+	    os.path.join('hildon-UI', fname))]),
+        ('share/dbus-1/services', ['maemo/%s.service' % PKG]),
         ('share/applications/hildon', ['maemo/%s.desktop' % PKG]),
         #('share/%s/demo' % PKG, [".%s/default.db" % PKG]),
         ('share/%s/help' % PKG, [os.path.join('help', fname) \
             for fname in os.listdir('help')]),
-        ('share/icons/hicolor/26x26/apps/',
-         ['./maemo/icons/26x26/%s.png' % PKG]),
-        ('share/icons/hicolor/64x64/apps/',
-         ['./maemo/icons/64x64/%s.png' % PKG])],
+        ('share/icons/hicolor/26x26/apps/', \
+	    ['./maemo/icons/26x26/%s.png' % PKG]),
+        ('share/icons/hicolor/64x64/apps/', \
+            ['./maemo/icons/64x64/%s.png' % PKG])],
     classifiers=[
     'Development Status :: 3 - Alpha',
     'Environment :: Console',
