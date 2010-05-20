@@ -89,6 +89,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
             self.info_label.show()
         elif card.grade == -1:
             self.info_label.set_text(_('Unseen card, no statistics available'))
+            self.info_label.show()
         else:
             self.html_container.show()
             html = self.html
