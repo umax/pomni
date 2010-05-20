@@ -138,19 +138,26 @@ class MaemoStatisticsWidget(StatisticsDialog):
         """Switches to the tags statistics page."""
 
         self.window.set_title(_('Tags statistics'))
-        self.html_container.show()
+        self.html_container.hide()
         self.info_label.hide()
-        html = self.html
-        for _id, name in self.database().get_tags__id_and_name():
-            html += "<tr><td><br><br>" + _('Tag') + " <b>%s</b></td></tr>" % \
-                name.replace('<', '&lt;').replace('>', '&gt;')
-            for grade in range(-1, 6):
-                html += "<tr><td>" + _('Grade') + " %2i: %i cards</td></tr>" % \
-                (grade, self.database().total_card_count_for_grade_and__tag_id(\
-                    grade, _id))
-        html += "</table><br><br></body></html>"
-        html = self.renderer.change_font_size(html)
-        self.renderer.render_html(self.html_widget, html)
+        tags = [(_id, name) for (_id, name) in \
+            self.database().get_tags__id_and_name()]
+        if not tags:
+            self.info_label.set_text(_('There are no tags'))
+            self.info_label.show()
+        else:
+            self.html_container.show()
+            html = self.html
+            for _id, name in tags:
+                html += "<tr><td><br><br>" + _('Tag') + " <b>%s</b></td></tr>" \
+                    % name.replace('<', '&lt;').replace('>', '&gt;')
+                for grade in range(-1, 6):
+                    html += "<tr><td>" + _('Grade') + " %2i: %i cards</td>" \
+                        "</tr>" % (grade, self.database(). \
+                        total_card_count_for_grade_and__tag_id(grade, _id))
+            html += "</table><br><br></body></html>"
+            html = self.renderer.change_font_size(html)
+            self.renderer.render_html(self.html_widget, html)
 
     def back_to_previous_mode_cb(self, widget):
         """Returns to previous mode."""
