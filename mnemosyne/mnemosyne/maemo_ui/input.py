@@ -72,9 +72,8 @@ class InputWidget(UiComponent):
         self.window.connect('destroy', self.input_to_main_menu_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
-        #media_button.connect('button-press-event', \
-        #    self.preview_sound_in_input_cb)
-        question_text.connect('button_release_event', self.show_media_dialog_cb)
+        #question_text.connect('button_release_event', self.show_media_dialog_cb)
+        #media_button_text.connect('button_release_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
 
         # FIXME: doesn't work
@@ -330,10 +329,8 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             'clicked', self.show_cardtype_dialog_cb)
         for button in self.grades.values():
             button.connect('clicked', self.add_card_cb)
-        for name in ('answer', 'foreign', 'pronunciation', 'translation', \
-            'cloze'):
-            self.areas[name].connect('button_press_event', self.clear_text_cb)
-        # gets last selected options
+        for text_area in self.areas.values():
+            text_area.connect('button_press_event', self.clear_text_cb)
         try:
             self.selected_tags = [unicode(tag.strip()) for tag in \
                 self.conf["tags_of_last_added"]]            
