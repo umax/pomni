@@ -27,11 +27,14 @@ Hildon UI. Widgets for input mode.
 import os
 import gtk
 import hildon
+import gettext
 import mnemosyne.maemo_ui.widgets.common as widgets
 from mnemosyne.libmnemosyne.card_types.front_to_back import FrontToBack
 from mnemosyne.libmnemosyne.card_types.both_ways import BothWays
 from mnemosyne.libmnemosyne.card_types.three_sided import ThreeSided
 from mnemosyne.libmnemosyne.card_types.cloze import Cloze
+
+_ = gettext.gettext
 
 ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 
@@ -60,15 +63,14 @@ def create_input_ui(theme_path):
     content_button = create_button()
     tags_button = create_button(image='general_tag.png')
     
-    # create sound button
-    sound_container = gtk.Frame()
-    sound_container.set_name('html_container')
-    html = '<html><body><table align="center"><tr><td><img src=%s></td></tr>' \
-        '</table></body></html>' % os.path.join(theme_path, "note.png")
-    sound_button = widgets.create_gtkhtml(html)
-    sound_container.add(sound_button)
-    sound_box = gtk.VBox()
-    sound_box.set_homogeneous(True)
+    # create media button
+    #images_dict = {'image': 'filemanager_image_folder.png', 'sound': '\
+    #    filemanager_audio_folder.png'}
+    media_button = widgets.create_gtkhtml()
+    media_container = gtk.Table()
+    #'<html><body><table align="center">' \
+    #    '<tr><td><img src=%s></td></tr></table></body></html>' % os.path.join( \
+    #    theme_path, images_dict[content_type]))
     
     # create grades buttons
     grades = {}
@@ -92,6 +94,8 @@ def create_input_ui(theme_path):
     cloze_text = create_text_field()
 
     # create other widgets
+    question_box = gtk.VBox()
+    question_box.set_homogeneous(True)
     two_sided_box = gtk.VBox()
     two_sided_box.set_homogeneous(True)
     three_sided_box = gtk.VBox()
@@ -119,9 +123,11 @@ def create_input_ui(theme_path):
     card_type_switcher.append_page(two_sided_box)
     card_type_switcher.append_page(three_sided_box)
     card_type_switcher.append_page(cloze_box)
-    sound_box.pack_start(sound_container)
-    sound_box.pack_end(question_text)
-    two_sided_box.pack_start(sound_box)
+    
+    media_container.attach(media_button, 0, 1, 0, 1, xpadding=5, ypadding=4)
+    question_box.pack_start(media_container)
+    question_box.pack_end(question_text)
+    two_sided_box.pack_start(question_box)
     two_sided_box.pack_end(answer_text)
     three_sided_box.pack_start(foreign_text)
     three_sided_box.pack_start(pronunciation_text)
@@ -135,20 +141,19 @@ def create_input_ui(theme_path):
     # create AppMenu
     menu = hildon.AppMenu()
     button_new_tag = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Add new tag")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Add new tag'))
     menu.append(button_new_tag)
     menu.show_all()
     window.set_app_menu(menu)
     window.show_all()
 
     # hide necessary widgets
-    sound_container.hide()
+    media_container.hide()
 
-    return window, card_type_button, \
-        content_button, tags_button, sound_button, question_text, \
-        answer_text, foreign_text, pronunciation_text, translation_text, \
-        cloze_text, button_new_tag, card_type_switcher, sound_container, \
-        question_text, grades, tags_button
+    return window, card_type_button, content_button, tags_button, \
+        question_text, answer_text, foreign_text, pronunciation_text, \
+        translation_text, cloze_text, button_new_tag, card_type_switcher, \
+        media_button, media_container, grades, tags_button
 
 
 def change_content_button_image(button, c_type):
@@ -172,6 +177,15 @@ def change_cardtype_button_image(button, c_type, config):
     button.set_alignment(0.8, 0.5, 0, 0)                                    
      
             
+def change_media_button_image(button, c_type, renderer):
+    """Changes current image for Media button."""
+
+    images_dict = {'image': 'filemanager_image_folder.png', 'sound': \
+        'filemanager_audio_folder.png'}
+    renderer.render_media_button(button, os.path.join(ICONS_PATH, \
+        images_dict[c_type]))
+
+        
 def create_media_dialog_ui():
     """Creates MediaDialog UI."""
 

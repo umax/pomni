@@ -48,7 +48,6 @@ class InputWidget(UiComponent):
     """Input mode widget for Rainbow theme."""
     
     def __init__(self, component_manager):
-
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
         self.default_tag_name = unicode(_("<default>"))
@@ -65,29 +64,32 @@ class InputWidget(UiComponent):
         self._main_widget = self.main_widget()
         # create widgets
         self.window, card_type_button, content_button, tags_button, \
-            sound_button, question_text, answer_text, foreign_text, \
-            pronunciation_text, translation_text, cloze_text, new_tag_button, \
-            card_type_switcher, sound_container, question_container, \
-            self.grades, tags_button = widgets.create_input_ui( \
-                self.conf["theme_path"])
+            question_text, answer_text, foreign_text, pronunciation_text, \
+            translation_text, cloze_text, new_tag_button, card_type_switcher, \
+            media_button, media_container, self.grades, tags_button = \
+                widgets.create_input_ui(self.conf["theme_path"])
         # connect signals
         self.window.connect('destroy', self.input_to_main_menu_cb)
         content_button.connect('clicked', self.show_content_dialog_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
-        sound_button.connect('button-press-event', \
-            self.preview_sound_in_input_cb)
+        #media_button.connect('button-press-event', \
+        #    self.preview_sound_in_input_cb)
         question_text.connect('button_release_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
+
+        # FIXME: doesn't work
         # create language switcher and set its callbacks for all text widgets
-        langswitcher = self.component_manager.get_current("langswitcher")
-        for widget in [question_text, answer_text, foreign_text, \
-            pronunciation_text, translation_text, cloze_text]:
-            widget.connect('focus-in-event', langswitcher.restore_cb)
-            widget.connect('focus-out-event', langswitcher.save_cb)
+        #langswitcher = self.component_manager.get_current("langswitcher")
+        #for widget in [question_text, answer_text, foreign_text, \
+        #    pronunciation_text, translation_text, cloze_text]:
+        #    widget.connect('focus-in-event', langswitcher.restore_cb)
+        #    widget.connect('focus-out-event', langswitcher.save_cb)
+
         # widgets as attributes
         self.areas = {"cloze": cloze_text, "answer":  answer_text,
             "foreign": foreign_text, "pronunciation": pronunciation_text,
             "translation": translation_text, "question": question_text}
+
         # change default font
         font = pango.FontDescription("Nokia Sans %s" % \
             (self.conf['font_size'] - FONT_DISTINCTION))
@@ -99,9 +101,9 @@ class InputWidget(UiComponent):
             "ContentButton": content_button,
             "TagsButton": tags_button,
             "CardTypeSwitcher": card_type_switcher,
-            "SoundContainer": sound_container,
-            "SoundButton": sound_button,
-            "QuestionContainer": question_container}
+            "MediaButton": media_button,
+            "MediaContainer": media_container,
+            "QuestionText": question_text}
 
         # card_id: {"page": page_id, "card_type": card_type, 
         # "widgets": [(field_name:text_area_widget)...]}
@@ -133,22 +135,24 @@ class InputWidget(UiComponent):
         except (TypeError, AttributeError): 
             pass # so, skip silently
 
-    def show_snd_container(self):
-        """Show or hide Sound button. """
-                    
-        if "sound src=" in self.get_textview_text(self.areas["question"]):
-            self.widgets["QuestionContainer"].hide()
-            self.widgets["SoundContainer"].show()
+    def show_media_button(self, content_type='text'):
+        """Shows of hides Media button."""
+
+        if content_type in ('image', 'sound'):
+            self.widgets['QuestionText'].hide()
+            self.widgets['MediaContainer'].show()
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                content_type, self.component_manager.get_current('renderer'))
         else:
-            self.widgets["QuestionContainer"].show()
-            self.widgets["SoundContainer"].hide()
+            self.widgets['QuestionText'].show()
+            self.widgets['MediaContainer'].hide()
 
     def set_card_type(self, card_type):
         """Set current Card type value and changes UI."""
 
         self.card_type = card_type
         widgets.change_cardtype_button_image( \
-            self.widgets['CardTypeButton'], card_type, self.config())
+            self.widgets['CardTypeButton'], card_type, self.conf)
        
         self.widgets['CardTypeSwitcher'].set_current_page( \
             self.selectors[card_type.id]['page'])
@@ -164,6 +168,7 @@ class InputWidget(UiComponent):
         self.content_type = content_type
         widgets.change_content_button_image(self.widgets['ContentButton'], \
             content_type)
+        self.show_media_button(content_type)
 
     def update_tags(self):
         """Update active tags list."""
@@ -241,18 +246,18 @@ class InputWidget(UiComponent):
             self.window, self.card_types(), self.card_type)
         if selected_cardtype is not self.card_type:
             self.set_card_type(selected_cardtype)
-            self.show_snd_container()
+            self.show_media_button()
             self.clear_widgets()
 
     def show_content_dialog_cb(self, widget):
         """Open ContentDialog."""
 
         self._main_widget.soundplayer.stop()
-        selected_content_type = widgets.create_content_dialog_ui( \
-            self.window, self.content_type)
-        self.set_content_type(selected_content_type)
-        self.areas['question'].get_buffer().set_text(_("<QUESTION>"))
-        self.show_snd_container()
+        self.set_content_type(widgets.create_content_dialog_ui( \
+            self.window, self.content_type))
+        #self.set_content_type(selected_content_type)
+        #self.areas['question'].get_buffer().set_text(_("<QUESTION>"))
+        #self.show_snd_container()
 
     def show_media_dialog_cb(self, widget, event):
         """Open MediaDialog."""
@@ -296,7 +301,7 @@ class InputWidget(UiComponent):
                 question_text = """<%s src="%s">""" % (item_type, \
                     os.path.abspath(os.path.join(item_dirname, item_fname)))
                 self.areas["question"].get_buffer().set_text(question_text)
-                self.show_snd_container()
+                self.show_media_button()
             dialog.destroy()
 
     def preview_sound_in_input_cb(self, widget, event):
@@ -341,7 +346,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         # this part is the first part of add_cards from default controller
         self.stopwatch().pause()
 
-        self.show_snd_container()
+        self.show_media_button()
         self.set_card_type(self.selectors[ \
             self.conf["card_type_last_selected"]]["card_type"])
         self.set_content_type(self.conf["content_type_last_selected"])
@@ -374,7 +379,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             [unicode(tag).strip() for tag in self.selected_tags], save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
-        self.show_snd_container()
+        self.show_media_button()
 
     def input_to_main_menu_cb(self, widget):
         """Return to main menu."""
@@ -438,7 +443,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
         self.set_content_type(content_type)
         self.set_widgets_data(self.fact)
         self.update_tags()
-        self.show_snd_container()
+        self.show_media_button()
 
     def update_card_cb(self, widget):
         """Update card in the database."""
