@@ -28,6 +28,10 @@ import os
 import gtk
 import hildon
 import mnemosyne.maemo_ui.widgets.common as widgets
+from mnemosyne.libmnemosyne.card_types.front_to_back import FrontToBack
+from mnemosyne.libmnemosyne.card_types.both_ways import BothWays
+from mnemosyne.libmnemosyne.card_types.three_sided import ThreeSided
+from mnemosyne.libmnemosyne.card_types.cloze import Cloze
 
 ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 
@@ -52,7 +56,7 @@ def create_input_ui(theme_path):
             button.set_alignment(0.8, 0.5, 0, 0)                                    
         return button
                                             
-    card_type_button = create_button('type')
+    card_type_button = create_button()
     content_button = create_button()
     tags_button = create_button(image='general_tag.png')
     
@@ -147,16 +151,27 @@ def create_input_ui(theme_path):
         question_text, grades, tags_button
 
 
-def change_content_button_image(button, type):
+def change_content_button_image(button, c_type):
     """Changes current image for Content button."""
 
-    types_dict = {'text': 'control_pen_input.png', 'image': \
+    images_dict = {'text': 'control_pen_input.png', 'image': \
         'general_image.png', 'sound': 'general_audio_file.png'}
     button.set_image(gtk.image_new_from_file( \
-        os.path.join(ICONS_PATH, types_dict[type])))
+        os.path.join(ICONS_PATH, images_dict[c_type])))
     button.set_alignment(0.8, 0.5, 0, 0)                                    
 
 
+def change_cardtype_button_image(button, c_type, config):
+    """Changes current image for CardType button."""
+
+    images_dict = {FrontToBack.id: 'front_to_back.png', BothWays.id: \
+        'both_ways.png', ThreeSided.id: 'three_sided.png', Cloze.id: \
+        'cloze.png'}
+    button.set_image(gtk.image_new_from_file( \
+        os.path.join(config['theme_path'], images_dict[c_type.id])))
+    button.set_alignment(0.8, 0.5, 0, 0)                                    
+     
+            
 def create_media_dialog_ui():
     """Creates MediaDialog UI."""
 

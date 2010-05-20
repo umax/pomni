@@ -147,21 +147,16 @@ class InputWidget(UiComponent):
         """Set current Card type value and changes UI."""
 
         self.card_type = card_type
-        self.widgets["ContentButton"].set_sensitive(False)
+        widgets.change_cardtype_button_image( \
+            self.widgets['CardTypeButton'], card_type, self.config())
+       
+        self.widgets['CardTypeSwitcher'].set_current_page( \
+            self.selectors[card_type.id]['page'])
 
-        # FIXME: replace by setting necessary image
         if card_type.id == FrontToBack.id:
-            self.widgets["CardTypeButton"].set_label('FtB')
-            self.widgets["ContentButton"].set_sensitive(True)
-        elif card_type.id == BothWays.id:
-            self.widgets["CardTypeButton"].set_label('BW')
-        elif card_type.id == ThreeSided.id:
-            self.widgets["CardTypeButton"].set_label('3S')
+            self.widgets['ContentButton'].set_sensitive(True)
         else:
-            self.widgets["CardTypeButton"].set_label('Clz')
-
-        self.widgets["CardTypeSwitcher"].set_current_page( \
-            self.selectors[card_type.id]["page"])
+            self.widgets['ContentButton'].set_sensitive(False)
             
     def set_content_type(self, content_type):
         """Set current Content type and changes UI."""
