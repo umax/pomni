@@ -44,9 +44,9 @@ def show_about_dialog():
     program_name_label = gtk.Label()
     program_name_label.set_justify(gtk.JUSTIFY_CENTER)
     program_name_label.set_use_markup(True)
-    program_name_label.set_markup("<span foreground='white' size='medium'><b>" \
+    program_name_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'small'>version 2.0.0~beta11</span>\n")
+        "'medium'>version 2.0.0~beta11~rc1</span>\n")
     
     pannable_area = hildon.PannableArea()
     pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
