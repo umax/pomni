@@ -121,8 +121,9 @@ def show_general_settings_dialog(config):
     def choose_directory_cb(widget, args=dialog):
         """Shows FileChooser dialog."""
 
-        chooser = hildon.FileChooserDialog(args, \
-            gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, hildon.FileSystemModel())
+        import gobject
+        chooser = gobject.new(hildon.FileChooserDialog, \
+            action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
         chooser.run()
         folder = chooser.get_filename()
         if folder:

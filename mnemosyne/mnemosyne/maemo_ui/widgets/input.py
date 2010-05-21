@@ -196,10 +196,11 @@ def change_media_button_image(button, c_type, renderer, folder_mode=True, \
 
 def show_media_dialog(window, config, content_type):
     """Shows FileChooser dialog to open image or sound file."""
-   
-    dialog = hildon.FileChooserDialog(window, gtk.FILE_CHOOSER_ACTION_OPEN, \
-        hildon.FileSystemModel())
-    dialog.set_current_folder_uri(config["%sdir" % content_type])
+  
+    import gobject
+    dialog = gobject.new(hildon.FileChooserDialog, \
+        action=gtk.FILE_CHOOSER_ACTION_OPEN)
+    dialog.set_current_folder(config["%sdir" % content_type])
     dialog.run()
     fname = dialog.get_filename()
     dialog.destroy()
