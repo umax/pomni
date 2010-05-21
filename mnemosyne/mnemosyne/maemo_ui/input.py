@@ -32,6 +32,7 @@ import gettext
 from mnemosyne.libmnemosyne.ui_components.dialogs import \
     AddCardsDialog, EditFactDialog
 import mnemosyne.maemo_ui.widgets.input as widgets
+import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 from mnemosyne.libmnemosyne.utils import numeric_string_cmp
 from mnemosyne.libmnemosyne.card_types.front_to_back import FrontToBack
@@ -73,7 +74,7 @@ class InputWidget(UiComponent):
         content_button.connect('clicked', self.show_content_dialog_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
         #question_text.connect('button_release_event', self.show_media_dialog_cb)
-        #media_button_text.connect('button_release_event', self.show_media_dialog_cb)
+        media_button.connect('button_press_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
 
         # FIXME: doesn't work
@@ -141,7 +142,8 @@ class InputWidget(UiComponent):
             self.widgets['QuestionText'].hide()
             self.widgets['MediaContainer'].show()
             widgets.change_media_button_image(self.widgets['MediaButton'], \
-                content_type, self.component_manager.get_current('renderer'))
+                content_type, self.component_manager.get_current('renderer'), \
+                folder_mode=True)
         else:
             self.widgets['QuestionText'].show()
             self.widgets['MediaContainer'].hide()
@@ -254,54 +256,28 @@ class InputWidget(UiComponent):
         self._main_widget.soundplayer.stop()
         self.set_content_type(widgets.create_content_dialog_ui( \
             self.window, self.content_type))
-        #self.set_content_type(selected_content_type)
-        #self.areas['question'].get_buffer().set_text(_("<QUESTION>"))
-        #self.show_snd_container()
 
     def show_media_dialog_cb(self, widget, event):
         """Open MediaDialog."""
 
-        if self.content_type == "text":
-            if self.component_type == "add_cards_dialog":
-                if self.get_textview_text(widget) in ["<%s>" % caption.upper() \
-                    for caption in self.areas]:
-                    widget.get_buffer().set_text("")
+        fname = widgets.show_media_dialog(self.window, self.conf, \
+            self.content_type)
+        if not fname:
+            return
+        renderer = self.component_manager.get_current('renderer')
+        if self.content_type == 'image':
+            # draw fname picture
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                self.content_type, renderer, folder_mode=False, fname=fname)
         else:
-            ctype = self.content_type + 'dir'
-            setattr(self, ctype, self.conf[ctype])
-            dialog, liststore, iconview_widget = \
-                widgets.create_media_dialog_ui()
-            if ctype == 'imagedir':
-                for fname in os.listdir(self.imagedir):
-                    if os.path.isfile(os.path.join(self.imagedir, fname)):
-                        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size( \
-                            os.path.join(self.imagedir, fname), 100, 100)
-                        liststore.append(["", "img", fname, self.imagedir, \
-                            pixbuf])
-            else:
-                self._main_widget.soundplayer.stop()
-                for fname in os.listdir(self.sounddir):
-                    if os.path.isfile(os.path.join(self.sounddir, fname)):
-                        sound_logo_file = os.path.join( \
-                            self.conf["theme_path"], "soundlogo.png")
-                        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size( \
-                            sound_logo_file, 100, 100)
-                        liststore.append([fname, "sound", fname, \
-                            self.sounddir, pixbuf])
-            response = dialog.run()
-            if response == gtk.RESPONSE_OK:
-                item_index = iconview_widget.get_selected_items()[0]
-                item_type = liststore.get_value(liststore.get_iter( \
-                    item_index), 1)
-                item_fname = liststore.get_value(liststore.get_iter( \
-                    item_index), 2)
-                item_dirname = liststore.get_value(liststore.get_iter( \
-                    item_index), 3)
-                question_text = """<%s src="%s">""" % (item_type, \
-                    os.path.abspath(os.path.join(item_dirname, item_fname)))
-                self.areas["question"].get_buffer().set_text(question_text)
-                self.show_media_button()
-            dialog.destroy()
+            # draw sound logo
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                self.content_type, renderer, folder_mode=False)
+        if self.content_type == 'image':
+            self.areas['question'].get_buffer().set_text('<img src=%s>' % fname)
+        else:
+            self.areas['question'].get_buffer().set_text('<snd src=%s>' % fname)
+            
 
     def preview_sound_in_input_cb(self, widget, event):
         """Listen sound in input mode."""

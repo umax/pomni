@@ -177,63 +177,34 @@ def change_cardtype_button_image(button, c_type, config):
     button.set_alignment(0.8, 0.5, 0, 0)                                    
      
             
-def change_media_button_image(button, c_type, renderer):
+def change_media_button_image(button, c_type, renderer, folder_mode=True, \
+    fname=None):
     """Changes current image for Media button."""
 
     images_dict = {'image': 'filemanager_image_folder.png', 'sound': \
         'filemanager_audio_folder.png'}
-    renderer.render_media_button(button, os.path.join(ICONS_PATH, \
-        images_dict[c_type]))
+    if folder_mode:
+        renderer.render_media_button(button, os.path.join(ICONS_PATH, \
+            images_dict[c_type]))
+    else:
+        if fname is not None:
+            renderer.render_media_button(button, fname)
+        else:
+            renderer.render_media_button(button, os.path.join(ICONS_PATH, \
+                'general_audio_file.png'))
 
-        
-def create_media_dialog_ui():
-    """Creates MediaDialog UI."""
 
-    def enable_select_button_cb(widget, select_button):
-        """If user has select item - enable Select button."""
-        select_button.set_sensitive(True)
-
-    #liststore = [text, type, filename, dirname, pixbuf]
-    liststore = gtk.ListStore(str, str, str, str, gtk.gdk.Pixbuf)
-    dialog = gtk.Dialog()
-    dialog.set_decorated(False)
-    dialog.set_name('dialog')
-    dialog.set_has_separator(False)
-    dialog.resize(570, 410)
-    width, height = dialog.get_size()
-    dialog.move((gtk.gdk.screen_width() - width)/2, \
-        (gtk.gdk.screen_height() - height)/2)
-    iconview_widget = gtk.IconView()
-    iconview_widget.set_name('iconview_widget')
-    iconview_widget.set_model(liststore)
-    iconview_widget.set_pixbuf_column(4)
-    iconview_widget.set_text_column(0)
-    label = gtk.Label('Select media')
-    label.set_name('white_label')
-    scrolledwindow_widget = gtk.ScrolledWindow()
-    scrolledwindow_widget.set_policy(gtk.POLICY_NEVER, \
-        gtk.POLICY_AUTOMATIC)
-    scrolledwindow_widget.set_name('scrolledwindow_widget')
-    scrolledwindow_widget.add(iconview_widget)
-    widgets_table = gtk.Table(rows=1, columns=1)
-    widgets_table.attach(scrolledwindow_widget, 0, 1, 0, 1, \
-        xpadding=14, ypadding=14)
-    dialog.vbox.pack_start(label, expand=False, fill=False, padding=4)
-    dialog.vbox.pack_start(widgets_table)
-    dialog.vbox.show_all()
-    select_button = dialog.add_button('Select', gtk.RESPONSE_OK)
-    select_button.set_size_request(262, 60)
-    select_button.set_sensitive(False)            
-    select_button.set_name('dialog_button')
-    iconview_widget.connect('selection-changed', enable_select_button_cb, \
-        select_button)
-    cancel_button = dialog.add_button('Cancel', gtk.RESPONSE_REJECT)
-    cancel_button.set_size_request(232, 60)
-    cancel_button.set_name('dialog_button')
-    dialog.action_area.set_layout(gtk.BUTTONBOX_SPREAD)
-    dialog.action_area.set_homogeneous(True)
-    return dialog, liststore, iconview_widget
-
+def show_media_dialog(window, config, content_type):
+    """Shows FileChooser dialog to open image or sound file."""
+   
+    dialog = hildon.FileChooserDialog(window, gtk.FILE_CHOOSER_ACTION_OPEN, \
+        hildon.FileSystemModel())
+    dialog.set_current_folder_uri(config["%sdir" % content_type])
+    dialog.run()
+    fname = dialog.get_filename()
+    dialog.destroy()
+    return fname
+                                                                        
 
 def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     """Creates CardType dialog UI."""

@@ -124,7 +124,7 @@ class Html(Renderer):
 
     def render_media_button(self, widget, image):
         """Render html text for Media button."""
-
+        
         return self.render_hint(widget, "<img src=%s>" % image)
 
 class Text(Renderer):
