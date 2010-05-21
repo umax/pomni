@@ -35,10 +35,9 @@ class HelpWidget(UiComponent):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         # create widgets
-        self.window, self.help_html = widgets.create_help_ui()
-        renderer = self.component_manager.get_current('renderer')
-        renderer.render_html(self.help_html, open(os.path.join( \
-            self.config()['help_path'], "help.html")).read())
+        self.window, help_html = widgets.create_help_ui()
+        self.component_manager.get_current('renderer').render_html(help_html, \
+            open(os.path.join(self.config()['help_path'], "help.html")).read())
       
     def activate(self):
         """Shows window."""
