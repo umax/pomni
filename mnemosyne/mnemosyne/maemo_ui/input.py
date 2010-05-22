@@ -315,10 +315,9 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             button.connect('clicked', self.add_card_cb)
         for text_area in self.areas.values():
             text_area.connect('button_press_event', self.clear_text_cb)
-        try:
-            self.selected_tags = [unicode(tag.strip()) for tag in \
-                self.conf['tags_of_last_added']]
-        except:
+        self.selected_tags = [unicode(tag.strip()) for tag in \
+            self.conf['tags_of_last_added'] if tag in self.tags]
+        if not self.selected_tags:
             self.selected_tags = [self.default_tag_name]
 
     def activate(self):
