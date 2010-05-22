@@ -51,6 +51,7 @@ class InputWidget(UiComponent):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
+        self.renderer = self.component_manager.get_current('renderer')
         self.default_tag_name = unicode(_("<default>"))
         self.content_type = None
         self.last_input_page = None
@@ -64,14 +65,14 @@ class InputWidget(UiComponent):
             [self.default_tag_name]]
         self._main_widget = self.main_widget()
         # create widgets
-        self.window, card_type_button, content_button, tags_button, \
+        self.window, card_type_button, content_type_button, tags_button, \
             question_text, answer_text, foreign_text, pronunciation_text, \
             translation_text, cloze_text, new_tag_button, card_type_switcher, \
             media_button, media_container, self.grades, tags_button = \
                 widgets.create_input_ui(self.conf["theme_path"])
         # connect signals
         self.window.connect('destroy', self.input_to_main_menu_cb)
-        content_button.connect('clicked', self.show_content_dialog_cb)
+        content_type_button.connect('clicked', self.show_content_dialog_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
         #question_text.connect('button_release_event', self.show_media_dialog_cb)
         media_button.connect('button_press_event', self.show_media_dialog_cb)
@@ -97,13 +98,13 @@ class InputWidget(UiComponent):
             area.modify_font(font)
 
         self.widgets = {# Other widgets
-            "CardTypeButton": card_type_button,
-            "ContentButton": content_button,
-            "TagsButton": tags_button,
-            "CardTypeSwitcher": card_type_switcher,
-            "MediaButton": media_button,
-            "MediaContainer": media_container,
-            "QuestionText": question_text}
+            'CardTypeButton': card_type_button,
+            'ContentTypeButton': content_type_button,
+            'TagsButton': tags_button,
+            'CardTypeSwitcher': card_type_switcher,
+            'MediaButton': media_button,
+            'MediaContainer': media_container,
+            'QuestionText': question_text}
 
         # card_id: {"page": page_id, "card_type": card_type, 
         # "widgets": [(field_name:text_area_widget)...]}
@@ -142,8 +143,7 @@ class InputWidget(UiComponent):
             self.widgets['QuestionText'].hide()
             self.widgets['MediaContainer'].show()
             widgets.change_media_button_image(self.widgets['MediaButton'], \
-                content_type, self.component_manager.get_current('renderer'), \
-                folder_mode=True)
+                content_type, self.renderer, folder_mode=True)
         else:
             self.widgets['QuestionText'].show()
             self.widgets['MediaContainer'].hide()
@@ -159,15 +159,16 @@ class InputWidget(UiComponent):
             self.selectors[card_type.id]['page'])
 
         if card_type.id == FrontToBack.id:
-            self.widgets['ContentButton'].set_sensitive(True)
+            self.widgets['ContentTypeButton'].set_sensitive(True)
         else:
-            self.widgets['ContentButton'].set_sensitive(False)
+            self.widgets['ContentTypeButton'].set_sensitive(False)
+            self.set_content_type('text')
             
     def set_content_type(self, content_type):
         """Set current Content type and changes UI."""
 
         self.content_type = content_type
-        widgets.change_content_button_image(self.widgets['ContentButton'], \
+        widgets.change_content_button_image(self.widgets['ContentTypeButton'], \
             content_type)
         self.show_media_button(content_type)
 
@@ -205,14 +206,24 @@ class InputWidget(UiComponent):
     def set_widgets_data(self, fact):
         """Set widgets data from fact."""
 
-        for fact_key, widget in self.selectors[self.card_type.id]["widgets"]:
+        for fact_key, widget in self.selectors[self.card_type.id]['widgets']:
             widget.get_buffer().set_text(fact[fact_key])
+        if self.content_type == 'sound':
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                self.content_type, self.renderer, folder_mode=False)
+        elif self.content_type == 'image':
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                self.content_type, self.renderer, folder_mode=False, \
+                fname=fact['q'], fname_is_html=True)
 
     def clear_widgets(self):
         """Clear widgets data."""
 
         for caption in self.areas:
             self.areas[caption].get_buffer().set_text("<%s>" % caption.upper())
+        if self.content_type in ('image', 'sound'):
+            widgets.change_media_button_image(self.widgets['MediaButton'], \
+                self.content_type, self.renderer, folder_mode=True)
 
     def get_textview_text(self, widget):
         """Returns current text in textview."""
@@ -268,16 +279,13 @@ class InputWidget(UiComponent):
         if self.content_type == 'image':
             # draw fname picture
             widgets.change_media_button_image(self.widgets['MediaButton'], \
-                self.content_type, renderer, folder_mode=False, fname=fname)
+                self.content_type, renderer, folder_mode=False, fname=fname)            
+            self.areas['question'].get_buffer().set_text('<img src=%s>' % fname)
         else:
             # draw sound logo
             widgets.change_media_button_image(self.widgets['MediaButton'], \
                 self.content_type, renderer, folder_mode=False)
-        if self.content_type == 'image':
-            self.areas['question'].get_buffer().set_text('<img src=%s>' % fname)
-        else:
             self.areas['question'].get_buffer().set_text('<snd src=%s>' % fname)
-            
 
     def preview_sound_in_input_cb(self, widget, event):
         """Listen sound in input mode."""
@@ -301,15 +309,15 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
         # connect signals
-        self.widgets["CardTypeButton"].connect( \
-            'clicked', self.show_cardtype_dialog_cb)
+        self.widgets['CardTypeButton'].connect('clicked', \
+            self.show_cardtype_dialog_cb)
         for button in self.grades.values():
             button.connect('clicked', self.add_card_cb)
         for text_area in self.areas.values():
             text_area.connect('button_press_event', self.clear_text_cb)
         try:
             self.selected_tags = [unicode(tag.strip()) for tag in \
-                self.conf["tags_of_last_added"]]            
+                self.conf['tags_of_last_added']]
         except:
             self.selected_tags = [self.default_tag_name]
 
@@ -319,10 +327,9 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         # this part is the first part of add_cards from default controller
         self.stopwatch().pause()
 
-        self.show_media_button()
-        self.set_card_type(self.selectors[ \
-            self.conf["card_type_last_selected"]]["card_type"])
-        self.set_content_type(self.conf["content_type_last_selected"])
+        self.set_content_type(self.conf['content_type_last_selected'])
+        self.set_card_type( \
+            self.selectors[self.conf['card_type_last_selected']]['card_type'])
         self.update_tags()
         self.clear_widgets()
 
@@ -352,15 +359,15 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             [unicode(tag).strip() for tag in self.selected_tags], save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
-        self.show_media_button()
 
     def input_to_main_menu_cb(self, widget):
         """Return to main menu."""
 
-        self.conf["tags_of_last_added"] = self.selected_tags
-        self.conf["card_type_last_selected"] = self.card_type.id
-        self.conf["content_type_last_selected"] = self.content_type
-        self.conf.save()
+        conf = self.conf
+        conf['tags_of_last_added'] = self.selected_tags
+        conf['card_type_last_selected'] = self.card_type.id
+        conf['content_type_last_selected'] = self.content_type
+        conf.save()
 
         # this part is called from add_card_cb, when card is added
         self.database().save()
@@ -403,20 +410,20 @@ class EditFactWidget(EditFactDialog, InputWidget):
 
         self.set_card_type(self.fact.card_type)
         if self.card_type.id is FrontToBack.id:
-            if "img src=" in self.fact.data['q']:
-                content_type = "image"
-            elif "sound src=" in self.fact.data['q']:
-                content_type = "sound"
+            if 'img src=' in self.fact.data['q']:
+                content_type = 'image'
+            elif 'sound src=' in self.fact.data['q']:
+                content_type = 'sound'
             else:
-                content_type = "text"
+                content_type = 'text'
         else:
-            content_type = "text"
+            content_type = 'text'
         
-        self.widgets["CardTypeButton"].set_sensitive(False)
+        self.widgets['CardTypeButton'].set_sensitive(False)
+        self.widgets['ContentTypeButton'].set_sensitive(False)
         self.set_content_type(content_type)
         self.set_widgets_data(self.fact)
         self.update_tags()
-        self.show_media_button()
 
     def update_card_cb(self, widget):
         """Update card in the database."""

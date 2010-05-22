@@ -178,7 +178,7 @@ def change_cardtype_button_image(button, c_type, config):
      
             
 def change_media_button_image(button, c_type, renderer, folder_mode=True, \
-    fname=None):
+    fname=None, fname_is_html=False):
     """Changes current image for Media button."""
 
     images_dict = {'image': 'filemanager_image_folder.png', 'sound': \
@@ -188,7 +188,7 @@ def change_media_button_image(button, c_type, renderer, folder_mode=True, \
             images_dict[c_type]))
     else:
         if fname is not None:
-            renderer.render_media_button(button, fname)
+            renderer.render_media_button(button, fname, fname_is_html)
         else:
             renderer.render_media_button(button, os.path.join(ICONS_PATH, \
                 'general_audio_file.png'))

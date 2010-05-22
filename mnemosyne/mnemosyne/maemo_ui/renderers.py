@@ -122,10 +122,13 @@ class Html(Renderer):
                 self.config["theme_path"], "note.png")
         return self.render_html(widget, self.change_font_size(html))
 
-    def render_media_button(self, widget, image):
+    def render_media_button(self, widget, fname, fname_is_html=False):
         """Render html text for Media button."""
         
-        return self.render_hint(widget, "<img src=%s>" % image)
+        if not fname_is_html:
+            return self.render_hint(widget, "<img src=%s>" % fname)
+        else:
+            return self.render_hint(widget, fname)
 
 class Text(Renderer):
     """Simple text renderer."""
