@@ -52,7 +52,7 @@ class InputWidget(UiComponent):
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
         self.renderer = self.component_manager.get_current('renderer')
-        self.default_tag_name = unicode(_("<default>"))
+        self.default_tag_name = unicode(_('<default>'))
         self.content_type = None
         self.last_input_page = None
         self.fact = None
@@ -315,10 +315,9 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             button.connect('clicked', self.add_card_cb)
         for text_area in self.areas.values():
             text_area.connect('button_press_event', self.clear_text_cb)
-        try:
-            self.selected_tags = [unicode(tag.strip()) for tag in \
-                self.conf['tags_of_last_added']]
-        except:
+        self.selected_tags = [unicode(tag.strip()) for tag in \
+            self.conf['tags_of_last_added'] if tag in self.tags]
+        if not self.selected_tags:
             self.selected_tags = [self.default_tag_name]
 
     def activate(self):
@@ -356,7 +355,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
         if grade in (0, 1):
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
-            [unicode(tag).strip() for tag in self.selected_tags], save=True)
+            self.selected_tags, save=True)
         self._main_widget.soundplayer.stop()
         self.clear_widgets()
 
