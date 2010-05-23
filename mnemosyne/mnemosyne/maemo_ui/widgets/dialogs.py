@@ -287,20 +287,161 @@ def show_tts_settings_dialog(config):
     dialog.destroy()
 
 
-def show_import_dialog():
+def show_import_dialog(file_formats, current_format, database):
     """Shows ImportCards dialog."""
+    
+    from mnemosyne.libmnemosyne.file_formats.mnemosyne_XML import MnemosyneXML
+
+    def update_tags(current_format_description, tags_button, selected_tags):
+        """Updates tags UI."""
+
+        if current_format_description == MnemosyneXML.description:
+            tags_button.set_sensitive(False)
+            tags_button.set_value(_('Using XML tags'))
+        else:
+            tags_button.set_sensitive(True)
+            tags_button.set_value(', '.join(selected_tags))
+
+            
+    # callbacks
+    def change_format_cb(widget, window, formats, tags_button, \
+        selected_tags, update_tags):
+        """Changes current file format and updates UI."""
+    
+        selected_format = show_items_dialog(window, widget, formats, \
+            _('File format'))
+        widget.set_value(selected_format)
+        update_tags(selected_format, tags_button, selected_tags)
+       
+
+    def add_new_tag_cb(widget, tags_button, tags):
+        """Creates new tag and updates UI."""
+
+        dialog = hildon.Dialog()
+        dialog.set_title(_('New tag'))
+        entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)
+        entry.show()
+        dialog.vbox.pack_start(entry)
+        dialog.add_button(_('Add'), gtk.RESPONSE_OK)
+        dialog.run()
+        tag_name = entry.get_text()
+        dialog.destroy()
+        if tag_name:
+            tags.append(tag_name)
+
+
+    def set_file_cb(widget):
+        """Shows FileChooser dialog to open file."""
+          
+        import gobject
+        dialog = gobject.new(hildon.FileChooserDialog, \
+            action=gtk.FILE_CHOOSER_ACTION_OPEN)
+        dialog.run()
+        fname = dialog.get_filename()
+        dialog.destroy()
+        if fname:
+            widget.set_value(fname)
+                                  
+                                            
+    def select_tags_cb(widget, window, tags, selected_tags, tags_button):
+        """Creates TagsSelection dialog UI."""
+
+        selector = hildon.TouchSelector(text=True) 
+    
+        # fill tags list
+        for tag in selected_tags:
+            if not tag in tags:
+                tags.append(tag)
+                
+        for tag in tags:
+            selector.append_text(tag)
+        
+        selector.set_column_selection_mode( \
+            hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
+        
+        # mark selected tags
+        selector.unselect_all(0)
+        model = selector.get_model(0)
+        for i in range(len(tags)):
+            if model[i][0] in selected_tags:
+                selector.select_iter(0, model.get_iter(i), False)
+            
+        dialog = hildon.PickerDialog(window)
+        dialog.set_title(_('Tags for new cards'))
+        dialog.set_selector(selector)
+        dialog.run()
+        indexes_of_selected_tags = [item[0] for item in \
+            selector.get_selected_rows(0)]
+        model = selector.get_model(0)
+        selected_tags[:] = []
+        for index in indexes_of_selected_tags:
+            selected_tags.append(unicode(model[index][0]))
+        dialog.destroy()
+        tags_button.set_value(', '.join(selected_tags))
+
+
+    formats = {}
+    fname = None  
+    tags = [tag.name for tag in database.get_tags()]
+    selected_tags = [_(u'<default>')]
+    
+
+    for _format in file_formats:
+        formats[_format.description] = _format.filename_filter
 
     dialog = hildon.Dialog()
     dialog.set_title(_('Import cards'))
+  
+    # create widgets
+    format_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        _('File format'), current_format.description) 
+    format_button.set_style(hildon.BUTTON_STYLE_PICKER)
+    format_button.set_alignment(0, 0, 0, 0)
     
-    label = gtk.Label("\nImport cards feature is not implemented yet :(\n" \
-        "It will be available soon!\n")
-    label.set_justify(gtk.JUSTIFY_CENTER)
-    dialog.vbox.pack_start(label)
+    file_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        _('File to import from'), _('Select file')) 
+    file_button.set_style(hildon.BUTTON_STYLE_PICKER)
+    file_button.set_alignment(0, 0, 0, 0)
+   
+    tags_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        _('Tags for new cards'), ', '.join(selected_tags)) 
+    tags_button.set_style(hildon.BUTTON_STYLE_PICKER)
+    tags_button.set_alignment(0, 0, 0, 0)
+  
+    new_tag_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
+        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
+        _('New tag'), '') 
+    new_tag_button.set_style(hildon.BUTTON_STYLE_NORMAL)
+    new_tag_button.set_alignment(0.5, 0.5, 0, 0)
+    new_tag_button.show()
+    
+    # connect signals
+    format_button.connect('clicked', change_format_cb, dialog, formats.keys(), \
+        tags_button, selected_tags, update_tags)
+    new_tag_button.connect('clicked', add_new_tag_cb, tags_button, tags)
+    file_button.connect('clicked', set_file_cb)
+    tags_button.connect('clicked', select_tags_cb, dialog, tags, \
+        selected_tags, tags_button)
+
+    # packing widgets
+    dialog.vbox.pack_start(format_button)
+    dialog.vbox.pack_start(file_button)
+    dialog.vbox.pack_start(tags_button)
+    dialog.action_area.pack_start(new_tag_button)
+    dialog.add_button(_('Import'), gtk.RESPONSE_OK)
     dialog.vbox.show_all()
 
-    dialog.run()
+    # updates ui
+    update_tags(current_format.description, tags_button, selected_tags)
+
+    response = dialog.run()
     dialog.destroy()
+    if response == gtk.RESPONSE_OK:
+        print fname
+        print 'import'
     
     
 def show_sync_dialog():

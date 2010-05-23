@@ -99,7 +99,10 @@ class MenuWidget(UiComponent):
         """Go to 'Import' mode."""
 
         #self._main_widget.import_()
-        dialogs.show_import_dialog()
+        dialogs.show_import_dialog( \
+            self.component_manager.get_all('file_format'), 
+            self.component_manager.get_current('file_format'), 
+            self.database())
 
     def about_cb(self, widget):
         """Show 'About' dialog."""
