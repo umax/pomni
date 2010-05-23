@@ -6,6 +6,7 @@
 
 from xml.sax import saxutils, make_parser
 from xml.sax.handler import feature_namespaces, ContentHandler
+from mnemosyne.libmnemosyne.file_formats.memaid import *
 import time
 
 class Mnemosyne_XML_Importer(ContentHandler):
