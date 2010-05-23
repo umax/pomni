@@ -435,24 +435,28 @@ def show_import_dialog(file_formats, current_format, database, \
     # updates ui
     update_tags(current_format.description, tags_button, selected_tags)
 
-    import sys
     response = dialog.run()
     if response == gtk.RESPONSE_OK:
-        fname = file_button.get_value()
+        # disable all widgets
+        format_button.set_sensitive(False)
+        file_button.set_sensitive(False)
+        tags_button.set_sensitive(False)
+        new_tag_button.set_sensitive(False)
+        import_button.set_sensitive(False)
+        hildon.hildon_gtk_window_set_progress_indicator(dialog, 1)
         for _format in file_formats:
             if _format.description == format_button.get_value():
                 try:
-                    dialog.destroy()
-                    _format.do_import(fname, selected_tags)
+                    _format.do_import(file_button.get_value(), selected_tags)
+                    hildon.hildon_gtk_window_set_progress_indicator(dialog, 0)
                     db_path = database._path
                     database.unload()
                     database.load(db_path)
                     review_controller.reload_counters()
                 except:
-                    #error_box(_('Oops! Error occured.'))
-                    sys.exc_info()[0]
-                    raise
+                    error_box(_('Oops! Error occured.'))
                 break
+    dialog.destroy()
 
 
 def show_sync_dialog():

@@ -25,7 +25,6 @@ Hildon UI. Widget for progressbar window.
 """
 
 import gtk
-import hildon
 from mnemosyne.libmnemosyne.ui_components.dialogs import ProgressDialog
 
 
@@ -34,27 +33,20 @@ class MaemoProgressDlg(ProgressDialog):
 
     def __init__(self, component_manager):
         ProgressDialog.__init__(self, component_manager)
-        self.fraction = 0.0
-        self.pbar = hildon.hildon_banner_show_progress( \
-            self.main_widget().widgets['menu'].window, gtk.ProgressBar(), '')
-        self.pbar.show()
 
     def set_range(self, minimum, maximum):
         """Calculate fraction for progressbar."""
 
-        self.fraction = float(1.0 / (maximum - minimum))
+        pass
 
     def set_text(self, text):
         """Set title on progress bar."""
 
-        self.pbar.set_text(text)
+        pass
 
     def set_value(self, value):
         """Set new value for progess bar."""
 
-        self.pbar.set_fraction(value * self.fraction)
-        if value * self.fraction > 0.9:
-            self.pbar.destroy()
         # pending gtk
         while gtk.events_pending():
             gtk.main_iteration(False)
