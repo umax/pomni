@@ -25,6 +25,7 @@ Hildon UI. Widget for progressbar window.
 """
 
 import gtk
+import hildon
 from mnemosyne.libmnemosyne.ui_components.dialogs import ProgressDialog
 
 
@@ -33,58 +34,27 @@ class MaemoProgressDlg(ProgressDialog):
 
     def __init__(self, component_manager):
         ProgressDialog.__init__(self, component_manager)
-        self.window = None
         self.fraction = 0.0
-        try:
-            import hildon
-            self.pbar = hildon.hildon_banner_show_progress( \
-                self.main_widget().window, None, "")
-            self.pbar.show()
-        except ImportError:
-            self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-            self.window.set_title("ProgressBar")
-            self.window.set_border_width(0)
-            vbox = gtk.VBox(False, 5)
-            vbox.set_border_width(10)
-            self.window.add(vbox)
-            vbox.show()
-            # create a centering alignment object
-            align = gtk.Alignment(0.5, 0.5, 0, 0)
-            vbox.pack_start(align, False, False, 5)
-            align.show()
-            # create the ProgressBar
-            self.pbar = gtk.ProgressBar()
-            align.add(self.pbar)
-            self.pbar.show()
-            separator = gtk.HSeparator()
-            vbox.pack_start(separator, False, False, 0)
-            separator.show()
-            # rows, columns, homogeneous
-            table = gtk.Table(2, 2, False)
-            vbox.pack_start(table, False, True, 0)
-            table.show()
-	
+        self.pbar = hildon.hildon_banner_show_progress( \
+            self.main_widget().widgets['menu'].window, gtk.ProgressBar(), '')
+        self.pbar.show()
+
     def set_range(self, minimum, maximum):
         """Calculate fraction for progressbar."""
 
         self.fraction = float(1.0 / (maximum - minimum))
-        if self.window:
-            self.window.show()
-       
+
     def set_text(self, text):
         """Set title on progress bar."""
 
         self.pbar.set_text(text)
-        
+
     def set_value(self, value):
-        """Set new value for progess bar.""" 
+        """Set new value for progess bar."""
 
         self.pbar.set_fraction(value * self.fraction)
-        if value * self.fraction > 0.999 :
-            if self.window:
-                self.window.destroy()
-            else:
-                self.pbar.destroy()
+        if value * self.fraction > 0.9:
+            self.pbar.destroy()
         # pending gtk
         while gtk.events_pending():
             gtk.main_iteration(False)
