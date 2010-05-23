@@ -92,7 +92,7 @@ class MenuWidget(UiComponent):
         """Show 'TTS settings' dialog."""
 
         dialogs.show_tts_settings_dialog(self.config())
-        
+
     def statistics_cb(self, widget):
         """Go to 'Statistics' mode."""
 
@@ -112,7 +112,7 @@ class MenuWidget(UiComponent):
         """Show 'About' dialog."""
 
         dialogs.show_about_dialog()
-        
+
     def help_cb(self, widget):
         """Go to 'Help' mode."""
 
