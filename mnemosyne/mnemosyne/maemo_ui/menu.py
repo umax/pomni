@@ -51,6 +51,9 @@ class MenuWidget(UiComponent):
         buttons['about'].connect('clicked', self.about_cb)
         buttons['sync'].connect('clicked', self.sync_cb)
 
+    def get_window(self):
+        return self.window
+
     def activate(self):
         """Shows 'Menu' window."""
 
@@ -100,9 +103,10 @@ class MenuWidget(UiComponent):
 
         #self._main_widget.import_()
         dialogs.show_import_dialog( \
-            self.component_manager.get_all('file_format'), 
-            self.component_manager.get_current('file_format'), 
-            self.database())
+            self.component_manager.get_all('file_format'),
+            self.component_manager.get_current('file_format'),
+            self.database(), self.review_controller(),
+            self._main_widget.error_box)
 
     def about_cb(self, widget):
         """Show 'About' dialog."""

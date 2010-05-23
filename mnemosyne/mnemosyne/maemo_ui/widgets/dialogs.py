@@ -37,17 +37,17 @@ MAX_FONT_SIZE = 60
 
 def show_about_dialog():
     """SHows About dialog."""
-    
+
     dialog = hildon.Dialog()
     dialog.set_title(_('About'))
-    
+
     program_name_label = gtk.Label()
     program_name_label.set_justify(gtk.JUSTIFY_CENTER)
     program_name_label.set_use_markup(True)
     program_name_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
         "'medium'>version 2.0.0~beta11~rc1</span>\n")
-    
+
     pannable_area = hildon.PannableArea()
     pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
     developers_label = gtk.Label()
@@ -77,7 +77,7 @@ def show_about_dialog():
         "</span>\n<span foreground='#299BFC' size='small'>" \
         "http://maemo.org/</span>")
     pannable_area.add_with_viewport(developers_label)
-    
+
     dialog.vbox.pack_start(program_name_label, expand=False, fill=True)
     dialog.vbox.pack_start(pannable_area)
     dialog.vbox.set_spacing(10)
@@ -95,7 +95,7 @@ def show_items_dialog(window, widget, items, caption):
     dialog.set_selector(selector)
     selector.set_column_selection_mode( \
         hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
-        
+
     # fill items list
     current_item = widget.get_value()
     items_dict = dict([(index, item) for index, item in enumerate(items)])
@@ -117,7 +117,7 @@ def show_general_settings_dialog(config):
 
     dialog = hildon.Dialog()
     dialog.set_title(_('General settings'))
-    
+
     def choose_directory_cb(widget, args=dialog):
         """Shows FileChooser dialog."""
 
@@ -130,7 +130,7 @@ def show_general_settings_dialog(config):
             widget.set_value(folder)
         chooser.destroy()
 
-    
+
     def show_font_size_dialog(widget, args=dialog):
         """Shows FontSize dialog."""
 
@@ -141,15 +141,15 @@ def show_general_settings_dialog(config):
     # create widgets
     widgets_box = gtk.VBox()
     widgets_box.set_spacing(4)
-    
+
     sound_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Sound directory'), config['sounddir']) 
+        _('Sound directory'), config['sounddir'])
     sound_button.set_style(hildon.BUTTON_STYLE_PICKER)
     sound_button.set_alignment(0, 0, 0, 0)
     sound_button.connect('clicked', choose_directory_cb)
     widgets_box.pack_start(sound_button, expand=False, fill=False)
-    
+
     image_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
         _('Image directory'), config['imagedir'])
@@ -165,7 +165,7 @@ def show_general_settings_dialog(config):
     font_size_button.connect('clicked', show_font_size_dialog)
     font_size_button.set_alignment(0, 0, 0, 0)
     widgets_box.pack_start(font_size_button, expand=False, fill=False)
-    
+
     open_review_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT)
     open_review_button.set_label(_('Open Review mode at startup'))
@@ -173,10 +173,10 @@ def show_general_settings_dialog(config):
     widgets_box.pack_start(open_review_button, expand=False, fill=False)
 
     widgets_box.show_all()
-    
-    dialog.vbox.add(widgets_box) 
+
+    dialog.vbox.add(widgets_box)
     dialog.add_button(_('Save'), gtk.RESPONSE_OK)
-    
+
     response = dialog.run()
     if response == gtk.RESPONSE_OK:
         config['sounddir'] = sound_button.get_value()
@@ -184,18 +184,18 @@ def show_general_settings_dialog(config):
         config['font_size'] = int(font_size_button.get_value())
         config['startup_with_review'] = open_review_button.get_active()
         config.save()
-    
+
     dialog.destroy()
-   
+
 
 def show_tts_settings_dialog(config):
     """Shows TTS settings dialog."""
 
     import mnemosyne.maemo_ui.tts as tts
-    
+
     dialog = hildon.Dialog()
     dialog.set_title(_('TTS settings'))
-    
+
     if not tts.is_available():
         label = gtk.Label(_("TTS is not available on your system!\n" \
             "Install eSpeak first."))
@@ -206,20 +206,20 @@ def show_tts_settings_dialog(config):
         dialog.destroy()
         return
 
-        
+
     def show_language_dialog(widget, args=dialog):
         """Shows Languages dialog."""
 
         widget.set_value(show_items_dialog(args, widget, tts.get_languages(), \
             _('Language')))
-        
+
 
     def show_voice_dialog(widget, args=dialog):
         """Shows Voices dialog."""
-        
+
         widget.set_value(show_items_dialog(args, widget, \
             [_('Male'), _('Female')], _('Voice')))
-        
+
 
     def show_speed_dialog(widget, args=dialog):
         """Shows PronunciationSpeed dialog."""
@@ -228,7 +228,7 @@ def show_tts_settings_dialog(config):
             in range(tts.MIN_SPEED_VALUE, tts.MAX_SPEED_VALUE)], \
             _('Pronunciation speed')))
 
-        
+
     def show_pitch_dialog(widget, args=dialog):
         """Shows VoicePitch dialog."""
 
@@ -243,7 +243,7 @@ def show_tts_settings_dialog(config):
 
     language_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Language'), config['tts_language']) 
+        _('Language'), config['tts_language'])
     language_button.set_style(hildon.BUTTON_STYLE_PICKER)
     language_button.set_alignment(0, 0, 0, 0)
     language_button.connect('clicked', show_language_dialog)
@@ -251,7 +251,7 @@ def show_tts_settings_dialog(config):
 
     voice_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Voice'), config['tts_voice']) 
+        _('Voice'), config['tts_voice'])
     voice_button.set_style(hildon.BUTTON_STYLE_PICKER)
     voice_button.set_alignment(0, 0, 0, 0)
     voice_button.connect('clicked', show_voice_dialog)
@@ -259,25 +259,25 @@ def show_tts_settings_dialog(config):
 
     speed_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Pronunciation speed'), str(config['tts_speed'])) 
+        _('Pronunciation speed'), str(config['tts_speed']))
     speed_button.set_style(hildon.BUTTON_STYLE_PICKER)
     speed_button.set_alignment(0, 0, 0, 0)
     speed_button.connect('clicked', show_speed_dialog)
     widgets_box.pack_start(speed_button, expand=False, fill=False)
-    
+
     pitch_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Voice pitch'), str(config['tts_pitch'])) 
+        _('Voice pitch'), str(config['tts_pitch']))
     pitch_button.set_style(hildon.BUTTON_STYLE_PICKER)
     pitch_button.set_alignment(0, 0, 0, 0)
     pitch_button.connect('clicked', show_pitch_dialog)
     widgets_box.pack_start(pitch_button, expand=False, fill=False)
-    
+
     widgets_box.show_all()
 
-    dialog.vbox.add(widgets_box) 
+    dialog.vbox.add(widgets_box)
     dialog.add_button(_('Save'), gtk.RESPONSE_OK)
-    
+
     response = dialog.run()
     if response == gtk.RESPONSE_OK:
         config['tts_language'] = language_button.get_value()
@@ -287,9 +287,10 @@ def show_tts_settings_dialog(config):
     dialog.destroy()
 
 
-def show_import_dialog(file_formats, current_format, database):
+def show_import_dialog(file_formats, current_format, database, \
+    review_controller, error_box):
     """Shows ImportCards dialog."""
-    
+
     from mnemosyne.libmnemosyne.file_formats.mnemosyne_XML import MnemosyneXML
 
     def update_tags(current_format_description, tags_button, selected_tags):
@@ -302,17 +303,17 @@ def show_import_dialog(file_formats, current_format, database):
             tags_button.set_sensitive(True)
             tags_button.set_value(', '.join(selected_tags))
 
-            
+
     # callbacks
     def change_format_cb(widget, window, formats, tags_button, \
         selected_tags, update_tags):
         """Changes current file format and updates UI."""
-    
+
         selected_format = show_items_dialog(window, widget, formats, \
             _('File format'))
         widget.set_value(selected_format)
         update_tags(selected_format, tags_button, selected_tags)
-       
+
 
     def add_new_tag_cb(widget, tags_button, tags):
         """Creates new tag and updates UI."""
@@ -330,9 +331,9 @@ def show_import_dialog(file_formats, current_format, database):
             tags.append(tag_name)
 
 
-    def set_file_cb(widget):
+    def set_file_cb(widget, import_button):
         """Shows FileChooser dialog to open file."""
-          
+
         import gobject
         dialog = gobject.new(hildon.FileChooserDialog, \
             action=gtk.FILE_CHOOSER_ACTION_OPEN)
@@ -341,31 +342,31 @@ def show_import_dialog(file_formats, current_format, database):
         dialog.destroy()
         if fname:
             widget.set_value(fname)
-                                  
-                                            
+            import_button.set_sensitive(True)
+
     def select_tags_cb(widget, window, tags, selected_tags, tags_button):
         """Creates TagsSelection dialog UI."""
 
-        selector = hildon.TouchSelector(text=True) 
-    
+        selector = hildon.TouchSelector(text=True)
+
         # fill tags list
         for tag in selected_tags:
             if not tag in tags:
                 tags.append(tag)
-                
+
         for tag in tags:
             selector.append_text(tag)
-        
+
         selector.set_column_selection_mode( \
             hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
-        
+
         # mark selected tags
         selector.unselect_all(0)
         model = selector.get_model(0)
         for i in range(len(tags)):
             if model[i][0] in selected_tags:
                 selector.select_iter(0, model.get_iter(i), False)
-            
+
         dialog = hildon.PickerDialog(window)
         dialog.set_title(_('Tags for new cards'))
         dialog.set_selector(selector)
@@ -380,49 +381,48 @@ def show_import_dialog(file_formats, current_format, database):
         tags_button.set_value(', '.join(selected_tags))
 
 
-    formats = {}
-    fname = None  
     tags = [tag.name for tag in database.get_tags()]
     selected_tags = [_(u'<default>')]
-    
-
-    for _format in file_formats:
-        formats[_format.description] = _format.filename_filter
 
     dialog = hildon.Dialog()
     dialog.set_title(_('Import cards'))
-  
+
     # create widgets
     format_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('File format'), current_format.description) 
+        _('File format'), current_format.description)
     format_button.set_style(hildon.BUTTON_STYLE_PICKER)
     format_button.set_alignment(0, 0, 0, 0)
-    
+
     file_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('File to import from'), _('Select file')) 
+        _('File to import from'), _('Select file'))
     file_button.set_style(hildon.BUTTON_STYLE_PICKER)
     file_button.set_alignment(0, 0, 0, 0)
-   
+
     tags_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Tags for new cards'), ', '.join(selected_tags)) 
+        _('Tags for new cards'), ', '.join(selected_tags))
     tags_button.set_style(hildon.BUTTON_STYLE_PICKER)
     tags_button.set_alignment(0, 0, 0, 0)
-  
+
     new_tag_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('New tag'), '') 
+        _('New tag'), '')
     new_tag_button.set_style(hildon.BUTTON_STYLE_NORMAL)
     new_tag_button.set_alignment(0.5, 0.5, 0, 0)
     new_tag_button.show()
-    
+    dialog.action_area.pack_end(new_tag_button)
+
+    import_button = dialog.add_button(_('Import'), gtk.RESPONSE_OK)
+    import_button.set_sensitive(False)
+
     # connect signals
-    format_button.connect('clicked', change_format_cb, dialog, formats.keys(), \
-        tags_button, selected_tags, update_tags)
+    format_button.connect('clicked', change_format_cb, dialog, \
+        [f.description for f in file_formats], tags_button, \
+        selected_tags, update_tags)
     new_tag_button.connect('clicked', add_new_tag_cb, tags_button, tags)
-    file_button.connect('clicked', set_file_cb)
+    file_button.connect('clicked', set_file_cb, import_button)
     tags_button.connect('clicked', select_tags_cb, dialog, tags, \
         selected_tags, tags_button)
 
@@ -430,26 +430,33 @@ def show_import_dialog(file_formats, current_format, database):
     dialog.vbox.pack_start(format_button)
     dialog.vbox.pack_start(file_button)
     dialog.vbox.pack_start(tags_button)
-    dialog.action_area.pack_start(new_tag_button)
-    dialog.add_button(_('Import'), gtk.RESPONSE_OK)
     dialog.vbox.show_all()
 
     # updates ui
     update_tags(current_format.description, tags_button, selected_tags)
 
     response = dialog.run()
-    dialog.destroy()
     if response == gtk.RESPONSE_OK:
-        print fname
-        print 'import'
-    
-    
+        for _format in file_formats:
+            if _format.description == format_button.get_value():
+                try:
+                    _format.do_import(file_button.get_value(), selected_tags)
+                    db_path = database._path
+                    database.unload()
+                    database.load(db_path)
+                    review_controller.reload_counters()
+                except:
+                    error_box(_('Oops! Error occured.'))
+                break
+    dialog.destroy()
+
+
 def show_sync_dialog():
     """Shows Sync dialog."""
 
     dialog = hildon.Dialog()
     dialog.set_title(_('Sync'))
-      
+
     label = gtk.Label("\nSync feature is not implemented yet :(\n" \
         "It will be available soon!\n")
     label.set_justify(gtk.JUSTIFY_CENTER)
@@ -458,4 +465,4 @@ def show_sync_dialog():
 
     dialog.run()
     dialog.destroy()
-    
+
