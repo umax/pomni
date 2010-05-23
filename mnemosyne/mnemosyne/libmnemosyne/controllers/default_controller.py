@@ -134,8 +134,12 @@ class DefaultController(Controller):
             cards.append(card)
         if save:
             db.save()
-        if self.review_controller().learning_ahead == True:
-            self.review_controller().reset()
+	
+	# HACK
+	review_controller = self.review_controller()
+	if hasattr(review_controller, 'learning_ahead'):
+	        if review_controller.learning_ahead == True:
+        	    review_controller.reset()
         return cards
 
     def update_related_cards(self, fact, new_fact_data, new_card_type, \
