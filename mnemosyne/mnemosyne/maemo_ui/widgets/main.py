@@ -40,7 +40,7 @@ def create_question_dialog(window, text):
     dialog = hildon.Dialog()
     dialog.set_title(_('Card deletion'))
     dialog.vbox.add(label)
-    label.show()
+    dialog.vbox.show_all()
     dialog.add_button(_('Yes'), gtk.RESPONSE_YES)
     dialog.add_button(_('No'), gtk.RESPONSE_NO)
     response = dialog.run()
@@ -48,17 +48,17 @@ def create_question_dialog(window, text):
     if response == gtk.RESPONSE_YES:
         return False
     return True
-                            
+
 
 def create_information_dialog(window, text):
     """Create InformationDialog UI."""
-    
+
     dialog = hildon.Dialog()
-    dialog.set_title('')
+    dialog.set_title(_('Information'))
     label = gtk.Label()
     label.set_justify(gtk.JUSTIFY_CENTER)
-    label.set_text(text + '\n')
-    label.show()
-    dialog.vbox.pack_start(label)
+    label.set_text('\n' + text + '\n')
+    dialog.vbox.add(label)
+    dialog.vbox.show_all()
     dialog.run()
     dialog.destroy()
