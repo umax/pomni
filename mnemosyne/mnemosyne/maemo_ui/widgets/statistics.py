@@ -44,7 +44,7 @@ def create_statistics_ui():
     current_stats_filter = gtk.RadioButton(None, _('Current'))
     current_stats_filter.set_mode(False)
     menu.add_filter(current_stats_filter)
-    
+
     # create widgets for all card statistics
     all_stats_filter = gtk.RadioButton(current_stats_filter, _('All'))
     all_stats_filter.set_mode(False)
@@ -54,9 +54,10 @@ def create_statistics_ui():
     tags_stats_filter = gtk.RadioButton(current_stats_filter, _('Tags'))
     tags_stats_filter.set_mode(False)
     menu.add_filter(tags_stats_filter)
-   
+
     widgets_box = gtk.VBox()
     html_widget = widgets.create_gtkhtml()
+    html_widget.set_sensitive(False)
     pannable_area = hildon.PannableArea()
     pannable_area.set_property('mode', hildon.PANNABLE_AREA_MODE_PUSH)
     pannable_area.add(html_widget)
@@ -65,7 +66,7 @@ def create_statistics_ui():
 
     widgets_box.pack_start(label, expand=True, fill=False)
     widgets_box.pack_start(pannable_area)
-    
+
     menu.show_all()
     window.set_app_menu(menu)
     window.add(widgets_box)
