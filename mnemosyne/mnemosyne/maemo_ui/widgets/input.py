@@ -56,13 +56,13 @@ def create_input_ui(theme_path):
         if image is not None:
             button.set_image(gtk.image_new_from_file( \
                 os.path.join(ICONS_PATH, image)))
-            button.set_alignment(0.8, 0.5, 0, 0)                                    
+            button.set_alignment(0.8, 0.5, 0, 0)
         return button
-                                            
+
     card_type_button = create_button()
     content_button = create_button()
     tags_button = create_button(image='general_tag.png')
-    
+
     # create media button
     #images_dict = {'image': 'filemanager_image_folder.png', 'sound': '\
     #    filemanager_audio_folder.png'}
@@ -71,7 +71,7 @@ def create_input_ui(theme_path):
     #'<html><body><table align="center">' \
     #    '<tr><td><img src=%s></td></tr></table></body></html>' % os.path.join( \
     #    theme_path, images_dict[content_type]))
-    
+
     # create grades buttons
     grades = {}
     for num in range(6):
@@ -84,14 +84,17 @@ def create_input_ui(theme_path):
         text_widget = gtk.TextView()
         text_widget.set_justification(gtk.JUSTIFY_CENTER)
         text_widget.set_wrap_mode(gtk.WRAP_CHAR)
-        return text_widget
+        text_container = hildon.PannableArea()
+        text_container.set_property('mov-mode', hildon.MOVEMENT_MODE_VERT)
+        text_container.add(text_widget)
+        return text_widget, text_container
 
-    question_text = create_text_field()
-    answer_text = create_text_field()
-    foreign_text = create_text_field()
-    pronunciation_text = create_text_field()
-    translation_text = create_text_field()
-    cloze_text = create_text_field()
+    question_text, question_container = create_text_field()
+    answer_text, answer_container = create_text_field()
+    foreign_text, foreign_container = create_text_field()
+    pronunciation_text, pronunciation_container = create_text_field()
+    translation_text, translation_container = create_text_field()
+    cloze_text, cloze_container = create_text_field()
 
     # create other widgets
     question_box = gtk.VBox()
@@ -104,16 +107,16 @@ def create_input_ui(theme_path):
     card_type_switcher = gtk.Notebook()
     card_type_switcher.set_show_tabs(False)
     card_type_switcher.set_show_border(False)
-    
+
     # packing widgets
     toolbar_table.attach(card_type_button, 0, 1, 0, 1, xpadding=2)
     toolbar_table.attach(content_button, 0, 1, 1, 2, xpadding=2)
     toolbar_table.attach(tags_button, 0, 1, 2, 3, xpadding=2)
-        
+
     # packing grades buttons
     for pos in grades.keys():
         grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, xpadding=2)
-            
+
     # packing other widgets
     toplevel_table.attach(toolbar_table, 0, 1, 0, 1, xpadding=2, ypadding=2, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
@@ -123,17 +126,17 @@ def create_input_ui(theme_path):
     card_type_switcher.append_page(two_sided_box)
     card_type_switcher.append_page(three_sided_box)
     card_type_switcher.append_page(cloze_box)
-    
+
     media_container.attach(media_button, 0, 1, 0, 1, xpadding=5, ypadding=4)
     question_box.pack_start(media_container)
-    question_box.pack_end(question_text)
+    question_box.pack_end(question_container)
     two_sided_box.pack_start(question_box)
-    two_sided_box.pack_end(answer_text)
-    three_sided_box.pack_start(foreign_text)
-    three_sided_box.pack_start(pronunciation_text)
-    three_sided_box.pack_end(translation_text)
-    cloze_box.pack_start(cloze_text)
-   
+    two_sided_box.pack_end(answer_container)
+    three_sided_box.pack_start(foreign_container)
+    three_sided_box.pack_start(pronunciation_container)
+    three_sided_box.pack_end(translation_container)
+    cloze_box.pack_start(cloze_container)
+
     # create StackableWindow
     window = hildon.StackableWindow()
     window.add(toplevel_table)
@@ -153,7 +156,7 @@ def create_input_ui(theme_path):
     return window, card_type_button, content_button, tags_button, \
         question_text, answer_text, foreign_text, pronunciation_text, \
         translation_text, cloze_text, button_new_tag, card_type_switcher, \
-        media_button, media_container, grades, tags_button
+        media_button, media_container, grades, tags_button, question_container
 
 
 def change_content_button_image(button, c_type):
@@ -163,7 +166,7 @@ def change_content_button_image(button, c_type):
         'general_image.png', 'sound': 'general_audio_file.png'}
     button.set_image(gtk.image_new_from_file( \
         os.path.join(ICONS_PATH, images_dict[c_type])))
-    button.set_alignment(0.8, 0.5, 0, 0)                                    
+    button.set_alignment(0.8, 0.5, 0, 0)
 
 
 def change_cardtype_button_image(button, c_type, config):
@@ -174,9 +177,9 @@ def change_cardtype_button_image(button, c_type, config):
         'cloze.png'}
     button.set_image(gtk.image_new_from_file( \
         os.path.join(config['theme_path'], images_dict[c_type.id])))
-    button.set_alignment(0.8, 0.5, 0, 0)                                    
-     
-            
+    button.set_alignment(0.8, 0.5, 0, 0)
+
+
 def change_media_button_image(button, c_type, renderer, folder_mode=True, \
     fname=None, fname_is_html=False):
     """Changes current image for Media button."""
@@ -196,7 +199,7 @@ def change_media_button_image(button, c_type, renderer, folder_mode=True, \
 
 def show_media_dialog(window, config, content_type):
     """Shows FileChooser dialog to open image or sound file."""
-  
+
     import gobject
     dialog = gobject.new(hildon.FileChooserDialog, \
         action=gtk.FILE_CHOOSER_ACTION_OPEN)
@@ -205,7 +208,7 @@ def show_media_dialog(window, config, content_type):
     fname = dialog.get_filename()
     dialog.destroy()
     return fname
-                                                                        
+
 
 def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     """Creates CardType dialog UI."""
@@ -214,23 +217,23 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
     dialog = hildon.PickerDialog(window)
     dialog.set_title(unicode('Card type'))
     dialog.set_selector(selector)
-    
+
     # fill card types list
     for card_type in card_types_list:
         selector.append_text(card_type.name)
 
     # activate current card type in cardtypes list
     selector.set_active(0, card_types_list.index(current_card_type))
-    
+
     dialog.run()
     selected_card_type_index = selector.get_active(0)
     dialog.destroy()
     return card_types_list[selected_card_type_index]
-                                                                        
+
 
 def create_content_dialog_ui(window, current_content_type):
     """Creates Content dialog UI."""
-    
+
     selector = hildon.TouchSelector(text=True)
     dialog = hildon.PickerDialog(window)
     dialog.set_title(unicode('Question type'))
@@ -240,7 +243,7 @@ def create_content_dialog_ui(window, current_content_type):
     content_types_list = ["text", "sound", "image"]
     for content_type in content_types_list:
         selector.append_text(content_type.capitalize())
-    
+
     # activate current card type in cardtypes list
     selector.set_active(0, content_types_list.index(current_content_type))
 
@@ -253,22 +256,22 @@ def create_content_dialog_ui(window, current_content_type):
 def create_tags_dialog_ui(window, tags, selected_tags):
     """Creates TagsSelection dialog UI."""
 
-    selector = hildon.TouchSelector(text=True) 
+    selector = hildon.TouchSelector(text=True)
 
     # fill tags list
     for tag in tags:
         selector.append_text(tag)
-    
+
     selector.set_column_selection_mode( \
         hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
-    
+
     # mark selected tags
     selector.unselect_all(0)
     model = selector.get_model(0)
     for i in range(len(tags)):
         if model[i][0] in selected_tags:
             selector.select_iter(0, model.get_iter(i), False)
-        
+
     dialog = hildon.PickerDialog(window)
     dialog.set_title(unicode("Tags for new card"))
     dialog.set_selector(selector)
@@ -284,7 +287,7 @@ def create_tags_dialog_ui(window, tags, selected_tags):
 
 def create_new_tag_dialog_ui():
     """Creates NewTagDialog UI."""
-    
+
     dialog = hildon.Dialog()
     dialog.set_title(unicode("New tag"))
     entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)

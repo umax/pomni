@@ -47,7 +47,7 @@ FONT_DISTINCTION = 7
 
 class InputWidget(UiComponent):
     """Input mode widget for Rainbow theme."""
-    
+
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
@@ -68,8 +68,8 @@ class InputWidget(UiComponent):
         self.window, card_type_button, content_type_button, tags_button, \
             question_text, answer_text, foreign_text, pronunciation_text, \
             translation_text, cloze_text, new_tag_button, card_type_switcher, \
-            media_button, media_container, self.grades, tags_button = \
-                widgets.create_input_ui(self.conf["theme_path"])
+            media_button, media_container, self.grades, tags_button, \
+            question_container = widgets.create_input_ui(self.conf["theme_path"])
         # connect signals
         self.window.connect('destroy', self.input_to_main_menu_cb)
         content_type_button.connect('clicked', self.show_content_dialog_cb)
@@ -104,13 +104,13 @@ class InputWidget(UiComponent):
             'CardTypeSwitcher': card_type_switcher,
             'MediaButton': media_button,
             'MediaContainer': media_container,
-            'QuestionText': question_text}
+            'QuestionContainer': question_container}
 
-        # card_id: {"page": page_id, "card_type": card_type, 
+        # card_id: {"page": page_id, "card_type": card_type,
         # "widgets": [(field_name:text_area_widget)...]}
         self.selectors = {
             FrontToBack.id: {
-                "page": 0, 
+                "page": 0,
                 "widgets": [('q', question_text), ('a', answer_text)]},
             BothWays.id: {
                 "page": 0,
@@ -133,19 +133,19 @@ class InputWidget(UiComponent):
             for widget in self.areas.values():
                 widget.set_property("hildon-input-mode", 'full')
         # stock gtk doesn't have hildon properties
-        except (TypeError, AttributeError): 
+        except (TypeError, AttributeError):
             pass # so, skip silently
 
     def show_media_button(self, content_type='text'):
         """Shows of hides Media button."""
 
         if content_type in ('image', 'sound'):
-            self.widgets['QuestionText'].hide()
+            self.widgets['QuestionContainer'].hide()
             self.widgets['MediaContainer'].show()
             widgets.change_media_button_image(self.widgets['MediaButton'], \
                 content_type, self.renderer, folder_mode=True)
         else:
-            self.widgets['QuestionText'].show()
+            self.widgets['QuestionContainer'].show()
             self.widgets['MediaContainer'].hide()
 
     def set_card_type(self, card_type):
@@ -154,7 +154,7 @@ class InputWidget(UiComponent):
         self.card_type = card_type
         widgets.change_cardtype_button_image( \
             self.widgets['CardTypeButton'], card_type, self.conf)
-       
+
         self.widgets['CardTypeSwitcher'].set_current_page( \
             self.selectors[card_type.id]['page'])
 
@@ -163,7 +163,7 @@ class InputWidget(UiComponent):
         else:
             self.widgets['ContentTypeButton'].set_sensitive(False)
             self.set_content_type('text')
-            
+
     def set_content_type(self, content_type):
         """Set current Content type and changes UI."""
 
