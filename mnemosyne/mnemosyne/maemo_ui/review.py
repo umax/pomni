@@ -47,7 +47,8 @@ class ReviewWdgt(ReviewWidget):
         # create widgets
         self.window, self.question_text, self.answer_text, \
         self.grades_table, grades, button_stats, self.tts_button, \
-        self.edit_button, self.del_button = widgets.create_review_ui()
+        self.edit_button, self.del_button, self.question_container = \
+            widgets.create_review_ui()
         self._main_widget.review_window = self.window
         self.tts_available = tts.is_available()
         self.tts_button.set_sensitive(False)
@@ -84,7 +85,7 @@ class ReviewWdgt(ReviewWidget):
 
         self.tts_button.set_sensitive(False)
         self.is_sound_card = False
-        self.question_text.set_size_request(-1, -1)
+        self.question_container.set_size_request(-1, -1)
         if "sound src=" in text:
             self.sndtext = text
             self.is_sound_card = True
@@ -92,7 +93,7 @@ class ReviewWdgt(ReviewWidget):
             self._main_widget.soundplayer.play(self.sndtext, self)
         else:
             if "img src=" in text:
-                self.question_text.set_size_request( \
+                self.question_container.set_size_request( \
                     -1, LARGE_CONTAINER_HEIGHT)
             else:
                 self.tts_button.set_sensitive(self.tts_available)
@@ -105,7 +106,7 @@ class ReviewWdgt(ReviewWidget):
 
         self.renderer.render_html(self.answer_text, text)
 
-    def clear_question(self): 
+    def clear_question(self):
         """Clear question text."""
 
         self.window.set_title(_('Review'))
@@ -117,7 +118,7 @@ class ReviewWdgt(ReviewWidget):
 
         self.renderer.render_html(self.answer_text)
 
-    def update_show_button(self, text, default, enabled): 
+    def update_show_button(self, text, default, enabled):
         """Update Show button."""
 
         self.answer_text.set_sensitive(enabled)
@@ -140,8 +141,8 @@ class ReviewWdgt(ReviewWidget):
         params = {"language": config['tts_language'], "voice": \
             config['tts_voice'], "speed": config['tts_speed'], \
             "pitch": config['tts_pitch']}
-        if not self.tts:            
-            self.tts = tts.TTS(params['language'], params['voice'], 
+        if not self.tts:
+            self.tts = tts.TTS(params['language'], params['voice'],
                 params['pitch'], params['speed'])
         self.tts.set_params(params)
         self.tts.speak(self.renderer.tts_text)

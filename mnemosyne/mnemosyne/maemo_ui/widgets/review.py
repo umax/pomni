@@ -41,10 +41,18 @@ def create_review_ui():
     grades_table = gtk.Table(rows=6, columns=1, homogeneous=True)
     widgets_box = gtk.VBox()
     widgets_box.set_spacing(10)
-    
+
     # create html widgets
     answer_text = widgets.create_gtkhtml()
+    answer_container = hildon.PannableArea()
+    answer_container.set_property('mov-mode', hildon.MOVEMENT_MODE_VERT)
+    answer_container.add(answer_text)
+
     question_text = widgets.create_gtkhtml()
+    question_text.set_sensitive(False)
+    question_container = hildon.PannableArea()
+    answer_container.set_property('mov-mode', hildon.MOVEMENT_MODE_VERT)
+    question_container.add(question_text)
 
     # create toolbar buttons
     def create_button(label=None, image=None):
@@ -56,24 +64,24 @@ def create_review_ui():
                 os.path.join(ICONS_PATH, image)))
             button.set_alignment(0.8, 0.5, 0, 0)
         return button
-    
+
     button_stats = create_button(image='calendar_todo.png')
     button_speak = create_button(image='general_speaker.png')
     button_edit = create_button(image='general_sketch.png')
     button_delete = create_button(image='general_delete.png')
-    
+
     # create grades buttons
     grades = {}
     for num in range(6):
         grades[num] = create_button(str(num))
         grades[num].set_name('grade%s' % num)
-        
+
     # packing toolbar buttons
     toolbar_table.attach(button_stats, 0, 1, 0, 1, xpadding=2)
     toolbar_table.attach(button_speak, 0, 1, 1, 2, xpadding=2)
     toolbar_table.attach(button_edit, 0, 1, 2, 3, xpadding=2)
     toolbar_table.attach(button_delete, 0, 1, 3, 4, xpadding=2)
-    
+
     # packing grades buttons
     for pos in grades.keys():
         grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, xpadding=2)
@@ -84,11 +92,12 @@ def create_review_ui():
     toplevel_table.attach(grades_table, 3, 4, 0, 1, ypadding=2, xpadding=2, \
         xoptions=gtk.SHRINK, yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
     toplevel_table.attach(widgets_box, 1, 2, 0, 1, ypadding=6, xpadding=4)
-   
-    widgets_box.pack_start(question_text)
-    widgets_box.pack_end(answer_text)
-    
+
+    widgets_box.pack_start(question_container)
+    widgets_box.pack_end(answer_container)
+
     window = hildon.StackableWindow()
     window.add(toplevel_table)
     return window, question_text, answer_text, grades_table, grades.values(), \
-        button_stats, button_speak, button_edit, button_delete
+        button_stats, button_speak, button_edit, button_delete, \
+        question_container
