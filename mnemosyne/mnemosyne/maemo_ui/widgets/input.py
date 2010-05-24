@@ -203,7 +203,7 @@ def show_media_dialog(window, config, content_type):
     import gobject
     dialog = gobject.new(hildon.FileChooserDialog, \
         action=gtk.FILE_CHOOSER_ACTION_OPEN)
-    dialog.set_current_folder(config["%sdir" % content_type])
+    dialog.set_current_folder(config['%sdir' % content_type])
     dialog.run()
     fname = dialog.get_filename()
     dialog.destroy()
@@ -215,7 +215,7 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
 
     selector = hildon.TouchSelector(text=True)
     dialog = hildon.PickerDialog(window)
-    dialog.set_title(unicode('Card type'))
+    dialog.set_title(_('Card type'))
     dialog.set_selector(selector)
 
     # fill card types list
@@ -234,13 +234,14 @@ def create_card_type_dialog_ui(window, card_types_list, current_card_type):
 def create_content_dialog_ui(window, current_content_type):
     """Creates Content dialog UI."""
 
+
     selector = hildon.TouchSelector(text=True)
     dialog = hildon.PickerDialog(window)
-    dialog.set_title(unicode('Question type'))
+    dialog.set_title(_('Question type'))
     dialog.set_selector(selector)
 
     # fill content types list
-    content_types_list = ["text", "sound", "image"]
+    content_types_list = ['text', 'sound', 'image']
     for content_type in content_types_list:
         selector.append_text(content_type.capitalize())
 
@@ -273,7 +274,7 @@ def create_tags_dialog_ui(window, tags, selected_tags):
             selector.select_iter(0, model.get_iter(i), False)
 
     dialog = hildon.PickerDialog(window)
-    dialog.set_title(unicode("Tags for new card"))
+    dialog.set_title(_('Tags for new card'))
     dialog.set_selector(selector)
     dialog.run()
     indexes_of_selected_tags = [item[0] for item in \
@@ -289,11 +290,11 @@ def create_new_tag_dialog_ui():
     """Creates NewTagDialog UI."""
 
     dialog = hildon.Dialog()
-    dialog.set_title(unicode("New tag"))
+    dialog.set_title(_('New tag'))
     entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)
-    entry.show()
-    dialog.vbox.pack_start(entry)
-    dialog.add_button("Add", gtk.RESPONSE_OK)
+    dialog.vbox.add(entry)
+    dialog.vbox.show_all()
+    dialog.add_button(_('Add'), gtk.RESPONSE_OK)
     dialog.run()
     tag_name = entry.get_text()
     dialog.destroy()

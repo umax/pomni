@@ -171,6 +171,7 @@ class InputWidget(UiComponent):
         widgets.change_content_button_image(self.widgets['ContentTypeButton'], \
             content_type)
         self.show_media_button(content_type)
+        self.clear_widgets()
 
     def update_tags(self):
         """Update active tags list."""
@@ -182,9 +183,9 @@ class InputWidget(UiComponent):
     def check_complete_input(self):
         """Check for non empty fields."""
 
-        pattern_list = ["<%s>" % caption.upper() for caption in self.areas]
+        pattern_list = ['<%s>' % caption.upper() for caption in self.areas]
         pattern_list.append("")
-        for selector in self.selectors[self.card_type.id]["widgets"]:
+        for selector in self.selectors[self.card_type.id]['widgets']:
             buf = selector[1].get_buffer()
             start, end = buf.get_bounds()
             if buf.get_text(start, end) in pattern_list:
@@ -195,7 +196,7 @@ class InputWidget(UiComponent):
         """Get data from widgets."""
 
         fact = {}
-        for fact_key, widget in self.selectors[self.card_type.id]["widgets"]:
+        for fact_key, widget in self.selectors[self.card_type.id]['widgets']:
             fact[fact_key] = unicode(self.get_textview_text(widget))
         if check_for_required:
             for required in self.card_type.required_fields:
@@ -220,7 +221,7 @@ class InputWidget(UiComponent):
         """Clear widgets data."""
 
         for caption in self.areas:
-            self.areas[caption].get_buffer().set_text("<%s>" % caption.upper())
+            self.areas[caption].get_buffer().set_text('<%s>' % caption.upper())
         if self.content_type in ('image', 'sound'):
             widgets.change_media_button_image(self.widgets['MediaButton'], \
                 self.content_type, self.renderer, folder_mode=True)
@@ -279,7 +280,7 @@ class InputWidget(UiComponent):
         if self.content_type == 'image':
             # draw fname picture
             widgets.change_media_button_image(self.widgets['MediaButton'], \
-                self.content_type, renderer, folder_mode=False, fname=fname)            
+                self.content_type, renderer, folder_mode=False, fname=fname)
             self.areas['question'].get_buffer().set_text('<img src=%s>' % fname)
         else:
             # draw sound logo
@@ -335,9 +336,9 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def clear_text_cb(self, widget, event):
         """Clear textview content."""
 
-        if self.get_textview_text(widget) in ["<%s>" % caption.upper() \
+        if self.get_textview_text(widget) in ['<%s>' % caption.upper() \
             for caption in self.areas]:
-            widget.get_buffer().set_text("")
+            widget.get_buffer().set_text('')
 
     def add_card_cb(self, widget):
         """Add card to database."""
@@ -417,7 +418,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
                 content_type = 'text'
         else:
             content_type = 'text'
-        
+
         self.widgets['CardTypeButton'].set_sensitive(False)
         self.widgets['ContentTypeButton'].set_sensitive(False)
         self.set_content_type(content_type)
@@ -437,11 +438,11 @@ class EditFactWidget(EditFactDialog, InputWidget):
         self.controller().update_related_cards(self.fact, fact_data,
           self.card_type, new_tags, None)
 
-        # this part is the second part of 
+        # this part is the second part of
         # edit_current_fact from default controller
         review_controller.reload_counters()
         review_controller.card = self.database().get_card(\
-            review_controller.card._id, id_is_internal=True)    
+            review_controller.card._id, id_is_internal=True)
         review_controller.update_dialog(redraw_all=True)
         self.stopwatch().unpause()
 
