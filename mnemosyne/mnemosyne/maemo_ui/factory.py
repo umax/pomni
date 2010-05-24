@@ -69,7 +69,6 @@ def app_factory(interface=None):
     """Mnemosyne application factory."""
 
     app = Mnemosyne()
-    app.components.append(("mnemosyne.maemo_ui.factory", "ConfigHook"))
 
     if not interface or interface == "hildon":
         # Remove not used components
@@ -92,24 +91,30 @@ def app_factory(interface=None):
             ("mnemosyne.libmnemosyne.filters.html5_media", "Html5Media"))
 
         # Add necessary components
-        app.components.insert(0, ("mnemosyne.libmnemosyne.translator",
-                                  "GetTextTranslator"))
+        app.components.insert(\
+            0, ("mnemosyne.libmnemosyne.translator", "GetTextTranslator"))
+        app.components.append(("mnemosyne.maemo_ui.factory", "ConfigHook"))
         app.components.append(("mnemosyne.maemo_ui.renderers", "Html"))
         app.components.append(("mnemosyne.maemo_ui.main", "MainWdgt"))
         app.components.append(("mnemosyne.maemo_ui.menu", "MenuWidget"))
         app.components.append(("mnemosyne.maemo_ui.review", "ReviewWdgt"))
         app.components.append(("mnemosyne.maemo_ui.input", "AddCardsWidget"))
         app.components.append(("mnemosyne.maemo_ui.input", "EditFactWidget"))
-        app.components.append(\
-            ("mnemosyne.maemo_ui.configuration", "ConfigurationWidget"))
+        #app.components.append(\
+        #    ("mnemosyne.maemo_ui.configuration", "ConfigurationWidget"))
         #app.components.append(("mnemosyne.maemo_ui.sync", "SyncWidget"))
         app.components.append(("mnemosyne.maemo_ui.tags", "TagsWidget"))
-        app.components.append(("mnemosyne.maemo_ui.statistics", "MaemoStatisticsWidget"))
-        app.components.append(("mnemosyne.maemo_ui.importcards", "ImportCardsWidget"))
-        app.components.append(("mnemosyne.libmnemosyne.file_formats.tsv", "TabSeparated"))
-        app.components.append(("mnemosyne.libmnemosyne.file_formats.mnemosyne_XML", "MnemosyneXML"))
-
-        app.components.append(("mnemosyne.maemo_ui.widgets.progress", "MaemoProgressDlg"))
+        app.components.append(("mnemosyne.maemo_ui.statistics", \
+            "MaemoStatisticsWidget"))
+        #app.components.append(("mnemosyne.maemo_ui.importcards", \
+        #    "ImportCardsWidget"))
+        app.components.append(("mnemosyne.libmnemosyne.file_formats.tsv", \
+            "TabSeparated"))
+        app.components.append(\
+            ("mnemosyne.libmnemosyne.file_formats.mnemosyne_XML", \
+            "MnemosyneXML"))
+        app.components.append(("mnemosyne.maemo_ui.widgets.progress", \
+            "MaemoProgressDlg"))
         app.components.append(\
             ("mnemosyne.libmnemosyne.card_types.cloze", "Cloze"))
         app.components.append(\
