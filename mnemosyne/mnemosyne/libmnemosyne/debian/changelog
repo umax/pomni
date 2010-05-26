@@ -1,3 +1,10 @@
+python-libmnemosyne (2.0.0-16~rc3) unstable; urgency=low
+
+  * added fogotten import
+  * fixed bug with review_controller while importing cards
+
+ -- Max Usachev <maxusachev@gmail.com>  Wed, 26 May 2010 16:36:24 +0200
+
 python-libmnemosyne (2.0.0-16~rc2) unstable; urgency=low
 
   * implemented tags binding for imported cards from *.mem
