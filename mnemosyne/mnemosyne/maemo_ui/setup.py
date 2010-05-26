@@ -32,8 +32,8 @@ setup(name=PKG,
         #('share/%s/demo' % PKG, [".%s/default.db" % PKG]),
         ('share/%s/help' % PKG, [os.path.join('help', fname) \
             for fname in os.listdir('help')]),
-        ('share/icons/hicolor/26x26/apps/', \
-	    ['./maemo/icons/26x26/%s.png' % PKG]),
+        ('share/icons/hicolor/48x48/apps/', \
+	        ['./maemo/icons/48x48/%s.png' % PKG]),
         ('share/icons/hicolor/64x64/apps/', \
             ['./maemo/icons/64x64/%s.png' % PKG])],
     classifiers=[
