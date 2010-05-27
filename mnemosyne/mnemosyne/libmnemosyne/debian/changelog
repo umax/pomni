@@ -1,3 +1,9 @@
+python-libmnemosyne (2.0.0-16~rc7) unstable; urgency=low
+
+  * final fixes for optify strategy
+
+ -- Max Usachev <maxusachev@gmail.com>  Thu, 27 May 2010 15:35:10 +0200
+
 python-libmnemosyne (2.0.0-16~rc6) unstable; urgency=low
 
   * corrected symlink creation in rules script
