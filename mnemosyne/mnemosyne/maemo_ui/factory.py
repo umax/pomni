@@ -35,8 +35,8 @@ class ConfigHook(Component):
     def run(self):
         """Entry point."""
         for key, value in {\
-            "theme_path": "/usr/share/mnemosyne/hildon-UI",
-            "help_path": "/usr/share/mnemosyne/help",
+            "theme_path": "/opt/maemo/usr/share/mnemosyne/hildon-UI",
+            "help_path": "/opt/maemo/usr/share/mnemosyne/help",
             "font_size": 30.0,
             "startup_with_review": False,
             "upload_logs": False,
@@ -58,6 +58,7 @@ class ConfigHook(Component):
             "tts_speed": 100,
             "tts_pitch": 30,
             "card_type_last_selected": "1",
+            "tags_of_last_added": [],
             "content_type_last_selected": "text",
             "times_loaded": 0}.iteritems():
 
