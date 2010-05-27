@@ -35,7 +35,9 @@ install: build
 	touch $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/__init__.py
 	echo "version = '$(PKGVER)'" > $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/version.py
 	# creating symbolic link to /opt/...
-	ln -s $(CURDIR)/debian/$(PACKAGE)/opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/libmnemosyne /usr/lib/python2.5/site-packages/mnemosyne
+	mkdir -p /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/libmnemosyne
+	ln -s /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/libmnemosyne $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne
+	rm -r /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne
 
 binary-indep: build install
 	dh_testdir
