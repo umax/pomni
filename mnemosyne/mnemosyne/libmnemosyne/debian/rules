@@ -10,7 +10,7 @@ PYTHON := PYTHONOPTIMIZE=2 python2.5
 
 build: build-stamp
 
-build-stamp: 
+build-stamp:
 	dh_testdir
 	$(PYTHON) setup.py build
 	touch $@
@@ -23,16 +23,19 @@ clean:
 	rm -rf ./build
 	rm -rf ./*.egg-info
 	rm -f *.pyc
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
-	$(PYTHON) setup.py install --root=$(PREFIX)
-	touch $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/__init__.py
-	echo "version = '$(PKGVER)'" > $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/version.py
+	$(PYTHON) setup.py install --root=$(PREFIX) --prefix=/opt/maemo/usr
+	touch $(CURDIR)/debian/$(PACKAGE)/opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/__init__.py
+	echo "version = '$(PKGVER)'" > $(CURDIR)/debian/$(PACKAGE)/opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/version.py
+	# creating symbolic link to /opt/...
+	mkdir -p $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/
+	ln -s $(CURDIR)/debian/$(PACKAGE)/opt/maemo/usr/lib/python2.5/site-packages/mnemosyne $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/
 
 binary-indep: build install
 	dh_testdir
