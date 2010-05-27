@@ -1,3 +1,9 @@
+mnemosyne (2.0.0~beta11~rc2) unstable; urgency=low
+
+  * updated optify strategy
+
+ -- Max Usachev <maxusachev@gmail.com>  Thu, 27 May 2010 14:10:08 +0200
+
 mnemosyne (2.0.0~beta11~rc1) unstable; urgency=low
 
   * the first version for Fremantle
