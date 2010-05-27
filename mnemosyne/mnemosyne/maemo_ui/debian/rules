@@ -32,7 +32,9 @@ install: build
 	$(PYTHON) setup.py install --root=$(PREFIX) --prefix=/opt/maemo/usr
 	cp $(PACKAGE) $(PREFIX)/usr/bin/$(PACKAGE)
 	mkdir -p $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne
-	ln -s $(CURDIR)/debian/$(PACKAGE)/opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/maemo_ui $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/maemo_ui
+	mkdir -p /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/maemo_ui
+	ln -s /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne/maemo_ui $(CURDIR)/debian/$(PACKAGE)/usr/lib/python2.5/site-packages/mnemosyne/maemo_ui
+	rm -r /opt/maemo/usr/lib/python2.5/site-packages/mnemosyne
 
 binary-indep: build install
 	dh_testdir
