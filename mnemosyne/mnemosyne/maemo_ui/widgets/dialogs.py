@@ -28,7 +28,6 @@ import gtk
 import hildon
 import gettext
 import gobject
-import mnemosyne.maemo_ui.widgets.common as widgets
 
 _ = gettext.gettext
 
