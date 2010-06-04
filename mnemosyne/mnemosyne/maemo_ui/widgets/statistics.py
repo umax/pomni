@@ -59,7 +59,7 @@ def create_statistics_ui():
     html_widget = widgets.create_gtkhtml()
     html_widget.set_sensitive(False)
     pannable_area = hildon.PannableArea()
-    pannable_area.set_property('mode', hildon.PANNABLE_AREA_MODE_PUSH)
+    pannable_area.set_property('vovershoot-max', 0)
     pannable_area.add(html_widget)
     label = gtk.Label()
     label.set_justify(gtk.JUSTIFY_CENTER)
