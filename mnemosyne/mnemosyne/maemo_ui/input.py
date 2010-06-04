@@ -238,14 +238,16 @@ class InputWidget(UiComponent):
     def show_tags_dialog_cb(self, widget):
         """Show TagsSelectionDialog."""
 
-        self.selected_tags = widgets.create_tags_dialog_ui( \
-            self.window, self.tags, self.selected_tags)
+        #self.selected_tags = widgets.create_tags_dialog_ui( \
+        #    self.window, self.tags, self.selected_tags)
+        self.selected_tags = dialogs.show_tags_selection_dialog(self.window, \
+            _('Tags for new card'), self.tags, self.selected_tags)
         self.update_tags()
 
     def add_new_tag_cb(self, widget):
         """Create new tag."""
 
-        tag = unicode(widgets.create_new_tag_dialog_ui())
+        tag = dialogs.show_new_tag_dialog()
         if tag and not tag in self.tags:
             self.selected_tags.append(tag)
             self.tags.append(tag)
@@ -255,8 +257,13 @@ class InputWidget(UiComponent):
         """Open CardTypeDialog."""
 
         self._main_widget.soundplayer.stop()
-        selected_cardtype = widgets.create_card_type_dialog_ui(\
-            self.window, self.card_types(), self.card_type)
+        selected_cardtype = dialogs.show_items_dialog(None, self.window, \
+            [card_type.name for card_type in self.card_types()], \
+            _('Card_type'), self.card_type.name)
+        for card_type in self.card_types():
+            if card_type.name == selected_cardtype:
+                selected_cardtype = card_type
+                break
         if selected_cardtype is not self.card_type:
             self.set_card_type(selected_cardtype)
             self.show_media_button()
@@ -266,14 +273,14 @@ class InputWidget(UiComponent):
         """Open ContentDialog."""
 
         self._main_widget.soundplayer.stop()
-        self.set_content_type(widgets.create_content_dialog_ui( \
-            self.window, self.content_type))
+        self.set_content_type(dialogs.show_items_dialog(None, self.window, \
+            ['text', 'sound', 'image'], _('Question type'), self.content_type))
 
     def show_media_dialog_cb(self, widget, event):
         """Open MediaDialog."""
 
-        fname = widgets.show_media_dialog(self.window, self.conf, \
-            self.content_type)
+        fname = dialogs.show_file_chooser_dialog(None, cur_dir = \
+            self.conf['%sdir' % self.content_type])
         if not fname:
             return
         renderer = self.component_manager.get_current('renderer')

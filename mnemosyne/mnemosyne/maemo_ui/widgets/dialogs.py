@@ -86,7 +86,7 @@ def show_about_dialog():
     dialog.destroy()
 
 
-def show_items_dialog(widget, window, items, caption):
+def show_items_dialog(widget, window, items, caption, cur_item=None):
     """Shows custom PickerDialog with TouchSelector widget."""
 
     dialog = hildon.PickerDialog(window)
@@ -97,7 +97,7 @@ def show_items_dialog(widget, window, items, caption):
         hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
 
     # fill items list
-    current_item = widget.get_value()
+    current_item = cur_item or widget.get_value()
     items_dict = dict([(index, item) for index, item in enumerate(items)])
     for item in items_dict.values():
         selector.append_text(item)
@@ -109,7 +109,8 @@ def show_items_dialog(widget, window, items, caption):
     dialog.run()
     selected_item = items_dict[selector.get_active(0)]
     dialog.destroy()
-    widget.set_value(selected_item)
+    if widget is not None:
+        widget.set_value(selected_item)
     return selected_item
 
 
@@ -139,7 +140,39 @@ def show_new_tag_dialog():
     return tag_name
 
 
-def show_file_chooser_dialog(widget, directory_mode=False):
+def show_tags_selection_dialog(window, title, tags, selected_tags):
+    """Shows dialog for selection multiple tags."""
+
+    selector = hildon.TouchSelector(text=True)
+
+    # fill tags list
+    for tag in tags:
+        selector.append_text(tag)
+
+    selector.set_column_selection_mode( \
+        hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
+
+    # mark selected tags
+    selector.unselect_all(0)
+    model = selector.get_model(0)
+    for i in range(len(tags)):
+        if model[i][0] in selected_tags:
+            selector.select_iter(0, model.get_iter(i), False)
+
+    dialog = hildon.PickerDialog(window)
+    dialog.set_title(title)
+    dialog.set_selector(selector)
+    dialog.run()
+    indexes_of_selected_tags = [item[0] for item in \
+        selector.get_selected_rows(0)]
+    model = selector.get_model(0)
+    selected_tags = [unicode(model[index][0]) for index in \
+        indexes_of_selected_tags]
+    dialog.destroy()
+    return selected_tags
+
+
+def show_file_chooser_dialog(widget, directory_mode=False, cur_dir=None):
     """Shows file or directory chooser dialog."""
 
     if directory_mode:
@@ -147,11 +180,11 @@ def show_file_chooser_dialog(widget, directory_mode=False):
     else:
         mode = gtk.FILE_CHOOSER_ACTION_OPEN
     chooser = gobject.new(hildon.FileChooserDialog, action=mode)
-    chooser.set_current_folder(widget.get_value())
+    chooser.set_current_folder(cur_dir or widget.get_value())
     chooser.set_property('show-files', True)
     chooser.run()
     path = chooser.get_filename()
-    if path:
+    if path and widget:
         widget.set_value(path)
     chooser.destroy()
     return path
@@ -282,9 +315,8 @@ def show_import_dialog(file_formats, current_format, database, \
         selected_tags, update_tags):
         """Changes current file format and updates UI."""
 
-        selected_format = show_items_dialog(widget, window, formats, \
-            _('File format'))
-        update_tags(selected_format, tags_button, selected_tags)
+        update_tags(show_items_dialog(widget, window, formats, \
+            _('File format')), tags_button, selected_tags)
 
     def add_new_tag_cb(widget, tags):
         """Creates new tag and updates UI."""
@@ -303,37 +335,13 @@ def show_import_dialog(file_formats, current_format, database, \
     def select_tags_cb(widget, window, tags, selected_tags, tags_button):
         """Creates TagsSelection dialog UI."""
 
-        selector = hildon.TouchSelector(text=True)
-
-        # fill tags list
+        # generate all tags list
         for tag in selected_tags:
             if not tag in tags:
                 tags.append(tag)
 
-        for tag in tags:
-            selector.append_text(tag)
-
-        selector.set_column_selection_mode( \
-            hildon.TOUCH_SELECTOR_SELECTION_MODE_MULTIPLE)
-
-        # mark selected tags
-        selector.unselect_all(0)
-        model = selector.get_model(0)
-        for i in range(len(tags)):
-            if model[i][0] in selected_tags:
-                selector.select_iter(0, model.get_iter(i), False)
-
-        dialog = hildon.PickerDialog(window)
-        dialog.set_title(_('Tags for new cards'))
-        dialog.set_selector(selector)
-        dialog.run()
-        indexes_of_selected_tags = [item[0] for item in \
-            selector.get_selected_rows(0)]
-        model = selector.get_model(0)
-        selected_tags[:] = []
-        for index in indexes_of_selected_tags:
-            selected_tags.append(unicode(model[index][0]))
-        dialog.destroy()
+        selected_tags[:] = show_tags_selection_dialog(window, \
+            _('Tags for imported cards'), tags, selected_tags)
         tags_button.set_value(', '.join(selected_tags))
 
 
