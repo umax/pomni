@@ -87,7 +87,7 @@ def show_about_dialog():
     dialog.destroy()
 
 
-def show_items_dialog(window, widget, items, caption):
+def show_items_dialog(widget, window, items, caption):
     """Shows custom PickerDialog with TouchSelector widget."""
 
     dialog = hildon.PickerDialog(window)
@@ -110,31 +110,56 @@ def show_items_dialog(window, widget, items, caption):
     dialog.run()
     selected_item = items_dict[selector.get_active(0)]
     dialog.destroy()
+    widget.set_value(selected_item)
     return selected_item
+
+
+def create_button(title, value):
+    """Creates setting button."""
+
+    button = hildon.Button( \
+        gtk.HILDON_SIZE_AUTO | gtk.HILDON_SIZE_FINGER_HEIGHT, \
+        hildon.BUTTON_ARRANGEMENT_VERTICAL, title, value)
+    button.set_style(hildon.BUTTON_STYLE_PICKER)
+    button.set_alignment(0, 0, 0, 0)
+    return button
+
+
+def show_new_tag_dialog():
+    """Shows NewTagDialog."""
+
+    dialog = hildon.Dialog()
+    dialog.set_title(_('New tag'))
+    entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)
+    dialog.vbox.pack_start(entry)
+    dialog.vbox.show_all()
+    dialog.add_button(_('Add'), gtk.RESPONSE_OK)
+    dialog.run()
+    tag_name = unicode(entry.get_text())
+    dialog.destroy()
+    return tag_name
+
+
+def show_file_chooser_dialog(widget, directory_mode=False):
+    """Shows file or directory chooser dialog."""
+
+    if directory_mode:
+        mode = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER
+    else:
+        mode = gtk.FILE_CHOOSER_ACTION_OPEN
+    chooser = gobject.new(hildon.FileChooserDialog, action=mode)
+    chooser.set_current_folder(widget.get_value())
+    chooser.set_property('show-files', True)
+    chooser.run()
+    path = chooser.get_filename()
+    if path:
+        widget.set_value(path)
+    chooser.destroy()
+    return path
 
 
 def show_general_settings_dialog(config):
     """Shows General settings dialog."""
-
-    def choose_directory_cb(widget):
-        """Shows FileChooser dialog."""
-
-        chooser = gobject.new(hildon.FileChooserDialog, \
-            action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
-        chooser.set_current_folder(widget.get_value())
-        chooser.set_property('show-files', True)
-        chooser.run()
-        folder = chooser.get_filename()
-        if folder:
-            widget.set_value(folder)
-        chooser.destroy()
-
-
-    def show_font_size_dialog(widget, window):
-        """Shows FontSize dialog."""
-
-        widget.set_value(show_items_dialog(window, widget, [str(size) for \
-            size in range(MIN_FONT_SIZE, MAX_FONT_SIZE)], _('Font size')))
 
     dialog = hildon.Dialog()
     dialog.set_title(_('General settings'))
@@ -143,28 +168,18 @@ def show_general_settings_dialog(config):
     widgets_box = gtk.VBox()
     widgets_box.set_spacing(4)
 
-    sound_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Sound directory'), config['sounddir'])
-    sound_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    sound_button.set_alignment(0, 0, 0, 0)
-    sound_button.connect('clicked', choose_directory_cb, dialog)
+    sound_button = create_button(_('Sound directory'), config['sounddir'])
+    sound_button.connect('clicked', show_file_chooser_dialog, True)
     widgets_box.pack_start(sound_button, expand=False, fill=False)
 
-    image_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Image directory'), config['imagedir'])
-    image_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    image_button.set_alignment(0, 0, 0, 0)
-    image_button.connect('clicked', choose_directory_cb, dialog)
+    image_button = create_button(_('Image directory'), config['imagedir'])
+    image_button.connect('clicked', show_file_chooser_dialog, True)
     widgets_box.pack_start(image_button, expand=False, fill=False)
 
-    font_size_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Font size'), str(int(config['font_size'])))
-    font_size_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    font_size_button.connect('clicked', show_font_size_dialog, dialog)
-    font_size_button.set_alignment(0, 0, 0, 0)
+    font_size_button = create_button(_('Font size'), str(config['font_size']))
+    font_size_button.connect('clicked', show_items_dialog, dialog, \
+        [str(size) for size in range(MIN_FONT_SIZE, MAX_FONT_SIZE)], \
+        _('Font size'))
     widgets_box.pack_start(font_size_button, expand=False, fill=False)
 
     open_review_button = hildon.CheckButton(gtk.HILDON_SIZE_AUTO | \
@@ -206,76 +221,35 @@ def show_tts_settings_dialog(config):
         dialog.destroy()
         return
 
-
-    def show_language_dialog(widget, args=dialog):
-        """Shows Languages dialog."""
-
-        widget.set_value(show_items_dialog(args, widget, tts.get_languages(), \
-            _('Language')))
-
-
-    def show_voice_dialog(widget, args=dialog):
-        """Shows Voices dialog."""
-
-        widget.set_value(show_items_dialog(args, widget, \
-            [_('Male'), _('Female')], _('Voice')))
-
-
-    def show_speed_dialog(widget, args=dialog):
-        """Shows PronunciationSpeed dialog."""
-
-        widget.set_value(show_items_dialog(args, widget, [str(speed) for speed \
-            in range(tts.MIN_SPEED_VALUE, tts.MAX_SPEED_VALUE)], \
-            _('Pronunciation speed')))
-
-
-    def show_pitch_dialog(widget, args=dialog):
-        """Shows VoicePitch dialog."""
-
-        widget.set_value(show_items_dialog(args, widget, [str(pitch) for pitch \
-            in range(tts.MIN_SPEED_VALUE, tts.MAX_SPEED_VALUE)], \
-            _('Voice pitch')))
-
-
     # create widgets
     widgets_box = gtk.VBox()
     widgets_box.set_spacing(4)
 
-    language_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Language'), config['tts_language'])
-    language_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    language_button.set_alignment(0, 0, 0, 0)
-    language_button.connect('clicked', show_language_dialog)
+    language_button = create_button(_('Language'), config['tts_language'])
+    language_button.connect('clicked', show_items_dialog, dialog, \
+        tts.get_languages(), _('Language'))
     widgets_box.pack_start(language_button, expand=False, fill=False)
 
-    voice_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Voice'), config['tts_voice'])
-    voice_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    voice_button.set_alignment(0, 0, 0, 0)
-    voice_button.connect('clicked', show_voice_dialog)
+    voice_button = create_button(_('Voice'), config['tts_voice'])
+    voice_button.connect('clicked', show_items_dialog, dialog, \
+        [_('Male'), _('Female')], _('Voice'))
     widgets_box.pack_start(voice_button, expand=False, fill=False)
 
-    speed_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Pronunciation speed'), str(config['tts_speed']))
-    speed_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    speed_button.set_alignment(0, 0, 0, 0)
-    speed_button.connect('clicked', show_speed_dialog)
+    speed_button = create_button(_('Pronunciation speed'), \
+        str(config['tts_speed']))
+    speed_button.connect('clicked', show_items_dialog, dialog, \
+        [str(speed) for speed in range(tts.MIN_SPEED_VALUE, \
+        tts.MAX_SPEED_VALUE)], _('Pronunciation speed'))
     widgets_box.pack_start(speed_button, expand=False, fill=False)
 
-    pitch_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Voice pitch'), str(config['tts_pitch']))
-    pitch_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    pitch_button.set_alignment(0, 0, 0, 0)
-    pitch_button.connect('clicked', show_pitch_dialog)
+    pitch_button = create_button(_('Voice pitch'), str(config['tts_pitch']))
+    pitch_button.connect('clicked', show_items_dialog, dialog, [str(pitch) \
+        for pitch in range(tts.MIN_SPEED_VALUE, tts.MAX_SPEED_VALUE)], \
+        _('Voice pitch'))
     widgets_box.pack_start(pitch_button, expand=False, fill=False)
 
-    widgets_box.show_all()
-
     dialog.vbox.add(widgets_box)
+    dialog.vbox.show_all()
     dialog.add_button(_('Save'), gtk.RESPONSE_OK)
 
     response = dialog.run()
@@ -284,6 +258,7 @@ def show_tts_settings_dialog(config):
         config['tts_voice'] = voice_button.get_value()
         config['tts_speed'] = int(speed_button.get_value())
         config['tts_pitch'] = int(pitch_button.get_value())
+
     dialog.destroy()
 
 
@@ -303,45 +278,27 @@ def show_import_dialog(file_formats, current_format, database, \
             tags_button.set_sensitive(True)
             tags_button.set_value(', '.join(selected_tags))
 
-
     # callbacks
     def change_format_cb(widget, window, formats, tags_button, \
         selected_tags, update_tags):
         """Changes current file format and updates UI."""
 
-        selected_format = show_items_dialog(window, widget, formats, \
+        selected_format = show_items_dialog(widget, window, formats, \
             _('File format'))
-        widget.set_value(selected_format)
         update_tags(selected_format, tags_button, selected_tags)
 
-
-    def add_new_tag_cb(widget, tags_button, tags):
+    def add_new_tag_cb(widget, tags):
         """Creates new tag and updates UI."""
 
-        dialog = hildon.Dialog()
-        dialog.set_title(_('New tag'))
-        entry = hildon.Entry(gtk.HILDON_SIZE_AUTO)
-        entry.show()
-        dialog.vbox.pack_start(entry)
-        dialog.add_button(_('Add'), gtk.RESPONSE_OK)
-        dialog.run()
-        tag_name = entry.get_text()
-        dialog.destroy()
+        tag_name = show_new_tag_dialog()
         if tag_name:
             tags.append(tag_name)
 
-
     def set_file_cb(widget, import_button):
-        """Shows FileChooser dialog to open file."""
+        """Sets file to import from."""
 
-        import gobject
-        dialog = gobject.new(hildon.FileChooserDialog, \
-            action=gtk.FILE_CHOOSER_ACTION_OPEN)
-        dialog.run()
-        fname = dialog.get_filename()
-        dialog.destroy()
+        fname = show_file_chooser_dialog(widget)
         if fname:
-            widget.set_value(fname)
             import_button.set_sensitive(True)
 
     def select_tags_cb(widget, window, tags, selected_tags, tags_button):
@@ -388,27 +345,11 @@ def show_import_dialog(file_formats, current_format, database, \
     dialog.set_title(_('Import cards'))
 
     # create widgets
-    format_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('File format'), current_format.description)
-    format_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    format_button.set_alignment(0, 0, 0, 0)
-
-    file_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('File to import from'), _('Select file'))
-    file_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    file_button.set_alignment(0, 0, 0, 0)
-
-    tags_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('Tags for new cards'), ', '.join(selected_tags))
-    tags_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    tags_button.set_alignment(0, 0, 0, 0)
-
-    new_tag_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
-        gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
-        _('New tag'), '')
+    format_button = create_button(_('File format'), current_format.description)
+    file_button = create_button(_('File to import from'), _('Select file'))
+    tags_button = create_button(_('Tags for new cards'), \
+        ', '.join(selected_tags))
+    new_tag_button = create_button(_('New tag'), '')
     new_tag_button.set_style(hildon.BUTTON_STYLE_NORMAL)
     new_tag_button.set_alignment(0.5, 0.5, 0, 0)
     new_tag_button.show()
@@ -421,7 +362,7 @@ def show_import_dialog(file_formats, current_format, database, \
     format_button.connect('clicked', change_format_cb, dialog, \
         [f.description for f in file_formats], tags_button, \
         selected_tags, update_tags)
-    new_tag_button.connect('clicked', add_new_tag_cb, tags_button, tags)
+    new_tag_button.connect('clicked', add_new_tag_cb, tags)
     file_button.connect('clicked', set_file_cb, import_button)
     tags_button.connect('clicked', select_tags_cb, dialog, tags, \
         selected_tags, tags_button)
@@ -456,6 +397,7 @@ def show_import_dialog(file_formats, current_format, database, \
                 except:
                     error_box(_('Oops! Error occured.'))
                 break
+
     dialog.destroy()
 
 
