@@ -27,6 +27,7 @@ Hildon UI. Dialogs.
 import gtk
 import hildon
 import gettext
+import gobject
 import mnemosyne.maemo_ui.widgets.common as widgets
 
 _ = gettext.gettext
@@ -115,15 +116,13 @@ def show_items_dialog(window, widget, items, caption):
 def show_general_settings_dialog(config):
     """Shows General settings dialog."""
 
-    dialog = hildon.Dialog()
-    dialog.set_title(_('General settings'))
-
-    def choose_directory_cb(widget, args=dialog):
+    def choose_directory_cb(widget):
         """Shows FileChooser dialog."""
 
-        import gobject
         chooser = gobject.new(hildon.FileChooserDialog, \
             action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+        chooser.set_current_folder(widget.get_value())
+        chooser.set_property('show-files', True)
         chooser.run()
         folder = chooser.get_filename()
         if folder:
@@ -131,12 +130,14 @@ def show_general_settings_dialog(config):
         chooser.destroy()
 
 
-    def show_font_size_dialog(widget, args=dialog):
+    def show_font_size_dialog(widget, window):
         """Shows FontSize dialog."""
 
-        widget.set_value(show_items_dialog(args, widget, [str(size) for \
+        widget.set_value(show_items_dialog(window, widget, [str(size) for \
             size in range(MIN_FONT_SIZE, MAX_FONT_SIZE)], _('Font size')))
 
+    dialog = hildon.Dialog()
+    dialog.set_title(_('General settings'))
 
     # create widgets
     widgets_box = gtk.VBox()
@@ -147,7 +148,7 @@ def show_general_settings_dialog(config):
         _('Sound directory'), config['sounddir'])
     sound_button.set_style(hildon.BUTTON_STYLE_PICKER)
     sound_button.set_alignment(0, 0, 0, 0)
-    sound_button.connect('clicked', choose_directory_cb)
+    sound_button.connect('clicked', choose_directory_cb, dialog)
     widgets_box.pack_start(sound_button, expand=False, fill=False)
 
     image_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
@@ -155,14 +156,14 @@ def show_general_settings_dialog(config):
         _('Image directory'), config['imagedir'])
     image_button.set_style(hildon.BUTTON_STYLE_PICKER)
     image_button.set_alignment(0, 0, 0, 0)
-    image_button.connect('clicked', choose_directory_cb)
+    image_button.connect('clicked', choose_directory_cb, dialog)
     widgets_box.pack_start(image_button, expand=False, fill=False)
 
     font_size_button = hildon.Button(gtk.HILDON_SIZE_AUTO | \
         gtk.HILDON_SIZE_FINGER_HEIGHT, hildon.BUTTON_ARRANGEMENT_VERTICAL, \
         _('Font size'), str(int(config['font_size'])))
     font_size_button.set_style(hildon.BUTTON_STYLE_PICKER)
-    font_size_button.connect('clicked', show_font_size_dialog)
+    font_size_button.connect('clicked', show_font_size_dialog, dialog)
     font_size_button.set_alignment(0, 0, 0, 0)
     widgets_box.pack_start(font_size_button, expand=False, fill=False)
 
@@ -172,9 +173,8 @@ def show_general_settings_dialog(config):
     open_review_button.set_active(config['startup_with_review'])
     widgets_box.pack_start(open_review_button, expand=False, fill=False)
 
-    widgets_box.show_all()
-
     dialog.vbox.add(widgets_box)
+    dialog.vbox.show_all()
     dialog.add_button(_('Save'), gtk.RESPONSE_OK)
 
     response = dialog.run()
