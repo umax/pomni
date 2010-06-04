@@ -38,7 +38,8 @@ def create_help_ui():
     window.set_title(_('Help'))
     html_widget = widgets.create_gtkhtml()
     pannable_area = hildon.PannableArea()
+    pannable_area.set_property('panning-threshold', 4)
     pannable_area.add(html_widget)
     window.add(pannable_area)
 
-    return window, html_widget
+    return window, html_widget, pannable_area

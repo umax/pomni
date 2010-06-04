@@ -35,12 +35,30 @@ class HelpWidget(UiComponent):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         # create widgets
-        self.window, help_html = widgets.create_help_ui()
-        self.component_manager.get_current('renderer').render_html(help_html, \
-            open(os.path.join(self.config()['help_path'], "help.html")).read())
-      
+        self.window, self.help_html, pannable_area = widgets.create_help_ui()
+        pannable_area.connect('panning-started', self.on_start_panning)
+        pannable_area.connect('panning-finished', self.on_stop_panning)
+        pannable_area.connect('horizontal-movement', self.on_hor_panning)
+        self.component_manager.get_current('renderer').render_html( \
+            self.help_html, open(os.path.join(self.config()['help_path'], \
+            'help.html')).read())
+
     def activate(self):
         """Shows window."""
 
         self.window.show_all()
 
+    def on_start_panning(self, widget):
+        """Temporary disable widget to avoid text selection."""
+
+        self.help_html.set_sensitive(False)
+
+    def on_stop_panning(self, widget):
+        """Temporary disable widget to avoid text selection."""
+
+        self.help_html.set_sensitive(True)
+
+    def on_hor_panning(self, widget, opt1, opt2, opt3):
+        """Temporary disable widget to avoid text selection."""
+
+        self.help_html.set_sensitive(False)
