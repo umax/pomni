@@ -70,8 +70,8 @@ def create_tags_ui(database):
     else:
         label = gtk.Label(_('There are no tags'))
         window.add(label)
-              
+
     window.set_app_menu(menu)
     window.show_all()
-    
+
     return window, selector, button_stats, tags_dict

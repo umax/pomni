@@ -61,28 +61,21 @@ class MainWdgt(MainWidget):
 
         widget = self.widgets.get(mode, None)
         if not widget: # lazy widget creation
-            if mode == "review":
+            if mode == 'review':
                 self.review_controller().reset()
                 widget = self.review_controller().widget
-            elif mode == "menu":
+            elif mode == 'menu':
                 from mnemosyne.maemo_ui.menu import MenuWidget
                 widget = MenuWidget(self.component_manager)
-            elif mode == "sync":
-                from mnemosyne.maemo_ui.sync import SyncWidget
-                widget = SyncWidget(self.component_manager)
-            elif mode == "help":
+            elif mode == 'help':
                 from mnemosyne.maemo_ui.help import HelpWidget
                 widget = HelpWidget(self.component_manager)
-            elif mode == "tags":
+            elif mode == 'tags':
                 from mnemosyne.maemo_ui.tags import TagsWidget
                 widget = TagsWidget(self.component_manager)
-            elif mode == "statistics":
+            elif mode == 'statistics':
                 from mnemosyne.maemo_ui.statistics import MaemoStatisticsWidget
                 widget = MaemoStatisticsWidget(self.component_manager)
-            elif mode == "importcards":
-                from mnemosyne.maemo_ui.importcards import ImportCardsWidget 
-                self.review_controller().reset()
-                widget = ImportCardsWidget(self.component_manager)
 
             self.widgets[mode] = widget
         return widget
@@ -112,15 +105,15 @@ class MainWdgt(MainWidget):
 
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.component_manager.get_current("activate_cards_dialog")\
+        self.component_manager.get_current('activate_cards_dialog') \
             (self.component_manager).activate()
 
     def input_(self):
         """Activates 'Input' mode."""
-       
+
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.component_manager.get_current("add_cards_dialog")\
+        self.component_manager.get_current('add_cards_dialog') \
             (self.component_manager).activate()
 
     def review_(self):
@@ -133,16 +126,6 @@ class MainWdgt(MainWidget):
 
         self.activate_mode('statistics')
 
-    def import_(self):
-        """Activates 'Import' mode."""
-
-        self.activate_mode('importcards')
-
-    def sync_(self):
-        """Activates 'Sync' mode."""
-
-        self.activate_mode('sync')
-
     def help_(self):
         """Activates 'Help' mode."""
 
@@ -151,7 +134,7 @@ class MainWdgt(MainWidget):
     @staticmethod
     def exit_(window=None, event=None):
         """Exit from main gtk loop."""
-        
+
         gtk.main_quit()
 
 
@@ -169,8 +152,8 @@ class MainWdgt(MainWidget):
     def question_box(self, question, option0, option1, option2):
         """Show Question message."""
 
-        return widgets.create_question_dialog(self.review_window, question) 
-        
+        return widgets.create_question_dialog(self.review_window, question)
+
 
 
 # Local Variables:

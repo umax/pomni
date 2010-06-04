@@ -37,7 +37,7 @@ class ConfigHook(Component):
         for key, value in {\
             "theme_path": "/opt/maemo/usr/share/mnemosyne/hildon-UI",
             "help_path": "/opt/maemo/usr/share/mnemosyne/help",
-            "font_size": 30.0,
+            "font_size": 30,
             "startup_with_review": False,
             "upload_logs": False,
             "imagedir": "/home/user/MyDocs/.images",
@@ -118,8 +118,9 @@ def app_factory(interface=None):
             "MaemoProgressDlg"))
         app.components.append(\
             ("mnemosyne.libmnemosyne.card_types.cloze", "Cloze"))
-        app.components.append(\
-            ("mnemosyne.maemo_ui.langswitcher", "LangSwitcher"))
+        # FIXME
+        #app.components.append(\
+        #    ("mnemosyne.maemo_ui.langswitcher", "LangSwitcher"))
         return app
 
     # add next gui here

@@ -31,7 +31,7 @@ from mnemosyne.libmnemosyne.ui_component import UiComponent
 class MenuWidget(UiComponent):
     """Main menu widget."""
 
-    component_type = "menu_widget"
+    component_type = 'menu_widget'
 
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
@@ -80,7 +80,6 @@ class MenuWidget(UiComponent):
     def sync_cb(self, widget):
         """Go to 'Sync' mode."""
 
-        #self._main_widget.sync_()
         dialogs.show_sync_dialog()
 
     def gen_settings_cb(self, widget):
@@ -101,7 +100,6 @@ class MenuWidget(UiComponent):
     def importcards_cb(self, widget):
         """Go to 'Import' mode."""
 
-        #self._main_widget.import_()
         dialogs.show_import_dialog( \
             self.component_manager.get_all('file_format'),
             self.component_manager.get_current('file_format'),

@@ -34,7 +34,7 @@ from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
 
 class TagsWidget(ActivateCardsDialog):
     """Activate cards widget."""
-    
+
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         # create widgets
@@ -59,7 +59,7 @@ class TagsWidget(ActivateCardsDialog):
         model = self.selector.get_model(0)
         selected_tags = [unicode(model[index][0]) for index in \
             indexes_of_selected_tags]
-            
+
         for selected_tag in selected_tags:
             tag_name = unicode(re.search(r'(.+) \(\d+ cards\)', \
                 selected_tag).group(1))
@@ -78,9 +78,9 @@ class TagsWidget(ActivateCardsDialog):
         self.stopwatch().unpause()
 
         self.main_widget().menu_()
-    
+
     def stats_cb(self, widget):
         """Go to main tag statistics."""
 
-        self.config()["last_variant_for_statistics_page"] = 0
+        self.config()['last_variant_for_statistics_page'] = 0
         self.controller().show_statistics()

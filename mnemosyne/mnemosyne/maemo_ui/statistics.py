@@ -60,7 +60,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
 
         # change current statistics page
         try:
-            last_page = self.config()["last_variant_for_statistics_page"]
+            last_page = self.config()['last_variant_for_statistics_page']
         except KeyError:
             last_page = 2
 
@@ -69,11 +69,11 @@ class MaemoStatisticsWidget(StatisticsDialog):
             self.tags_statistics_cb(None)
         elif last_page == 1:
             self.common_button.set_active(True)
-            self.common_statistics_cb(None) 
+            self.common_statistics_cb(None)
         else:
             self.current_button.set_active(True)
             self.current_card_statistics_cb(None)
- 
+
 
     # callbacks
 
@@ -133,7 +133,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
         html += "</table><br><br></body></html>"
         html = self.renderer.change_font_size(html)
         self.renderer.render_html(self.html_widget, html)
-        
+
     def tags_statistics_cb(self, widget):
         """Switches to the tags statistics page."""
 
