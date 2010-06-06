@@ -77,8 +77,8 @@ class GstSoundEngine:
     def parse_fname(text):
         """Returns filename to play."""
 
-        return re.search(r"""src=\"(.+?)\"""", text).group(1)
-       
+        return re.search(r'src=([^>]*)', text).group(1)
+
 
 class SoundPlayer:
     """Sound Player Interface."""
