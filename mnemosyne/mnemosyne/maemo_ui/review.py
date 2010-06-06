@@ -62,7 +62,7 @@ class ReviewWdgt(ReviewWidget):
         self.tts_button.connect('clicked', self.speak_cb)
         self.edit_button.connect('clicked', self.edit_card_cb)
         self.del_button.connect('clicked', self.delete_card_cb)
-        self.window.connect("delete-event", self.review_to_main_menu_cb)
+        self.window.connect('delete-event', self.review_to_main_menu_cb)
 
     def activate(self):
         """Set necessary switcher page."""
@@ -86,20 +86,20 @@ class ReviewWdgt(ReviewWidget):
         self.tts_button.set_sensitive(False)
         self.is_sound_card = False
         self.question_container.set_size_request(-1, -1)
-        if "sound src=" in text:
+        if 'snd src=' in text:
             self.sndtext = text
             self.is_sound_card = True
             self.renderer.render_sound_hint(self.question_text)
             self._main_widget.soundplayer.play(self.sndtext, self)
         else:
-            if "img src=" in text:
+            if 'img src=' in text:
                 self.question_container.set_size_request( \
                     -1, LARGE_CONTAINER_HEIGHT)
             else:
                 self.tts_button.set_sensitive(self.tts_available)
             self.renderer.render_html(self.question_text, text)
         tags = [tag.name for tag in self._review_controller.card.tags]
-        self.window.set_title(_("Tags: ") + ', '.join(tags))
+        self.window.set_title(_('Tags') + ': ' + ', '.join(tags))
 
     def set_answer(self, text):
         """Set answer text."""

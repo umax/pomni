@@ -49,7 +49,6 @@ def create_review_ui():
     answer_container.add(answer_text)
 
     question_text = widgets.create_gtkhtml()
-    question_text.set_sensitive(False)
     question_container = hildon.PannableArea()
     answer_container.set_property('mov-mode', hildon.MOVEMENT_MODE_VERT)
     question_container.add(question_text)

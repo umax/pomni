@@ -29,6 +29,8 @@ import re
 
 re_src = re.compile(r"""src=\"(.+?)\"""", re.DOTALL | re.IGNORECASE)
 
+ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
+
 class Html(Renderer):
     """Hildon Html renderer."""
     
@@ -117,10 +119,11 @@ class Html(Renderer):
     def render_sound_hint(self, widget):
         """Render html text for sound button."""
 
-        html = '<html><body><table align="center"><tr><td><img src=%s></td>' \
-            '</tr></table></body></html>' % os.path.join( \
-                self.config["theme_path"], "note.png")
-        return self.render_html(widget, self.change_font_size(html))
+        #html = '<html><body><table align="center"><tr><td><img src=%s></td>' \
+        #    '</tr></table></body></html>' % os.path.join( \
+        #        self.config["theme_path"], "note.png")
+        #return self.render_html(widget, self.change_font_size(html))
+        self.render_media_button(widget, os.path.join(ICONS_PATH, 'general_audio_file.png'))
 
     def render_media_button(self, widget, fname, fname_is_html=False):
         """Render html text for Media button."""
