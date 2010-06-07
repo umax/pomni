@@ -50,11 +50,11 @@ def create_question_dialog(window, text):
     return True
 
 
-def create_information_dialog(window, text):
+def create_information_dialog(window, text, title=_('Information')):
     """Create InformationDialog UI."""
 
     dialog = hildon.Dialog()
-    dialog.set_title(_('Information'))
+    dialog.set_title(title)
     label = gtk.Label()
     label.set_justify(gtk.JUSTIFY_CENTER)
     label.set_text('\n' + text + '\n')

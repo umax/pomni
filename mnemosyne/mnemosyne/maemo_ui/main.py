@@ -25,9 +25,11 @@ Main Widget.
 """
 
 import gtk
+import gettext
 import mnemosyne.maemo_ui.widgets.main as widgets
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
+_ = gettext.gettext
 
 class MainWdgt(MainWidget):
     """Main widget class."""
@@ -42,7 +44,7 @@ class MainWdgt(MainWidget):
     def soundplayer(self):
         if not self._soundplayer:
             from mnemosyne.maemo_ui.sound import SoundPlayer
-            self._soundplayer = SoundPlayer()
+            self._soundplayer = SoundPlayer(self.error_box)
         return self._soundplayer
 
     def activate(self):
@@ -147,7 +149,8 @@ class MainWdgt(MainWidget):
     def error_box(self, message):
         """Error message."""
 
-        self.information_box(message)
+        widgets.create_information_dialog(self.review_window, message,  \
+            title=_('Error'))
 
     def question_box(self, question, option0, option1, option2):
         """Show Question message."""
