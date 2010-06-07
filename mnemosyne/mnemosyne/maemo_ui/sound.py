@@ -27,11 +27,14 @@ Sound engines.
 import re
 import os
 import gst
+import gettext
+
+_ = gettext.gettext
 
 class GstSoundEngine:
     """Sound engine."""
 
-    def __init__(self):
+    def __init__(self, messanger):
         """Init variables."""
 
         self.fname = ""
@@ -39,6 +42,7 @@ class GstSoundEngine:
         self.parent = None
         self.player = gst.element_factory_make("playbin", "player")
         self.player.set_property("volume", 8)
+        self.messanger = messanger
         bus = self.player.get_bus()
         bus.add_signal_watch()
         bus.enable_sync_message_emission()
@@ -55,7 +59,8 @@ class GstSoundEngine:
         elif mtype == gst.MESSAGE_ERROR:
             self.player.set_state(gst.STATE_NULL)
             err, debug = message.parse_error()
-            print "GstSoundEngine:error: %s" % err, debug
+            #print "GstSoundEngine:error: %s" % err, debug
+            self.messanger(_('Unable to play sound file!'))
 
     def play(self, fname, parent):
         """Start playing fname."""
@@ -83,14 +88,15 @@ class GstSoundEngine:
 class SoundPlayer:
     """Sound Player Interface."""
 
-    def __init__(self):
+    def __init__(self, messanger):
         self.soundengine = None
+        self.messanger = messanger
 
     def play(self, text, parent):
         """Start playing."""
 
         if not self.soundengine:
-            self.soundengine = GstSoundEngine()
+            self.soundengine = GstSoundEngine(self.messanger)
         self.soundengine.play(text, parent)
 
     def stop(self):
