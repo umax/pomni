@@ -256,7 +256,7 @@ class InputWidget(UiComponent):
     def show_cardtype_dialog_cb(self, widget):
         """Open CardTypeDialog."""
 
-        self._main_widget.soundplayer.stop()
+        #self._main_widget.soundplayer.stop()
         selected_cardtype = dialogs.show_items_dialog(None, self.window, \
             [card_type.name for card_type in self.card_types()], \
             _('Card_type'), self.card_type.name)
@@ -272,7 +272,7 @@ class InputWidget(UiComponent):
     def show_content_dialog_cb(self, widget):
         """Open ContentDialog."""
 
-        self._main_widget.soundplayer.stop()
+        #self._main_widget.soundplayer.stop()
         self.set_content_type(dialogs.show_items_dialog(None, self.window, \
             ['text', 'sound', 'image'], _('Question type'), self.content_type))
 
@@ -364,7 +364,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
             self.selected_tags, save=True)
-        self._main_widget.soundplayer.stop()
+        #self._main_widget.soundplayer.stop()
         self.clear_widgets()
 
     def input_to_main_menu_cb(self, widget):
@@ -384,7 +384,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
             review_controller.new_question()
         self.stopwatch().unpause()
 
-        self._main_widget.soundplayer.stop()
+        #self._main_widget.soundplayer.stop()
         self._main_widget.menu_()
 
 
@@ -419,7 +419,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
         if self.card_type.id is FrontToBack.id:
             if 'img src=' in self.fact.data['q']:
                 content_type = 'image'
-            elif 'sound src=' in self.fact.data['q']:
+            elif 'snd src=' in self.fact.data['q']:
                 content_type = 'sound'
             else:
                 content_type = 'text'
@@ -458,7 +458,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
     def input_to_main_menu_cb(self, widget=None):
         """Return to Review mode."""
 
-        self._main_widget.soundplayer.stop()
+        #self._main_widget.soundplayer.stop()
         self.window.destroy()
         self._main_widget.activate_mode('review')
 
