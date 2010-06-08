@@ -59,10 +59,10 @@ class InputWidget(UiComponent):
         self.sounddir = None
         self.imagedir = None
         self.card_type = None
-        self.selected_tags = None
+        self.selected_tags = None   # user selected tags list
         self.tags = [unicode(tag) for tag in sorted( \
             self.database().get_tag_names(), cmp=numeric_string_cmp) or \
-            [self.default_tag_name]]
+            [self.default_tag_name]]    # all tags list
         self._main_widget = self.main_widget()
         # create widgets
         self.window, card_type_button, content_type_button, tags_button, \
@@ -174,11 +174,10 @@ class InputWidget(UiComponent):
         self.clear_widgets()
 
     def update_tags(self):
-        """Update active tags list."""
+        """Update title by selected tags."""
 
-        tags = ', '.join([tag.strip() for tag in self.selected_tags \
-            if tag.strip() in self.tags]) or self.default_tag_name
-        self.window.set_title(_('Tags: ') + tags)
+        tags = self.selected_tags or [self.default_tag_name]
+        self.window.set_title(_('Tags') + ': ' + ', '.join(tags))
 
     def check_complete_input(self):
         """Check for non empty fields."""
@@ -238,8 +237,6 @@ class InputWidget(UiComponent):
     def show_tags_dialog_cb(self, widget):
         """Show TagsSelectionDialog."""
 
-        #self.selected_tags = widgets.create_tags_dialog_ui( \
-        #    self.window, self.tags, self.selected_tags)
         self.selected_tags = dialogs.show_tags_selection_dialog(self.window, \
             _('Tags for new card'), self.tags, self.selected_tags)
         self.update_tags()
