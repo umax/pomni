@@ -24,8 +24,6 @@
 Hildon UI: Input mode Widgets.
 """
 
-import os
-import gtk
 import pango
 import gettext
 
@@ -69,12 +67,12 @@ class InputWidget(UiComponent):
             question_text, answer_text, foreign_text, pronunciation_text, \
             translation_text, cloze_text, new_tag_button, card_type_switcher, \
             media_button, media_container, self.grades, tags_button, \
-            question_container = widgets.create_input_ui(self.conf["theme_path"])
+            question_container = widgets.create_input_ui( \
+                self.conf['theme_path'])
         # connect signals
         self.window.connect('destroy', self.input_to_main_menu_cb)
         content_type_button.connect('clicked', self.show_content_dialog_cb)
         tags_button.connect('clicked', self.show_tags_dialog_cb)
-        #question_text.connect('button_release_event', self.show_media_dialog_cb)
         media_button.connect('button_press_event', self.show_media_dialog_cb)
         new_tag_button.connect('clicked', self.add_new_tag_cb)
 

@@ -33,13 +33,13 @@ ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 
 class Html(Renderer):
     """Hildon Html renderer."""
-    
+
     def __init__(self, component_manager):
         Renderer.__init__(self, component_manager)
         self._css = {} # {card_type: css}
         self.config = self.config()
         self.tts_text = ''
-        
+
     def css(self, card_type):
         """Creates css."""
 
@@ -115,19 +115,16 @@ class Html(Renderer):
             "margin-left:auto;margin-right:auto;}</style></head><body><table>" \
             "<tr><td>%s</td></tr></table></body></html>" % text
         return self.render_html(widget, self.change_font_size(html))
-    
+
     def render_sound_hint(self, widget):
         """Render html text for sound button."""
 
-        #html = '<html><body><table align="center"><tr><td><img src=%s></td>' \
-        #    '</tr></table></body></html>' % os.path.join( \
-        #        self.config["theme_path"], "note.png")
-        #return self.render_html(widget, self.change_font_size(html))
-        self.render_media_button(widget, os.path.join(ICONS_PATH, 'general_audio_file.png'))
+        self.render_media_button(widget, os.path.join(ICONS_PATH, \
+            'general_audio_file.png'))
 
     def render_media_button(self, widget, fname, fname_is_html=False):
         """Render html text for Media button."""
-        
+
         if not fname_is_html:
             return self.render_hint(widget, "<img src=%s>" % fname)
         else:
@@ -138,7 +135,7 @@ class Text(Renderer):
 
     def __init__(self, component_manager):
         Renderer.__init__(self, component_manager)
-    
+
     def render_card_fields(self, fact, fields):
         """Renders card fields."""
 

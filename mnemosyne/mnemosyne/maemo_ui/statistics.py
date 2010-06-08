@@ -46,9 +46,9 @@ class MaemoStatisticsWidget(StatisticsDialog):
         'right:auto;text-align:center} body{ background-color:black;margin:0;'\
         'padding:0;}</style></head><body><table>'
         # create widgets
-        self.window, self.current_button, self.common_button, self.tags_button,\
-            self.html_widget, self.html_container, self.info_label = \
-                widgets.create_statistics_ui()
+        self.window, self.current_button, self.common_button, \
+            self.tags_button, self.html_widget, self.html_container, \
+            self.info_label = widgets.create_statistics_ui()
         # connect signals
         self.window.connect('destroy', self.back_to_previous_mode_cb)
         self.current_button.connect('clicked', self.current_card_statistics_cb)

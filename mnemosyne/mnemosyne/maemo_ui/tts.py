@@ -44,10 +44,10 @@ def get_languages():
     languages = {}
     voices = StringIO.StringIO(commands.getoutput("espeak --voices"))
     for voice in voices.readlines()[1:-1]:
-        voice = voice[22:52].rsplit(None,1)
+        voice = voice[22:52].rsplit(None, 1)
         languages[voice[0]] = voice[1]
     return languages
-         
+
 
 class TTS:
     """TTS main class."""
@@ -70,7 +70,7 @@ class TTS:
                 """gst play function."""
                 player = gst.element_factory_make("playbin", "player")
                 player.set_property('uri', "file://%s" % fname)
-                player.set_state(gst.STATE_PLAYING)                
+                player.set_state(gst.STATE_PLAYING)
 
             self.play_sound = play
 
