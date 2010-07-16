@@ -1,12 +1,5 @@
--set run sync server false
--clean up dummy request
--get rid of run once?
--add test
--locks needed?
--fix port numbers
--close database in server. At what level? database? controller?
--controller interface
--test if mnemosyne version gets set alright, both client and server
+-test if mnemosyne version gets set alright
+-log save event after import and sync in the default controller. Add tests
 -server.open_database: create new database on server side if needed
 -log save event after import and sync in the default controller. Add tests
 
@@ -21,20 +14,46 @@
 
 -need component.statisticspages and configuration widgets?
 
--merge sync
 
--duplicates for fact speedup
--id vs _id
--tag.id in criteria?
 -is it worth keeping database.tag_names?
 -get rid of 'get_'
+-update_cards --> modify cards, edit cards?
+-delete fact and related data,  --> related cards?
+-reload counters --> recalc counters
+
+-check if media files exist?
 
 -number of unmemorised cards to hold in your hand? (i.e. grade 0 + 1)
 -rework give initial grade dialog
 
 -time WM: history in same DB?
 
--SM2sync -> openSM2sync?
+-eliminate double save on finalise
+-compression on backup to reduce write time to SD card?
+
+
+-duplicates for fact speedup
+>         """Return fact with the same 'unique_fields' data as 'fact'."""
+>         
+>         query = "select _id from facts where card_type_id=?"
+>         args = (fact.card_type.id,)
+>         if fact._id:
+>             query += " and not _id=?"
+>             args = (fact.card_type.id, fact._id)
+>         duplicates = []            
+>         for cursor in self.con.execute(query, args):
+>             data = dict([(cursor2["key"], cursor2["value"]) for cursor2 in \
+>                 self.con.execute("""select * from data_for_fact where
+>                 _fact_id=?""", (cursor[0], ))])
+>             for field in fact.card_type.unique_fields:
+>                 if data[field] == fact[field]:
+>                     duplicates.append(\
+>                         self.get_fact(cursor[0], id_is_internal=True))
+>                     break
+>         return duplicates
+
+
+-rework progress bar API
 
 -more tests
 -update_cards --> modify cards?
@@ -128,6 +147,7 @@ http://www.linuxtopia.org/online_books/programming_books/python_programming/pyth
  remember size
 
 -make distrib
+-http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
 
 -check for related cards on same day could fail if minute level scheduler is used in the meantime
  (update comment in scheduler too)

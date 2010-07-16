@@ -44,10 +44,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, MainWidget):
         self.statusbar_widgets.append(widget)
         self.statusbar.addPermanentWidget(widget)
 
-    def clear_statusbar(self):
-        for widget in self.statusbar_widgets:
-            self.statusbar.removeWidget(widget)
-        self.statusbar_widgets = []
+    def status_bar_message(self, message):
+        self.status_bar.showMessage(message)
+
+    def add_to_status_bar(self, widget):
+        self.status_bar_widgets.append(widget)
+        self.status_bar.addPermanentWidget(widget)
+
+    def clear_status_bar(self):
+        for widget in self.status_bar_widgets:
+            self.status_bar.removeWidget(widget)
+        self.status_bar_widgets = []
 
     def information_box(self, message):
         QtGui.QMessageBox.information(None, _("Mnemosyne"), message, _("&OK"))
@@ -121,6 +128,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, MainWidget):
         
     def export_file(self):
         self.controller().export_file()
+
+    def sync(self):
+        self.controller().sync()
 
     def configure(self):
         self.controller().configure()      

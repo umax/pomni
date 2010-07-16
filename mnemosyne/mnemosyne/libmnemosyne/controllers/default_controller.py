@@ -283,10 +283,18 @@ class DefaultController(Controller):
             {"name": clone_name, "id": clone_id})
         cloned_card_type = card_type_class(self.component_manager)
         self.database().add_card_type(cloned_card_type)
-        self.component_manager.register(cloned_card_type)
         self.database().save()
         return cloned_card_type
     
+    def delete_card_type(self, card_type):
+        fact_views = card_type.fact_views
+        self.database().delete_card_type(card_type)
+        # Correct ordering for the sync protocol is deleting the fact
+        # views last.
+        for fact_view in fact_views:
+            self.database().delete_fact_view(fact_view)
+        self.database().save()
+   
     def file_new(self):
         self.stopwatch().pause()
         db = self.database()

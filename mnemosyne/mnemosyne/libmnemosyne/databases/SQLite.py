@@ -274,8 +274,7 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
             sys.exit()
         except:
             self.load_failed = True
-            raise RuntimeError, _("Unable to load file.")
-        
+            raise RuntimeError, _("Unable to load file.")    
         if sql_res["value"] != self.version:
             self.load_failed = True
             raise RuntimeError, \
@@ -322,7 +321,7 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
             self._path = dest_path
         self.config()["path"] = contract_path(path, self.config().basedir)
         # We don't log every save, as that would result in an event after
-        # every review.
+        # card repetitions.
 
     def backup(self):
         if self.config()["backups_to_keep"] == 0:
@@ -648,7 +647,8 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
             _fact_view_id = self._add_fact_view(fact_view)
             self.con.execute("""insert into fact_views_for_card_type
                 (_fact_view_id, card_type_id) values(?,?)""",
-                (_fact_view_id, card_type.id))
+                (fact_view._id, card_type.id))
+        self.component_manager.register(card_type)
         self.log().added_card_type(card_type)
 
     def get_card_type(self, id, id_is_internal):
@@ -693,7 +693,9 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
             _fact_view_id = self._add_fact_view(fact_view)
             self.con.execute("""insert into fact_views_for_card_type
                 (_fact_view_id, card_type_id) values(?,?)""",
-                (_fact_view_id, card_type.id))
+                (fact_view._id, card_type.id))
+        self.component_manager.unregister(card_type)
+        self.component_manager.register(card_type)
         self.log().updated_card_type(card_type)
 
     def delete_card_type(self, card_type):
@@ -704,7 +706,9 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
             card_type_id=?""", (card_type.id, ))
         self.con.execute("delete from card_types where id=?",
             (card_type.id, ))
-        self.log().deleted_card_type(card_type)       
+        self.component_manager.unregister(card_type)
+        self.log().deleted_card_type(card_type)
+        del card_type
 
     #
     # Activity criteria.

@@ -38,6 +38,7 @@ class Widget(MainWidget):
     def question_box(self, question, option0, option1, option2):
         return answer
 
+SERVER = socket.getfqdn()
 PORT = 9451
         
 class MyServer(Server, Thread):
