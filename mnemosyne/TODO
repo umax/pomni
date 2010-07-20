@@ -1,3 +1,10 @@
+-locks needed?
+-close database in server. At what level? database? controller?
+-controller interface
+-test if mnemosyne version gets set alright, both client and server
+-server.open_database: create new database on server side if needed
+-log save event after import and sync in the default controller. Add tests
+
 -current active set not marked upon entering
 
 
@@ -225,6 +232,7 @@ Windows Mobile client:
 
 If your phone has a touchscreen use the pocket pc version. Otherwise try the smartphone version. 
 
+-integrate sync
 -better way of making default actions visible? Call layout()?
 -hook up scheduler rollover
 -cramming widget, cache counters
