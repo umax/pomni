@@ -171,7 +171,8 @@ class Server(WSGIServer, Partner):
             self.terminate_session_with_token(session_token)
         self.stopped = True
         # Make dummy request for self.stopped to take effect.
-        con = httplib.HTTPConnection(socket.getfqdn(), self.server_port)   
+        import httplib
+        con = httplib.HTTPConnection("localhost:%d" % self.server_port)   
         con.request("GET", "dummy_request")
         con.getresponse().read()
 
