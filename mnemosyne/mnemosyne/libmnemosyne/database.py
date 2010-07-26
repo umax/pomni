@@ -23,6 +23,30 @@ class Database(Component):
         self.backup()
         self.unload()
 
+    def path(self):
+
+        """Returns full path of the database."""
+        
+        raise NotImplementedError
+        
+    def name(self):
+
+        """Returns name of the database, without parent paths, but with
+        extensions.
+
+        """
+        
+        raise NotImplementedError
+    
+    def display_name(self):
+
+        """Returns bare name of the database, without parent paths and
+        without extension.
+
+        """
+        
+        raise NotImplementedError
+        
     # File operations.
 
     def new(self, path):

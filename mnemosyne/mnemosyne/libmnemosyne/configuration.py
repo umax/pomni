@@ -110,8 +110,8 @@ class Configuration(Component, dict):
              "active_plugins": set(), # Plugin classes, not instances.
              "media_autoplay": True,
              "media_controls": False,
-             "run_sync_server": True,
-             "sync_server_port": 9013,
+             "run_sync_server": False,
+             "sync_server_port": 9064,
              "sync_server_username": "",
              "sync_server_password": ""
             }.items():

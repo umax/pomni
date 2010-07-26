@@ -1,7 +1,5 @@
--test if mnemosyne version gets set alright
--log save event after import and sync in the default controller. Add tests
--server.open_database: create new database on server side if needed
--log save event after import and sync in the default controller. Add tests
+-fix port numbers
+-test if mnemosyne version gets set alright, both client and server
 
 -current active set not marked upon entering
 

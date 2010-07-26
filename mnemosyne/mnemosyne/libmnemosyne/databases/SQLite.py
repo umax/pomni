@@ -210,7 +210,24 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
                                check_same_thread=False)
             self._connection.row_factory = sqlite3.Row
         return self._connection
-
+    
+    def path(self):
+        return self._path
+    
+    def name(self):
+        return os.path.basename(self.config()["path"])
+        
+    def display_name(self):
+        if not self.is_loaded():
+            return None
+        else:
+            return os.path.basename(self.config()["path"]).\
+                   split(self.database().suffix)[0]
+        
+    def mediadir(self):
+        return os.path.join(self.config().basedir,
+            os.path.basename(self.config()["path"]) + "_media")
+    
     def new(self, path):
         if self.is_loaded():
             self.unload()
