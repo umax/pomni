@@ -111,7 +111,7 @@ class Configuration(Component, dict):
              "media_autoplay": True,
              "media_controls": False,
              "run_sync_server": False,
-             "sync_server_port": 9021,
+             "sync_server_port": 8512,
              "sync_server_username": "",
              "sync_server_password": ""
             }.items():
