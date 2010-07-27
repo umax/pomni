@@ -1,7 +1,8 @@
--set run sync server false
--get rid of run once?
--locks needed?
--fix port numbers
+-sync cycle
+-revisit UI object design, only use progress bars and no status bars
+-connect information box directly to main_widget?
+-make sure 'server running' message does not show if there is an error
+-display server status in configuration box
 -test if mnemosyne version gets set alright, both client and server
 
 -current active set not marked upon entering
