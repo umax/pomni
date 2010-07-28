@@ -4,7 +4,6 @@
 #             Peter Bienstman <Peter.Bienstman@UGent.be>
 
 import os
-import sys
 import cgi
 import uuid
 import time
@@ -60,7 +59,6 @@ class Session(object):
         self.database = database
         self.client_log = []
         self.expires = time.time() + 60*60
-        import sys; sys.stderr.write("backup")
         self.backup_file = self.database.backup()
         self.database.set_sync_partner_info(client_info)
 
@@ -68,7 +66,6 @@ class Session(object):
         return time.time() > self.expired
 
     def close(self):
-        import sys; sys.stderr.write("update")
         self.database.update_last_log_index_synced_for(\
             self.client_info["machine_id"])
         self.database.save()
@@ -77,7 +74,6 @@ class Session(object):
 
         """Restore from backup if the session failed to close normally."""
 
-        import sys; sys.stderr.write("session terminated, database restored.\n")
         self.database.restore(self.backup_file)
 
 
@@ -224,61 +220,46 @@ class Server(WSGIServer, Partner):
     # request.
 
     def put_login(self, environ):
-        session = None
-        try:
-            self.ui.set_progress_text("Client logging in...")
-            client_info_repr = environ["wsgi.input"].readline()
-            client_info = self.text_format.parse_partner_info(\
-                client_info_repr)
-            if not self.authorise(client_info["username"],
-                client_info["password"]):
-                return "403 Forbidden"
-            # Close old session waiting in vain for client input.
-            old_running_session_token = self.session_token_for_user.\
-                get(client_info["username"])
-            if old_running_session_token:
-                self.terminate_session_with_token(old_running_session_token)
-            session = self.create_session(client_info)
-            # Make sure there are no cycles in the sync graph.
-            server_in_client_partners = self.machine_id in \
-                session.client_info["partners"]
-            client_in_server_partners = session.client_info["machine_id"] in \
-                session.database.partners()      
-            if (server_in_client_partners and not client_in_server_partners)\
-               or \
-               (client_in_server_partners and not server_in_client_partners):
-                self.terminate_session_with_token(session.token)                
-                return "CYCLE"
-            session.database.create_partnership_if_needed_for(\
-                client_info["machine_id"])
-            session.database.merge_partners(client_info["partners"])
-            # Note that we need to send 'user_id' to the client as well, so
-            # that the client can make sure the 'user_id's (used to label the
-            # anonymous uploaded logs) are consistent across machines.
-            server_info = {"user_id": session.database.user_id(),
-                "machine_id": self.machine_id,
-                "program_name": self.program_name,
-                "program_version": self.program_version,
-                "database_version": session.database.version,
-                "partners": session.database.partners(),
-                "session_token": session.token,
-                "supports_binary_log_download": \
-                    self.supports_binary_log_download(session)}
-            # We check if files were updated outside of the program. This can
-            # generate MEDIA_UPDATED log entries, so it should be done first.
-            session.database.check_for_updated_media_files()
-            return self.text_format.repr_partner_info(server_info)\
-                   .encode("utf-8")
-        except:
-            # We need to be really thorough in our exception handling, so as
-            # to always revert the database to its last backup if an error
-            # occurs. It is important that this happens as soon as possible,
-            # especially if this server is being run as a built-in server in a
-            # thread in an SRS desktop application.
-            if session:
-                self.terminate_session_with_token(session.token) 
-            self.ui.error_box(traceback_string())
-            return "CANCEL"
+        self.ui.status_bar_message("Client logging in...")
+        client_info_repr = environ["wsgi.input"].readline()
+        client_info = self.text_format.parse_partner_info(client_info_repr)
+        if not self.authorise(client_info["username"],
+            client_info["password"]):
+            return "403 Forbidden"
+        # Close old session if it failed to finish properly.
+        old_running_session_token = self.session_token_for_user.\
+            get(client_info["username"])
+        if old_running_session_token:
+            self.terminate_session_with_token(old_running_session_token)
+        session = self.create_session(client_info)
+        # Make sure there are no cycles in the sync graph.
+        server_in_client_partners = self.machine_id in \
+            session.client_info["partners"]
+        client_in_server_partners = session.client_info["machine_id"] in \
+            session.database.partners()      
+        if (server_in_client_partners and not client_in_server_partners) or \
+           (client_in_server_partners and not server_in_client_partners):
+            self.terminate_session_with_token(session.token)                
+            return "Cycle detected"
+        session.database.create_partnership_if_needed_for(\
+            client_info["machine_id"])
+        session.database.merge_partners(client_info["partners"])
+        # Note that we need to send 'user_id' to the client as well, so that the
+        # client can make sure the 'user_id's (used to label the anonymous
+        # uploaded logs) are consistent across machines.
+        server_info = {"user_id": session.database.user_id(),
+            "machine_id": self.machine_id,
+            "program_name": self.program_name,
+            "program_version": self.program_version,
+            "database_version": session.database.version,
+            "partners": session.database.partners(),
+            "session_token": session.token,
+            "supports_binary_log_download": \
+                self.supports_binary_log_download(session)}
+        # We check if files were updated outside of the program. This can
+        # generate MEDIA_UPDATED log entries, so it should be done first.
+        session.database.check_for_updated_media_files()
+        return self.text_format.repr_partner_info(server_info).encode("utf-8")
 
     def _read_unsized_log_entry_stream(self, stream):
         # Since chunked requests are not supported by the WSGI 1.x standard,

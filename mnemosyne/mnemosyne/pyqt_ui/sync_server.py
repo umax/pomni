@@ -4,6 +4,8 @@
 
 import socket
 
+from PyQt4 import QtCore, QtGui
+
 from PyQt4 import QtCore
 
 from mnemosyne.libmnemosyne import Mnemosyne
@@ -93,10 +95,6 @@ class SyncServer(Component, QtCore.QObject):
                         + " " + _("Terminate that process and try again."))
                     self.thread = None
                     return
-            self.thread.sync_started_message.connect(\
-                self.unload_database_before_sync)
-            self.thread.sync_ended_message.connect(\
-                self.load_database_after_sync)
             self.thread.information_message.connect(\
                 self.main_widget().information_box)
             self.thread.error_message.connect(\

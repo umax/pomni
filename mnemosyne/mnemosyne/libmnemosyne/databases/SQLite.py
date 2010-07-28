@@ -343,10 +343,9 @@ class SQLite(Database, SQLiteLogging, SQLiteStatistics):
         if self.config()["backups_to_keep"] == 0:
             return
         backupdir = os.path.join(self.config().basedir, "backups")
-        # Make a copy. Create only a single file per day.
         db_name = os.path.basename(self._path).rsplit(".", 1)[0]
         backupfile = db_name + "-" + \
-                   datetime.date.today().strftime("%Y%m%d") + ".db"
+            datetime.datetime.today().strftime("%Y%m%d-%H%M%S.db")
         backupfile = os.path.join(backupdir, backupfile)
         shutil.copy(self._path, backupfile)
         if not os.path.exists(backupfile) or not os.stat(backupfile).st_size:
