@@ -72,9 +72,10 @@ class MyServer(Server, Thread):
     def run(self):
         # We only open the database connection inside the thread to prevent
         # access problems, as a single connection can only be used inside a
-        # single thread (at least that was true originally...).
+        # single thread.
         # We use a lock here to prevent the client from accessing the server
         # until the server is ready.
+        global server_lock
         server_lock.acquire()
         try:
             self.mnemosyne.initialise(self.basedir, self.filename)
@@ -130,6 +131,7 @@ class MyClient(Client):
                         self.mnemosyne.database(), self.mnemosyne.main_widget())
         
     def do_sync(self):
+        global server_lock
         server_lock.acquire()
         try:
             self.sync("localhost", PORT, self.user, self.password)
@@ -139,6 +141,7 @@ class MyClient(Client):
 class TestSync(object):
 
     def teardown(self):
+        global server_lock
         self.server.stop()
         server_lock.acquire()
         assert self.server.passed_tests == True

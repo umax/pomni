@@ -69,11 +69,14 @@ class Partner(object):
 
     def download_binary_file(self, filename, stream):
         downloaded_file = file(filename, "wb")
+        line = stream.readline()
         try:
             file_size = int(stream.readline())
         except:
-            raise SyncError("Downloading binary file: error on remote side.")
-        self.ui.set_progress_range(0, file_size)
+            raise SyncError("Downloading binary file: server error.")            
+        progress_dialog = self.ui.get_progress_dialog()
+        progress_dialog.set_text(progress_message)
+        progress_dialog.set_range(0, file_size)
         remaining = file_size
         while remaining:
             if remaining < BUFFER_SIZE:
