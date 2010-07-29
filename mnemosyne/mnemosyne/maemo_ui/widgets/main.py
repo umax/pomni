@@ -26,9 +26,7 @@ Hildon UI. Widgets for main.
 
 import gtk
 import hildon
-import gettext
-
-_ = gettext.gettext
+from gettext import gettext as _
 
 
 def create_question_dialog(window, text):

@@ -27,14 +27,12 @@ Hildon UI. Widgets for input mode.
 import os
 import gtk
 import hildon
-import gettext
+from gettext import gettext as _
 import mnemosyne.maemo_ui.widgets.common as widgets
 from mnemosyne.libmnemosyne.card_types.front_to_back import FrontToBack
 from mnemosyne.libmnemosyne.card_types.both_ways import BothWays
 from mnemosyne.libmnemosyne.card_types.three_sided import ThreeSided
 from mnemosyne.libmnemosyne.card_types.cloze import Cloze
-
-_ = gettext.gettext
 
 ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 

@@ -26,9 +26,7 @@ Hildon UI. Widgets for Tags mode.
 
 import gtk
 import hildon
-import gettext
-
-_ = gettext.gettext
+from gettext import gettext as _
 
 
 def create_tags_ui(database):

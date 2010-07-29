@@ -26,10 +26,8 @@ Hildon UI. Dialogs.
 
 import gtk
 import hildon
-import gettext
 import gobject
-
-_ = gettext.gettext
+from gettext import gettext as _
 
 MIN_FONT_SIZE = 10
 MAX_FONT_SIZE = 60
@@ -46,31 +44,31 @@ def show_about_dialog():
     program_name_label.set_use_markup(True)
     program_name_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'medium'>version 2.0.0~beta11~rc5</span>\n")
+        "'medium'>" + _('version') + " 2.0.0~beta11~rc5</span>\n")
 
     pannable_area = hildon.PannableArea()
     pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
     developers_label = gtk.Label()
     developers_label.set_use_markup(True)
-    developers_label.set_markup("<span foreground='white' size='small'><b>" \
-        "Developers:</b></span>\n<span foreground='white' size='small'>" \
-        "Max Usachev |</span> <span foreground='#299BFC' size='small'>" \
+    developers_label.set_markup("<span foreground='white' size='small'><b>" + \
+        _("Developers") + ":</b></span>\n<span foreground='white' size='small" \
+        "'>Max Usachev |</span> <span foreground='#299BFC' size='small'>" \
         "maxusachev@gmail.com</span>\n<span foreground='white' size=" \
         "'small'>Ed Bartosh |</span> <span foreground='#299BFC' size=" \
         "'small'>bartosh@gmail.com</span>\n<span foreground='white' " \
         "size='small'>Vlad Vasiliev |</span> <span foreground='#299BFC' " \
         "size='small'>vlad@gas.by</span>\n\n<span foreground='white' " \
-        "size='small'><b>Designer:</b>\n</span><span foreground='white' " \
-        "size='small'>Andrew Zhilin |</span> <span foreground='#299BFC' " \
-        "size='small'>drew.zhilin@gmail.com</span>\n\n<span foreground=" \
-        "'white' size='small'><b>Development team:</b></span>\n<span " \
-        "foreground='#299BFC' size='small'>pomni@googlegroups.com</span>"
-        "<span foreground='white' size='small'><b>" \
-        "\n\nSpecial Thanks To:</b></span>\n<span foreground='white' size=" \
-        "'small'>Peter Bienstman</span>\n<span foreground='#299BFC' size=" \
-        "'small'>Peter.Bienstman@ugent.be</span>\n<span foreground=" \
-        "'#299BFC' size='small'>http://www.mnemosyne-proj.org/</span>" \
-        "\n<span size='x-large'></span><span foreground='white' size=" \
+        "size='small'><b>" + _('Designer') + ":</b>\n</span><span foreground=" \
+        "'white' size='small'>Andrew Zhilin |</span> <span foreground=" \
+        "'#299BFC' size='small'>drew.zhilin@gmail.com</span>\n\n<span " \
+        "foreground='white' size='small'><b>" + _('Development team') + \
+        ":</b></span>\n<span foreground='#299BFC' size='small'>pomni@" \
+        "googlegroups.com</span><span foreground='white' size='small'><b>" \
+        "\n\n" + _('Special Thanks To') + ":</b></span>\n<span foreground=" \
+        "'white' size='small'>Peter Bienstman</span>\n<span foreground=" \
+        "'#299BFC' size='small'>Peter.Bienstman@ugent.be</span>\n<span " \
+        "foreground='#299BFC' size='small'>http://www.mnemosyne-proj.org/" \
+        "</span>\n<span size='x-large'></span><span foreground='white' size=" \
         "'small'>\nGSoC 2009</span>\n<span foreground='#299BFC' size='"\
         "small'>http://socghop.appspot.com/</span>\n<span size='x-large'>" \
         "</span><span foreground='white' size='small'>\nMaemo community" \
@@ -414,8 +412,8 @@ def show_sync_dialog():
     dialog = hildon.Dialog()
     dialog.set_title(_('Sync'))
 
-    label = gtk.Label("\nSync feature is not implemented yet :(\n" \
-        "It will be available soon!\n")
+    label = gtk.Label('\n' + _('Sync feature is not implemented yet :(') + \
+        '\n' + _('It will be available soon!') + '\n')
     label.set_justify(gtk.JUSTIFY_CENTER)
     dialog.vbox.pack_start(label)
     dialog.vbox.show_all()

@@ -26,10 +26,8 @@ Hildon UI. Statistics widget.
 
 import gtk
 import hildon
-import gettext
+from gettext import gettext as _
 import mnemosyne.maemo_ui.widgets.common as widgets
-
-_ = gettext.gettext
 
 
 def create_statistics_ui():

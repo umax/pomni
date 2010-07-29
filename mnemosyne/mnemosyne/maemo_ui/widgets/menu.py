@@ -26,9 +26,8 @@ Hildon UI. Widgets for menu.
 
 import gtk
 import hildon
-import gettext
+from gettext import gettext as _
 
-_ = gettext.gettext
 
 def create_menu_ui():
     """Creates MenuWidget UI."""
@@ -37,20 +36,20 @@ def create_menu_ui():
 
     # create Menu window
     window = hildon.StackableWindow()
-    window.set_title(unicode("Mnemosyne for Maemo"))
+    window.set_title('Mnemosyne for Maemo')
 
     # create menu buttons
     buttons_table = gtk.Table(rows=2, columns=2)
     buttons_table.set_row_spacings(4)
     buttons_table.set_col_spacings(4)
     button_review = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Review")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Review'))
     button_input = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Input")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Input'))
     button_tags = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Tags")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Tags'))
     button_stats = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, "Stats")
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Stats'))
     buttons_table.attach(button_review, 0, 1, 0, 1)
     buttons_table.attach(button_input, 1, 2, 0, 1)
     buttons_table.attach(button_tags, 0, 1, 1, 2)

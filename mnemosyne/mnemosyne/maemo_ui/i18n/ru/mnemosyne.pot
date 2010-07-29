@@ -1,0 +1,165 @@
+msgid "Review"
+msgstr "Обучение"
+
+msgid "Input"
+msgstr "Добавление"
+
+msgid "Stats"
+msgstr "Статистика"
+
+msgid "General settings"
+msgstr "Общие настройки"
+
+msgid "TTS settings"
+msgstr "Настройки произношения"
+
+msgid "Import"
+msgstr "Импорт"
+
+msgid "Sync"
+msgstr "Синхронизация"
+
+msgid "Delete this card and 1 related card?"
+msgstr "Удалить эту карточку и связанные с ней?"
+
+msgid "Card deletion"
+msgstr "Удаление карточки"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Information"
+msgstr "Информация"
+
+msgid "Add new tag"
+msgstr "Создать новый тег"
+
+msgid "Tags statistics"
+msgstr "Статистика по тегам"
+
+msgid "There are no tags"
+msgstr "Теги отсутствуют"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+msgid "Current"
+msgstr "Текущая"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Tags"
+msgstr "Теги"
+
+msgid "Help"
+msgstr "Помощь"
+
+msgid "About"
+msgstr "О программе"
+
+msgid "New tag"
+msgstr "Новый тег"
+
+msgid "Add"
+msgstr "Добавить"
+
+msgid "Расположение звуковых файлов"
+msgstr ""
+
+msgid "Image directory"
+msgstr "Расположение графических файлов"
+
+msgid "Sound directory"
+msgstr "Расположение звуковых файлов"
+
+msgid "Font size"
+msgstr "Размер шрифта"
+
+msgid "Open Review mode at startup"
+msgstr "Начинать обучение при старте программы"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "TTS is not available on your system!\nInstall eSpeak first."
+msgstr "В системе отсутствует поддержка TTS.\nУстановаите eSpeak."
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Voice"
+msgstr "Голос"
+
+msgid "Female"
+msgstr "Женский"
+
+msgid "Male"
+msgstr "Мужской"
+
+msgid "Pronunciation speed"
+msgstr "Скорость произношения"
+
+msgid "Voice pitch"
+msgstr "Высота голоса"
+
+msgid "Using XML tags"
+msgstr "Используются XML теги"
+
+msgid "File format"
+msgstr "Формат файла"
+
+msgid "Tags for imported cards"
+msgstr "Теги для импортируемых карточек"
+
+msgid "<default>"
+msgstr "<по умолчанию>"
+
+msgid "Import cards"
+msgstr "Импортирование карточек"
+
+msgid "File to import from"
+msgstr "Файл для импорта"
+
+msgid "Select file"
+msgstr "Выбор файла"
+
+msgid "Tags for new cards"
+msgstr "Теги для новых карточек"
+
+msgid "Oops! Error occured."
+msgstr "Ой, ошибочка вышла."
+
+msgid "Current card statistics"
+msgstr "Статистика по текущей карточке"
+
+msgid "All cards statistics"
+msgstr "Статистика по всем карточкам"
+
+msgid "There is no current card"
+msgstr "Карточка отсутствует"
+
+msgid "Sync feature is not implemented yet :("
+msgstr "Cинхронизация пока недоступна :("
+
+msgid "It will be available soon!"
+msgstr "Планируется в следующей версии."
+
+msgid "Developers"
+msgstr "Разработчики"
+
+msgid "version"
+msgstr "версия"
+
+msgid "Designer"
+msgstr "Дизайнер"
+
+msgid "Development team"
+msgstr "Команда разработчиков"
+
+msgid "Special Thanks To"
+msgstr "Особая благодарность"
+

@@ -1,0 +1,168 @@
+# This file is distributed under the same license as the 'Mnemosyne for Maemo' package.
+# Max Usachev <maxusachev@gmail.com>, 2010.
+#
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: UTF-8\n"
+
+msgid "Review"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+msgid "Stats"
+msgstr ""
+
+msgid "General settings"
+msgstr ""
+
+msgid "TTS settings"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Sync"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "Delete this card and 1 related card?"
+msgstr ""
+
+msgid "Card deletion"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Add new tag"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Tags statistics"
+msgstr ""
+
+msgid "There are no tags"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Help"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "New tag"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "General settings"
+msgstr ""
+
+msgid "Sound directory"
+msgstr ""
+
+msgid "Image directory"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
+msgid "Open Review mode at startup"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "TTS settings"
+msgstr ""
+
+msgid ""
+"TTS is not available on your system!\n"
+"Install eSpeak first."
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Voice"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Pronunciation speed"
+msgstr ""
+
+msgid "Voice pitch"
+msgstr ""
+
+msgid "Using XML tags"
+msgstr ""
+
+msgid "File format"
+msgstr ""
+
+msgid "Tags for imported cards"
+msgstr ""
+
+msgid "<default>"
+msgstr ""
+
+msgid "Import cards"
+msgstr ""
+
+msgid "File to import from"
+msgstr ""
+
+msgid "Select file"
+msgstr ""
+
+msgid "Tags for new cards"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Oops! Error occured."
+msgstr ""
+
+msgid "Sync"
+msgstr ""
+
+msgid "Current card statistics"
+msgstr ""
+
+msgid "All cards statistics"
+msgstr ""
+

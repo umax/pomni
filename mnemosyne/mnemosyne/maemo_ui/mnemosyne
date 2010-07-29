@@ -24,8 +24,10 @@
 Main
 """
 
-import sys
 import os
+import sys
+import gettext
+gettext.textdomain('mnemosyne')
 
 # add mnemosyne directory to Python path in debug mode
 if os.path.basename(sys.argv[0]).endswith("debug"):
