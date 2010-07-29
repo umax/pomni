@@ -19,18 +19,20 @@ setup(name=PKG,
     packages=["mnemosyne.maemo_ui", "mnemosyne.maemo_ui.widgets"],
     package_dir={'mnemosyne.maemo_ui': ''},
     data_files = [
-	    ('/opt/maemo/usr/share/%s/hildon-UI' % PKG, \
+        ('/opt/maemo/usr/share/%s/hildon-UI' % PKG, \
             [os.path.join('hildon-UI', fname) for fname in \
             os.listdir('hildon-UI') if os.path.isfile( \
-    	    os.path.join('hildon-UI', fname))]),
+            os.path.join('hildon-UI', fname))]),
         ('/usr/share/dbus-1/services', ['maemo/%s.service' % PKG]),
         ('/usr/share/applications/hildon', ['maemo/%s.desktop' % PKG]),
         ('/opt/maemo/usr/share/%s/help' % PKG, [os.path.join('help', fname) \
             for fname in os.listdir('help')]),
         ('/usr/share/icons/hicolor/48x48/apps/', \
-	        ['./maemo/icons/48x48/%s.png' % PKG]),
+            ['./maemo/icons/48x48/%s.png' % PKG]),
         ('/usr/share/icons/hicolor/64x64/apps/', \
-            ['./maemo/icons/64x64/%s.png' % PKG])
+            ['./maemo/icons/64x64/%s.png' % PKG]), \
+        ('/usr/share/locale/ru/LC_MESSAGES', ['./i18n/ru/mnemosyne.mo']),
+        ('/usr/share/locale/ru_RU/LC_MESSAGES', ['./i18n/ru/mnemosyne.mo'])
     ],
     classifiers=[
     'Development Status :: 3 - Alpha',
