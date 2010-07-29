@@ -55,6 +55,9 @@ msgstr "Все"
 msgid "Tags"
 msgstr "Теги"
 
+msgid "Tag"
+msgstr "Тег"
+
 msgid "Help"
 msgstr "Помощь"
 
@@ -119,7 +122,7 @@ msgid "<default>"
 msgstr "<по умолчанию>"
 
 msgid "Import cards"
-msgstr "Импортирование карточек"
+msgstr "Импорт карточек"
 
 msgid "File to import from"
 msgstr "Файл для импорта"
@@ -127,7 +130,7 @@ msgstr "Файл для импорта"
 msgid "Select file"
 msgstr "Выбор файла"
 
-msgid "Tags for new cards"
+msgid "Tags for new card"
 msgstr "Теги для новых карточек"
 
 msgid "Oops! Error occured."
@@ -162,4 +165,22 @@ msgstr "Команда разработчиков"
 
 msgid "Special Thanks To"
 msgstr "Особая благодарность"
+
+msgid "Card is already in database.\nDuplicate not added."
+msgstr "Такая карточка уже есть!"
+
+msgid "Grade"
+msgstr "Оценка"
+
+msgid "Easiness"
+msgstr "Лёгкость"
+
+msgid "Repetitions"
+msgstr "Повторений"
+
+msgid "Total cards"
+msgstr "Всего карточек"
+
+msgid "Grade statistics for all cards"
+msgstr "Оценки по всем карточкам"
 
