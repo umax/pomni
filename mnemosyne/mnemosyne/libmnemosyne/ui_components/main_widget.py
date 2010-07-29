@@ -45,3 +45,29 @@ class MainWidget(UiComponent):
 
     def set_window_title(self, title):
         pass
+
+    # Functions for progress dialogs, behaving in a streaming manner.
+    
+    def set_progress_text(self, text):
+        pass
+    
+    def set_progress_range(self, minimum, maximum):
+
+        """If minimum and maximum are zero, this is just a busy dialog."""
+        
+        pass
+
+    def set_progress_value(self, value):
+
+        """If value is maximum or beyond, the dialog closes."""
+        
+        pass
+
+    def close_progress(self):
+
+        """Convenience function for closing a busy dialog."""
+        
+        pass
+
+
+        

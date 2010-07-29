@@ -41,9 +41,7 @@ class TestMemImport(MnemosyneTest):
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
                              "GetTextTranslator"))
         self.mnemosyne.components.append(\
-            ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))
-        self.mnemosyne.components.append(\
-            ("mnemosyne.libmnemosyne.ui_components.dialogs", "ProgressDialog"))        
+            ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))       
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
                              "GetTextTranslator"))
         self.mnemosyne.components.append(\
@@ -618,9 +616,7 @@ class TestMemImport(MnemosyneTest):
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
                              "GetTextTranslator"))
         self.mnemosyne.components.append(\
-            ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))
-        self.mnemosyne.components.append(\
-            ("mnemosyne.libmnemosyne.ui_components.dialogs", "ProgressDialog"))        
+            ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))       
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
                              "GetTextTranslator"))
         self.mnemosyne.components.append(\

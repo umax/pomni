@@ -1,11 +1,17 @@
--sync cycle: server partnership gets set due to backup that gets corrupted/overwritten on close
--revisit UI object design, only use progress bars and no status bars
--connect information box directly to main_widget?
--make sure 'server running' message does not show if there is an error, and not if the server is already running
--display server status in configuration box
+-progress bars don't show up as expected.
+-make sure to reload the current card from the database, editing does not have an effect
+-server: add 1 card, import mnemosyne: non scheduled cards are not shown
+-after sync with client: same problems, plus bad status bar. restart: all cards due... (last rep and next rep set to zero...)
+-delete progress bar on bad termination, both in client and server
+-do we need to import all those components for the server?
 -test if mnemosyne version gets set alright, both client and server
+-no traceback on 'connection refused' error on client sync.
+-make sure 'server running' message does not show if there is an error, and not if the server is already running
+-display server status in configuration box?
+-make sure everything happens as expected for dangling sessions (modality, cancel box needed...)
+-remove debug statements from qt_server
 -why does home pc start on localhost?
--sync dialog: ok button not default
+-modulo in progress dialogs
 
 -current active set not marked upon entering
 
@@ -88,6 +94,14 @@ the GUI function itself?
 -delete 1.99 logs
 -reenable upload
 
+<<<<<<< HEAD
+=======
+-progress dialog title is 'mnemosyne' instead of 'Mnemosyne'
+
+-... after menu options that open a dialog
+-suppress autorepeat on review dialog
+
+>>>>>>> 0e820b3... More UI integration work.
 -do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
 -Hungarian translation by bkil + others (announce on website)
