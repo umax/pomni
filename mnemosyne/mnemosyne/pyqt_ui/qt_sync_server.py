@@ -51,7 +51,18 @@ class ServerThread(QtCore.QThread, SyncServer):
         SyncServer.__init__(self, component_manager, self)
 
     def run(self):
-        self.serve_forever()
+        import select
+        while not self.stopped:
+            if select.select([self.socket], [], [], 0.25)[0]:
+                self.handle_request()
+        self.socket.close()
+
+        mutex.lock()
+        import sys; sys.stderr.write("stopped!")
+        self.terminate_all_sessions()
+        self.database().release_connection()
+        database_released.wakeAll()
+        mutex.unlock()
 
     def open_database(self, database_name):
         mutex.lock()
@@ -144,12 +155,7 @@ class QtSyncServer(Component, QtCore.QObject):
         wait_for_main_thread_database_unloaded.wakeAll()
         mutex.unlock()
 
-    def load_database_after_sync(self):
-        global main_thread_database_loaded
-        # If we are closing down the program, and there are still dangling
-        # sessions in the server, we cannot continue.
-        if not self.database():
-            return
+    def load_database(self):
         mutex.lock()
         self.database().load(self.old_database)
         self.log().loaded_database()
@@ -159,18 +165,26 @@ class QtSyncServer(Component, QtCore.QObject):
         import sys; sys.stderr.write("main: reloaded\n")
         mutex.unlock()
 
-    def flush_sync_server(self):
-        global main_thread_database_loaded
-        import sys; sys.stderr.write("main: entered flush\n")
+    def stop_server(self):
         mutex.lock()
-        if self.thread:
-            self.thread.terminate_all_sessions()
-        reload_needed = not main_thread_database_loaded
-        mutex.unlock()
-        if reload_needed:
-            self.load_database_after_sync()
+        self.thread.stopped = True
+        if self.database().is_loaded():
+            database_released.wait(mutex)
+        mutex.unlock()       
+        self.thread.wait()
+        self.thread = None
+        
+    def flush_sync_server(self):
+        if not self.thread or len(self.thread.sessions) == 0:
+            return
+        # The server has the database.
+        self.stop_server()
+        self.activate()
             
     def deactivate(self):
-        if self.thread:
-            self.thread.stop()
-            self.thread = None
+        # We have the database.
+        if not self.thread:
+            return
+        self.stop_server()
+
+        

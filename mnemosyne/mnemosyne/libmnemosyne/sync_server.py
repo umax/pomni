@@ -35,8 +35,19 @@ class SyncServer(Component, Server):
                password == self.config()["sync_server_password"]
     
     def open_database(self, database_name):
-        # Load the database, and create it if it does not yet exist.
-        raise NotImplentedError
+        if previous_database != database_name:
+            if not os.path.exists(expand_path(database_name,
+                self.config().basedir)):
+                self.database().new(database_name)
+            else:
+                self.database().load(database_name)
+        return self.database()
+    
+    def unload_database(self, database):
+        self.database().load(self.old_database)
+        self.log().loaded_database()
+        self.review_controller().reset_but_try_to_keep_current_card()
+        self.review_controller().update_dialog(redraw_all=True)
 
     def unload_database(self, database):
         raise NotImplentedError        
