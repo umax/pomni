@@ -84,7 +84,6 @@ class Session(object):
         """Restore from backup if the session failed to close normally."""
 
         self.database.restore(self.backup_file)
-        import sys; sys.stderr.write("restored")
         
 
 class Server(WSGIServer, Partner):
@@ -117,7 +116,7 @@ class Server(WSGIServer, Partner):
                 self.handle_request()
         self.socket.close()
         
-    def get_method(self, environ):
+    def get_method(self, environ):        
         # Convert e.g. GET /foo_bar into get_foo_bar.
         method = (environ["REQUEST_METHOD"] + \
                   environ["PATH_INFO"].replace("/", "_")).lower()
@@ -152,7 +151,8 @@ class Server(WSGIServer, Partner):
         self.after_sync()        
         del self.session_token_for_user[session.client_info["username"]]
         del self.sessions[session_token]
-
+        self.ui.close_progress()
+        
     def cancel_session_with_token(self, session_token):
 
         """Cancel a session at the user's request, e.g. after detecting
@@ -164,7 +164,8 @@ class Server(WSGIServer, Partner):
         self.after_sync()
         del self.session_token_for_user[session.client_info["username"]]
         del self.sessions[session_token]
-            
+        self.ui.close_progress()
+        
     def terminate_session_with_token(self, session_token):
 
         """Clean up a session which failed to close normally."""
@@ -174,7 +175,8 @@ class Server(WSGIServer, Partner):
         self.after_sync()      
         del self.session_token_for_user[session.client_info["username"]]
         del self.sessions[session_token]
-
+        self.ui.close_progress()
+        
     def terminate_all_sessions(self):
         for session_token in self.sessions.keys():
             self.terminate_session_with_token(session_token)        
@@ -186,7 +188,8 @@ class Server(WSGIServer, Partner):
         con = httplib.HTTPConnection(self.server_name, self.server_port)   
         con.request("GET", "dummy_request")
         con.getresponse().read()
-
+        self.ui.close_progress()
+        
     def binary_format_for(self, session):
         for BinaryFormat in BinaryFormats:
             binary_format = BinaryFormat(session.database)

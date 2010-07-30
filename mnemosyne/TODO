@@ -1,5 +1,7 @@
--make sure everything happens as expected for dangling sessions (threading issues, modality, cancel box needed...)
--server: add 1 card, import mnemosyne. after sync with client: all cards due... (last rep and next rep set to zero...)
+-make sure to reload the current card from the database, editing does not have an effect
+-server: add 1 card, import mnemosyne: non scheduled cards are not shown
+-after sync with client: same problems, plus bad status bar. restart: all cards due... (last rep and next rep set to zero...)
+-do we need to import all those components for the server?
 -no traceback on 'connection refused' error on client sync.
 -make sure 'server running' message does not show if there is an error, and not if the server is already running
 -display server status + hostname in configuration box?
@@ -7,6 +9,7 @@
 -sync, create a new database on client with same name, syncing triggers sync cycle
 
 -modulo in progress dialogs
+-reduce socket timeout and test again
 
 -current active set not marked upon entering
 
@@ -104,6 +107,8 @@ the GUI function itself?
 -new translation infrastructure
 -handle deferred translation
 -different translators for different users?
+
+-remove port from GUI syncing options?
 
 -import
 -update data if same id present on import

@@ -2,19 +2,11 @@
 # sync_dlg.py <Peter.Bienstman@UGent.be>
 #
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from mnemosyne.libmnemosyne.translator import _
 from mnemosyne.pyqt_ui.ui_sync_dlg import Ui_SyncDlg
 from mnemosyne.libmnemosyne.ui_components.dialogs import SyncDialog
-
-
-# Thread synchronisation machinery to communicate the result of a question
-# box to the sync thread.
-
-answer = None
-mutex = QtCore.QMutex()
-question_answered = QtCore.QWaitCondition()
 
 
 class SyncThread(QtCore.QThread):
@@ -28,14 +20,14 @@ class SyncThread(QtCore.QThread):
 
     """
     
-    information_signal = QtCore.pyqtSignal(QtCore.QString)
-    error_signal = QtCore.pyqtSignal(QtCore.QString)
-    question_signal = QtCore.pyqtSignal(QtCore.QString, QtCore.QString,
+    information_message = QtCore.pyqtSignal(QtCore.QString)
+    error_message = QtCore.pyqtSignal(QtCore.QString)
+    question_message = QtCore.pyqtSignal(QtCore.QString, QtCore.QString,
         QtCore.QString, QtCore.QString)
-    set_progress_text_signal = QtCore.pyqtSignal(QtCore.QString)
-    set_progress_range_signal = QtCore.pyqtSignal(int, int)
-    set_progress_value_signal = QtCore.pyqtSignal(int)    
-    close_progress_signal = QtCore.pyqtSignal()
+    set_progress_text_message = QtCore.pyqtSignal(QtCore.QString)
+    set_progress_range_message = QtCore.pyqtSignal(int, int)
+    set_progress_value_message = QtCore.pyqtSignal(int)    
+    close_progress_message = QtCore.pyqtSignal()
     
     def __init__(self, machine_id, database, server, port, username, password):
         QtCore.QThread.__init__(self)
@@ -58,33 +50,27 @@ class SyncThread(QtCore.QThread):
         client.do_backup = True
         client.upload_science_logs = True
         client.sync(self.server, self.port, self.username, self.password)
-        client.database.release_connection()
         
     def information_box(self, message):
-        self.information_signal.emit(message)
+        self.information_message.emit(message)
     
     def error_box(self, error):
-        self.error_signal.emit(error)
+        self.error_message.emit(error)
 
     def question_box(self, question, option0, option1, option2):
-        mutex.lock()
-        self.question_signal.emit(question, option0, option1, option2)
-        if not answer:
-            question_answered.wait(mutex)
-        mutex.unlock()
-        return answer
+        self.question_message.emit(question, option0, option1, option2)
 
     def set_progress_text(self, text):
-        self.set_progress_text_signal.emit(text)
+        self.set_progress_text_message.emit(text)
         
     def set_progress_range(self, minimum, maximum):
-        self.set_progress_range_signal.emit(minimum, maximum)        
+        self.set_progress_range_message.emit(minimum, maximum)        
 
     def set_progress_value(self, value):
-        self.set_progress_value_signal.emit(value) 
+        self.set_progress_value_message.emit(value) 
 
     def close_progress(self):
-        self.close_progress_signal.emit()
+        self.close_progress_message.emit()
 
 
 class SyncDlg(QtGui.QDialog, Ui_SyncDlg, SyncDialog):
@@ -120,34 +106,23 @@ class SyncDlg(QtGui.QDialog, Ui_SyncDlg, SyncDialog):
         self.config()["sync_as_client_username"] = username
         self.config()["sync_as_client_password"] = password
         # Do the actual sync in a separate thread.
-        self.database().release_connection()
-        global answer
-        answer = None
         thread = SyncThread(self.config().machine_id(), self.database(),
             server, port, username, password)
-        thread.information_signal.connect(\
+        thread.information_message.connect(\
             self.main_widget().information_box)
-        thread.error_signal.connect(\
+        thread.error_message.connect(\
             self.main_widget().error_box)
-        thread.question_signal.connect(\
-            self.threaded_question_box)        
-        thread.set_progress_text_signal.connect(\
+        thread.question_message.connect(\
+            self.main_widget().question_box)        
+        thread.set_progress_text_message.connect(\
             self.main_widget().set_progress_text)
-        thread.set_progress_range_signal.connect(\
+        thread.set_progress_range_message.connect(\
             self.main_widget().set_progress_range)
-        thread.set_progress_value_signal.connect(\
+        thread.set_progress_value_message.connect(\
             self.main_widget().set_progress_value)
-        thread.close_progress_signal.connect(\
+        thread.close_progress_message.connect(\
             self.main_widget().close_progress)
         thread.start()
         while thread.isRunning():
             QtGui.QApplication.instance().processEvents()
             thread.wait(100)
-
-    def threaded_question_box(self,question, option0, option1, option2):
-        global answer
-        mutex.lock()        
-        answer = self.main_widget().question_box(question, option0,
-            option1, option2)
-        question_answered.wakeAll()
-        mutex.unlock()
