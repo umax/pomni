@@ -52,39 +52,51 @@ class ServerThread(QtCore.QThread, SyncServer):
     def __init__(self, component_manager):
         QtCore.QThread.__init__(self)
         SyncServer.__init__(self, component_manager, self)
+        self.server_has_connection = False
 
     def run(self):
-        self.serve_until_stopped()
+        # Run until stopped.
+        import select
+        while not self.stopped:
+            if select.select([self.socket], [], [], 0.25)[0]:
+                self.handle_request()
+        self.socket.close()
         # Clean up after stopping.
+        import sys; sys.stderr.write("stopped!")
         mutex.lock()
+        if not self.server_has_connection:
+            database_released.wait(mutex)
         server_hanging = (len(self.sessions) != 0)
         mutex.unlock()
         if server_hanging:
-            if not self.server_has_connection:
-                mutex.lock()
-                database_released.wait(mutex)
-                mutex.unlock()
-            self.terminate_all_sessions() # Does its own locking.
+            self.terminate_all_sessions()
             self.database().release_connection()
             self.server_has_connection = False
             database_released.wakeAll()
             
-    def load_database(self, database_name):
+    def open_database(self, database_name):
         mutex.lock()
         self.sync_started_signal.emit()
-        if self.database().is_loaded():
+        if not self.server_has_connection:
             database_released.wait(mutex)
-        SyncServer.load_database(self, database_name)                
+        previous_database = self.config()["path"]      
+        if previous_database != database_name:
+            if not os.path.exists(expand_path(database_name,
+                self.config().basedir)):
+                self.database().new(database_name)
+            else:
+                self.database().load(database_name)
         self.server_has_connection = True
         mutex.unlock()
         return self.database()
 
     def unload_database(self, database):
         mutex.lock()
-        if self.server_has_connection:
-            self.database().release_connection()
-            self.server_has_connection = False
-            database_released.wakeAll()
+        if not self.server_has_connection:
+            database_released.wait(mutex)
+        self.database().release_connection()
+        self.server_has_connection = False
+        database_released.wakeAll()
         self.sync_ended_signal.emit()
         mutex.unlock()
         
@@ -149,14 +161,19 @@ class QtSyncServer(Component, QtCore.QObject):
             self.thread.close_progress_message.connect(\
                 self.main_widget().close_progress)
             self.thread.start()
+
+    def release_database_if_needed(self):
+        mutex.lock()
+        if not self.thread.server_has_connection:
+            self.database().release_connection()
+            self.thread.server_has_connection = True
+            database_released.wakeAll()
+        mutex.unlock()        
             
     def unload_database(self):
-        mutex.lock()
         self.previous_database = self.config()["path"]
-        self.database().release_connection()
-        database_released.wakeAll()
-        mutex.unlock()
-
+        self.release_database_if_needed()
+        
     def load_database(self):
         # If we are closing down the program, and there are still dangling
         # sessions in the server, we cannot continue.
@@ -164,30 +181,35 @@ class QtSyncServer(Component, QtCore.QObject):
             return
         mutex.lock()
         if self.thread.server_has_connection:
-            database_released.wait(mutex)            
+            database_released.wait(mutex)
         self.database().load(self.previous_database)
         self.log().loaded_database()
+        self.thread.server_has_connection = False
         self.review_controller().reset_but_try_to_keep_current_card()
         self.review_controller().update_dialog(redraw_all=True)
         self.thread.server_has_connection = False
         mutex.unlock()
 
-    def flush_sync_server(self):
-        # This function only does something useful if the server thread holds
-        # the database.
-        if not self.thread:
-            return
+    def server_is_hanging(self):
         mutex.lock()
-        self.thread.terminate_all_sessions()
-        reload_needed = not self.database().is_loaded()
+        hanging = (len(self.thread.sessions) != 0)
         mutex.unlock()
-        if reload_needed:
-            self.load_database_after_sync()
+        return hanging
+        
+    def flush_sync_server(self):
+        if not self.thread or not self.server_is_hanging():
+            return
+        self.deactivate()
+        self.activate()
             
     def deactivate(self):
-        # We have the database.
         if not self.thread:
             return
-        self.stop_server()
+        self.release_database_if_needed()
+        mutex.lock()
+        self.thread.stopped = True
+        mutex.unlock()
+        self.thread.wait()
+        self.thread = None
 
         
