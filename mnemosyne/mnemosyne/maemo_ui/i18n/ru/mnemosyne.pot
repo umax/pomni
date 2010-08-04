@@ -130,8 +130,11 @@ msgstr "Файл для импорта"
 msgid "Select file"
 msgstr "Выбор файла"
 
-msgid "Tags for new card"
+msgid "Tags for new cards"
 msgstr "Теги для новых карточек"
+
+msgid "Tags for new card"
+msgstr "Теги для новой карточки"
 
 msgid "Oops! Error occured."
 msgstr "Ой, ошибочка вышла."

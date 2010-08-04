@@ -25,7 +25,7 @@ Hildon UI: Input mode Widgets.
 """
 
 import pango
-import gettext
+from gettext import gettext as _
 
 from mnemosyne.libmnemosyne.ui_components.dialogs import \
     AddCardsDialog, EditFactDialog
@@ -38,8 +38,6 @@ from mnemosyne.libmnemosyne.card_types.both_ways import BothWays
 from mnemosyne.libmnemosyne.card_types.three_sided import ThreeSided
 from mnemosyne.libmnemosyne.card_types.cloze import Cloze
 Cloze.required_fields = ["text"]
-
-_ = gettext.gettext
 
 FONT_DISTINCTION = 7
 

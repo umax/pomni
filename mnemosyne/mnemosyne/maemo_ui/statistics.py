@@ -25,11 +25,9 @@ Hildon UI. Statistics widget.
 """
 
 import time
-import gettext
-import mnemosyne.maemo_ui.widgets.statistics as widgets
+from gettext import gettext as _
+from mnemosyne.maemo_ui.widgets.statistics import create_statistics_ui
 from mnemosyne.libmnemosyne.ui_components.dialogs import StatisticsDialog
-
-_ = gettext.gettext
 
 DAY = 24 * 60 * 60 # Seconds in a day.
 
@@ -48,7 +46,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
         # create widgets
         self.window, self.current_button, self.common_button, \
             self.tags_button, self.html_widget, self.html_container, \
-            self.info_label = widgets.create_statistics_ui()
+            self.info_label = create_statistics_ui()
         # connect signals
         self.window.connect('destroy', self.back_to_previous_mode_cb)
         self.current_button.connect('clicked', self.current_card_statistics_cb)
@@ -76,7 +74,6 @@ class MaemoStatisticsWidget(StatisticsDialog):
 
 
     # callbacks
-
     def current_card_statistics_cb(self, widget):
         """Switches to the current card statistics page."""
 
@@ -164,7 +161,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
 
         for radio_button in self.current_button.get_group():
             if radio_button.get_active():
-                self.config()["last_variant_for_statistics_page"] = \
+                self.config()['last_variant_for_statistics_page'] = \
                     radio_button.get_group().index(radio_button)
                 break
         self.main_widget().widgets['statistics'] = None

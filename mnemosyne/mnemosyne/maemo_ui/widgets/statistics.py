@@ -27,7 +27,7 @@ Hildon UI. Statistics widget.
 import gtk
 import hildon
 from gettext import gettext as _
-import mnemosyne.maemo_ui.widgets.common as widgets
+from mnemosyne.maemo_ui.widgets.common import create_gtkhtml
 
 
 def create_statistics_ui():
@@ -54,7 +54,7 @@ def create_statistics_ui():
     menu.add_filter(tags_stats_filter)
 
     widgets_box = gtk.VBox()
-    html_widget = widgets.create_gtkhtml()
+    html_widget = create_gtkhtml()
     html_widget.set_sensitive(False)
     pannable_area = hildon.PannableArea()
     pannable_area.set_property('vovershoot-max', 0)
@@ -65,9 +65,9 @@ def create_statistics_ui():
     widgets_box.pack_start(label, expand=True, fill=False)
     widgets_box.pack_start(pannable_area)
 
-    menu.show_all()
     window.set_app_menu(menu)
     window.add(widgets_box)
+    menu.show_all()
     window.show_all()
 
     return window, current_stats_filter, all_stats_filter, tags_stats_filter, \

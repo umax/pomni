@@ -51,7 +51,7 @@ def create_tags_ui(database):
         tags_dict[tag.name] = tag._id
         tags_names.append(tag.name)
         cards_count = database.total_card_count_for__tag_id(tag._id)
-        selector.append_text(unicode(tag.name + " (%s cards)" % cards_count))
+        selector.append_text(unicode(tag.name + " (%s)" % cards_count))
 
     if tags_names:
         if len(tags_names) > 1:

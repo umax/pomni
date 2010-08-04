@@ -21,7 +21,7 @@
 #
 
 """
-Hildon UI: Tags widget.
+Hildon UI. Tags widget.
 """
 
 import re
@@ -38,11 +38,11 @@ class TagsWidget(ActivateCardsDialog):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         # create widgets
-        self.window, self.selector, button_stats, self.tags_dict = \
+        window, self.selector, button_stats, self.tags_dict = \
             widgets.create_tags_ui(self.database())
         # connecting signals
-        self.window.connect('destroy', self.tags_to_main_menu_cb)
         button_stats.connect('clicked', self.stats_cb)
+        window.connect('destroy', self.tags_to_main_menu_cb)
 
     def activate(self):
         """Activate 'ActivateCardsDialog'."""
@@ -61,7 +61,7 @@ class TagsWidget(ActivateCardsDialog):
             indexes_of_selected_tags]
 
         for selected_tag in selected_tags:
-            tag_name = unicode(re.search(r'(.+) \(\d+ cards\)', \
+            tag_name = unicode(re.search(r'(.+) \(\d+\)', \
                 selected_tag).group(1))
             criterion.active_tag__ids.add(self.tags_dict[tag_name])
         return criterion
