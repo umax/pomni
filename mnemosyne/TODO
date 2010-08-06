@@ -1,6 +1,12 @@
--test suite speed, timeout
+-server: add 1 card, import mnemosyne. after sync with client: all cards due... (last rep and next rep set to zero...)
 -modulo in progress dialogs
 -reduce socket timeout and test again
+
+-is it worth keeping database.tag_names?
+-get rid of 'get_'
+-update_cards --> modify cards, edit cards?
+-delete fact and related data,  --> related cards?
+-reload counters --> recalc counters
 
 -current active set not marked upon entering
 
@@ -13,13 +19,6 @@
 
 -need component.statisticspages and configuration widgets?
 -pressing enter on configuration pages does not equal 'OK'
-
-
--is it worth keeping database.tag_names?
--get rid of 'get_'
--update_cards --> modify cards, edit cards?
--delete fact and related data,  --> related cards?
--reload counters --> recalc counters
 
 -check if media files exist?
 
