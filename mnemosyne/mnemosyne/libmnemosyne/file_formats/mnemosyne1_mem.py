@@ -5,6 +5,7 @@
 import os
 import re
 import sys
+import time
 import shutil
 import cPickle
 import datetime
@@ -107,7 +108,18 @@ class Mnemosyne1Mem(FileFormat):
         # to the txt logs, and after the import we update the partership index.
         db.dump_to_txt_log() 
         self._import_logs(filename)
-        db.bring_txt_log_partnership_index_forward()
+        db.skip_science_log()
+        # Force an ADDED_CARD log entry for those cards that did not figure in
+        # the txt logs, e.g. due to missing or corrupt logs.
+        db.add_missing_added_card_log_entries(\
+            set(item.id for item in self.items))
+        # In 2.x, repetition events are used to update a card's last_rep and
+        # next_rep during sync. In 1.x, there was no such information, and
+        # calculating it from the logs will fail if they are incomplete.
+        # Therefore, we force a card update event for all cards.
+        timestamp = int(time.time())
+        for item in self.items:
+            db.log_updated_card(timestamp, item.id)
         # Mananage database indices.
         db.after_mem_import()
         db.save()
