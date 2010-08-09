@@ -1,8 +1,3 @@
--test suite errors
--test suite speed, timeout
--modulo in progress dialogs
--reduce socket timeout and test again
-
 -is it worth keeping database.tag_names?
 -get rid of 'get_'
 -update_cards --> modify cards, edit cards?
@@ -53,8 +48,6 @@
 >         return duplicates
 
 
--rework progress bar API
-
 -more tests
 -update_cards --> modify cards?
 
@@ -83,14 +76,6 @@ the GUI function itself?
 -delete 1.99 logs
 -reenable upload
 
-<<<<<<< HEAD
-=======
--progress dialog title is 'mnemosyne' instead of 'Mnemosyne'
-
--... after menu options that open a dialog
--suppress autorepeat on review dialog
-
->>>>>>> 0e820b3... More UI integration work.
 -do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
 -Hungarian translation by bkil + others (announce on website)
@@ -219,6 +204,82 @@ pylint:
 
 * After 2.0:
 
+<<<<<<< HEAD
+=======
+-hack tarfile to add progress bar?
+
+-'shared deck' export
+-is 'client_info["shared_dack"] the best way to signal this? Or have entirely new
+ server API functions?
+-make sure not send across learning data, e.g. by calling reset_learning_data on
+ a copy in _log_entry() for card
+-server.py
+    def open_shared_database(self, database_name, username):
+
+        """A shared database only contains log entries to specify the card
+        contents, not the learning data. Make sure this is read-only for
+        everybody except the original author. Can have side effects like
+        listing the shared deck on a website, ... .
+
+        """
+-client.py
+
+    def upload_shared_database(self):
+        raise NotImplementedError
+
+        # client_info["shared_deck"] = True
+        # self.login(hostname, port, username, password)
+        # self.put_client_log_entries()
+        # self.put_client_media_files()
+        # no self.get_sync_finish(), no partnership update.
+    
+        # Refactor put_client_log_entries to have arguments number_of_entries,
+        # entries, where entries is an iterator that does not pass through the
+        # log put rather only creates new cards and facts events.     
+        # Ditto for media files.
+
+        # An upload always overrides the previous one. The alternative would be
+        # to have to generate artificial deletion events for cards which are
+        # still in the original author's database, but which he no longer wants
+        # to share.
+
+    def download_shared_database(self):
+        raise NotImplementedError
+    
+        # client_info["shared_deck"] = True
+        # backup_file = self.database.backup()
+        # self.login(hostname, port, username, password)
+        # self.get_client_log_entries()
+        # self.get_client_media_files()
+
+        # download will never delete cards, even if they were in a previous
+        # version of the shared deck. TODO: is this good or bad? If we do want
+        # this, we do need to complicate the protocol and worry about creating
+        # artificial deletion events?
+
+-    def card_from_log_entry(self, log_entry):
+        # When syncing from a shared deck, don't update repetition data, but do
+        # update fact views, card types, tags. (TODO: think about changing card
+        # types more carefully.) (TODO: make sure we don't override our own
+        # existing tags.)
+        # Note that shared cards do have the same id's across all users, this
+        # will give extra info for the science server (but means that in this
+        # case the science server will need to look at user_ids too to
+        # differentiate the cards.
+-    def apply_log_entry(self, log_entry):
+        # When (re)downloading shared decks, there will be only ADDED_ events,
+        # not UPDATED_events. Convert the former to the latter if the objects
+        # were already in the database.
+-make sure to enforce read-only, preferable through server itself, not through
+ open_shared_database
+
+
+-mechanism to have plugin settings synced?
+-send across cards as pictures (see stubs in client.py and server.py). Add resolution to filename? (device rotation)
+-option purge history, refactor logging test. Should only happen in no other sync partners are
+ interested in it
+
+>>>>>>> 40a22bc... Improve progress bar.
 -website redesign? like http://hanzim.com/download.php
 
 -add days since last rep / until next rep to statistics

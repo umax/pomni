@@ -24,10 +24,11 @@ class SyncThread(QtCore.QThread):
     error_message = QtCore.pyqtSignal(QtCore.QString)
     question_message = QtCore.pyqtSignal(QtCore.QString, QtCore.QString,
         QtCore.QString, QtCore.QString)
-    set_progress_text_message = QtCore.pyqtSignal(QtCore.QString)
-    set_progress_range_message = QtCore.pyqtSignal(int, int)
-    set_progress_value_message = QtCore.pyqtSignal(int)    
-    close_progress_message = QtCore.pyqtSignal()
+    set_progress_text_signal = QtCore.pyqtSignal(QtCore.QString)
+    set_progress_range_signal = QtCore.pyqtSignal(int, int)
+    set_progress_update_interval_signal = QtCore.pyqtSignal(int)
+    set_progress_value_signal = QtCore.pyqtSignal(int)    
+    close_progress_signal = QtCore.pyqtSignal()
     
     def __init__(self, machine_id, database, server, port, username, password):
         QtCore.QThread.__init__(self)
@@ -64,8 +65,11 @@ class SyncThread(QtCore.QThread):
         self.set_progress_text_message.emit(text)
         
     def set_progress_range(self, minimum, maximum):
-        self.set_progress_range_message.emit(minimum, maximum)        
-
+        self.set_progress_range_signal.emit(minimum, maximum)
+        
+    def set_progress_update_interval(self, value):
+        self.set_progress_update_interval_signal.emit(value)
+        
     def set_progress_value(self, value):
         self.set_progress_value_message.emit(value) 
 
@@ -118,7 +122,9 @@ class SyncDlg(QtGui.QDialog, Ui_SyncDlg, SyncDialog):
             self.main_widget().set_progress_text)
         thread.set_progress_range_message.connect(\
             self.main_widget().set_progress_range)
-        thread.set_progress_value_message.connect(\
+        thread.set_progress_update_interval_signal.connect(\
+            self.main_widget().set_progress_update_interval)
+        thread.set_progress_value_signal.connect(\
             self.main_widget().set_progress_value)
         thread.close_progress_message.connect(\
             self.main_widget().close_progress)
