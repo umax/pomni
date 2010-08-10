@@ -91,7 +91,7 @@ class Configuration(Component, dict):
              "background_colour": {}, # [card_type.id]             
              "font_colour": {}, # [card_type.id][fact_key]
              "alignment": {}, # [card_type.id]
-             "grade_0_cards_in_hand": 10,
+             "non_memorised_cards_in_hand": 10,
              "randomise_new_cards": False,
              "randomise_scheduled_cards": False,
              "memorise_related_cards_on_same_day": False, 
@@ -233,3 +233,22 @@ class Configuration(Component, dict):
                 user, index = last.split('_')
                 index = int(index.split('.')[0]) + 1
 
+    def change_user_id(self, new_user_id):
+
+        """When a client syncs for the first time with a server, we need to
+        set the client's user_id identical to the one of the server, in order
+        for the uploaded anonymous logs to be consistent. However, we should only
+        do this on a 'virgin' client.
+
+        """
+
+        if new_user_id == self["user_id"]:
+            return
+        db = self.database()        
+        if self["log_index"] > 1 or not db.is_empty():
+            raise RuntimeError, "Unable to change user id."
+        old_user_id = self["user_id"]
+        self["user_id"] = new_user_id
+        from mnemosyne.libmnemosyne.component_manager import \
+             migrate_component_manager
+        migrate_component_manager(old_user_id, new_user_id)
