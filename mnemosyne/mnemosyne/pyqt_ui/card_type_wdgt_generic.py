@@ -42,7 +42,7 @@ class GenericCardTypeWdgt(QtGui.QWidget, GenericCardTypeWidget):
             try:
                 font_string = self.config()["font"][card_type.id][fact_key]
                 font = QtGui.QFont()
-                font.fromString(font_string)
+                font.fromString(font_string)                
                 t.setCurrentFont(font)
             except:
                 pass            
@@ -83,4 +83,4 @@ class GenericCardTypeWdgt(QtGui.QWidget, GenericCardTypeWidget):
         self.top_edit_box.setFocus()
     
     def text_changed(self):
-        self.parent().set_valid(self.card_type.is_data_valid(self.get_data()))
+        self.parent().set_valid(self.card_type.is_data_valid(self.data()))

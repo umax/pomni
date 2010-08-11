@@ -126,8 +126,7 @@ class Mnemosyne1Mem(FileFormat):
             
     def _import_mem_file(self, filename, tag_names, reset_learning_data=False):
         self.importdir = os.path.dirname(os.path.abspath(filename))
-        w = self.main_widget()
-        
+        w = self.main_widget()    
         # Mimick 1.x module structure.
         class MnemosyneCore(object):                          
             class StartTime:                                    
@@ -137,8 +136,7 @@ class Mnemosyne1Mem(FileFormat):
             class Item:                                         
                 pass
         sys.modules["mnemosyne.core"] = object()       
-        sys.modules["mnemosyne.core.mnemosyne_core"] = MnemosyneCore()
-        
+        sys.modules["mnemosyne.core.mnemosyne_core"] = MnemosyneCore()       
         # Load data.
         try:
             memfile = file(filename, "rb")
@@ -157,8 +155,7 @@ class Mnemosyne1Mem(FileFormat):
         if card:
             w.error_box(\
                 _("This file seems to have been imported before. Aborting..."))
-            return -2
-            
+            return -2          
         # Convert to 2.x data structures.
         w.set_progress_text(_("Importing cards..."))
         w.set_progress_range(0, len(self.items))
@@ -341,4 +338,3 @@ class Mnemosyne1Mem(FileFormat):
             if component.component_type == "card_type" and component.id == "4":
                 plugin.activate()
     
-

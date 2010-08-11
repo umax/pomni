@@ -158,7 +158,7 @@ class SQLiteLogging(object):
     
     def dump_to_txt_log(self):
         # Open log file and get starting index.
-        logname = os.path.join(self.config().basedir, "log.txt")
+        logname = os.path.join(self.config().data_dir, "log.txt")
         logfile = file(logname, "a")
         sql_res = self.con.execute(\
             "select _last_log_id from partnerships where partner=?",
@@ -271,8 +271,14 @@ class SQLiteLogging(object):
         self.con.execute("delete from log where _id>? and event=?",
             (index, self.ADDED_CARD))
         self.con.execute("vacuum")
+
+    def add_missing_added_card_log_entries(self, id_set):
+
+        """Make sure all ids in 'id_set' have a card creation log entry."""
         
-    def bring_txt_log_partnership_index_forward(self):
-        self.con.execute(\
-            "update partnerships set _last_log_id=? where partner=?",
-            (self.get_log_index(), "log.txt"))       
+        for id in id_set - set(cursor[0] for cursor in self.con.execute(\
+          "select distinct object_id from log where event_type=?",
+          (EventTypes.ADDED_CARD, ))):
+            self.log_added_card(int(time.time()), id)
+            
+        
