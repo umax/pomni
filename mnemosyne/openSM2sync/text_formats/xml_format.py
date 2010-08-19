@@ -137,17 +137,11 @@ class XMLFormat(object):
                 yield log_entry
 
     def repr_message(self, message, traceback=None):
-        xml = "<openSM2sync message=\"%s\">" % (message, )
+        xml = "<openSM2sync message='%d'>" % (message, )
         if traceback:
             xml += "<traceback>%s</traceback>" % saxutils.escape(traceback)
         xml += "</openSM2sync>"
         return xml
 
-    def parse_message(self, xml):
-        element = cElementTree.XML(xml)
-        message = element.attrib["message"]
-        traceback = None
-        if element.find("traceback") is not None:
-            traceback = element.find("traceback").text
-        return message, traceback
-
+    def parse_message(self, text):
+        raise NotImplementedError
