@@ -1,15 +1,8 @@
--in add_cards controller, add __UNTAGGED__ if tag is empty. Document why.
--add test
--in libmnemosyne, pyqt_ui, get rid of <default> 
--in tree widget for tags, rename __UNTAGGED__ with _("untagged")
+-statistics dlg from designer? also hide tabbar there
 
--convert default tags on import, make sure the events needed for sync are there
+-new style connect
 
--test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
-
--check if media files exist?
--time how long it takes to extract all media from a set of cards. If it takes too
- long, consider adding a media field to the fact table
+-reapply activity criterion after sync
 
 -warn when creating a new database that this is not the recommended way to organise your cards.
 -right click to add cards or sound, comma to separate tag names, :: to separate hierarchies
@@ -42,19 +35,17 @@
 -MVC: http://doc.trolltech.com/qq/qq24-delegates.html
 -make card browser remember its size
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
--better mechanism to have different renderers?
+-better mechanism to have different renderers, e.g. filters that only run on sync.
 
 -do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
 -delete 1.99 logs
 -reenable upload
 
-
 -alpha 1
 
 
 -make distrib
--http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
 
 -Qt bug? different font size in edit box and in css
 
@@ -65,7 +56,8 @@
 
 -reenable datadir in setup.py
 
--Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev
+-Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev, Ullrich Martini
+ (also make sure they are on webpage)
 
 -Faq about how to pronounce Mnemosyne
 
@@ -258,6 +250,7 @@ pylint:
 
 -mechanism to have plugin settings synced?
 -send across cards as pictures (see stubs in client.py and server.py). Add resolution to filename? (device rotation)
+-Tim's gogorender plugin
 -option purge history, refactor logging test. Should only happen in no other sync partners are
  interested in it
 

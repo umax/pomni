@@ -58,6 +58,40 @@ class GenericCardTypeWdgt(QtGui.QWidget, GenericCardTypeWidget):
         self.hboxlayout.addLayout(self.vboxlayout)
         self.resize(QtCore.QSize(QtCore.QRect(0,0,325,264).size()).\
                     expandedTo(self.minimumSizeHint()))
+        
+    def update_formatting(self, edit_box):
+        fact_key = self.fact_key_for_edit_box[edit_box]
+        try:
+            colour = self.config()["font_colour"][self.card_type.id][fact_key]
+            edit_box.setTextColor(QtGui.QColor(colour))
+        except KeyError:
+            # The defaults have not been changed, there is no key for colour.
+            pass
+        try:
+            colour = self.config()["background_colour"][self.card_type.id]
+            p = QtGui.QPalette()
+            p.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base,
+                       QtGui.QColor(colour))
+            edit_box.setPalette(p)
+        except KeyError:
+            pass
+        try:
+            font_string = self.config()["font"][self.card_type.id][fact_key]
+            font = QtGui.QFont()
+            font.fromString(font_string)                
+            edit_box.setCurrentFont(font)
+        except KeyError:
+            pass
+
+    def reset_formatting(self):
+
+        """Deleting all the text reverts back to the system font, so we have
+        to force our custom font again.
+
+        """
+        
+        for edit_box in self.fact_key_for_edit_box:
+            self.update_formatting(edit_box)
 
     def contains_data(self):
         for edit_box in self.edit_boxes:
