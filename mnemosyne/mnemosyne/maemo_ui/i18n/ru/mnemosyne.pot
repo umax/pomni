@@ -187,3 +187,21 @@ msgstr "Всего карточек"
 msgid "Grade statistics for all cards"
 msgstr "Оценки по всем карточкам"
 
+msgid "Interval"
+msgstr "Интервал"
+
+msgid "Lapses"
+msgstr "Снижение оценки"
+
+msgid "Average thinking time (secs)"
+msgstr "Среднее время обдумывания (сек)"
+
+msgid "Total thinking time (secs)"
+msgstr "Общее время обдумывания (сек)"
+
+msgid "Last repetition"
+msgstr "Последнее повторение"
+
+msgid "Next repetition"
+msgstr "Следующее повторение"
+
