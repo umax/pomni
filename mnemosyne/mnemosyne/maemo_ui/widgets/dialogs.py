@@ -59,8 +59,8 @@ def show_about_dialog():
         "size='small'>Vlad Vasiliev |</span> <span foreground='#299BFC' " \
         "size='small'>vlad@gas.by</span>\n\n<span foreground='white' " \
         "size='small'><b>" + _('Designer') + ":</b>\n</span><span foreground=" \
-        "'white' size='small'>Andrew Zhilin |</span> <span foreground=" \
-        "'#299BFC' size='small'>drew.zhilin@gmail.com</span>\n\n<span " \
+        "'white' size='small'>Artem Shubin |</span> <span foreground=" \
+        "'#299BFC' size='small'>admin@mayan.ru</span>\n\n<span " \
         "foreground='white' size='small'><b>" + _('Development team') + \
         ":</b></span>\n<span foreground='#299BFC' size='small'>pomni@" \
         "googlegroups.com</span><span foreground='white' size='small'><b>" \
