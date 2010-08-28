@@ -37,7 +37,8 @@ class MenuWidget(UiComponent):
         UiComponent.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         # create widgets
-        self.window, buttons = widgets.create_menu_ui()
+        self.window, buttons = widgets.create_menu_ui( \
+            self.config()['theme_path'])
         # connect signals
         self.window.connect('delete_event', self.exit_cb)
         buttons['tags'].connect('clicked', self.tags_cb)

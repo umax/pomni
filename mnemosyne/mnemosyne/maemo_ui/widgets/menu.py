@@ -24,12 +24,23 @@
 Hildon UI. Widgets for menu.
 """
 
+import os
 import gtk
 import hildon
 from gettext import gettext as _
 
 
-def create_menu_ui():
+def create_button(image_name, title):
+    """Creates menu button with image."""
+
+    button = hildon.Button(gtk.HILDON_SIZE_AUTO, \
+        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, title)
+    button.set_image(gtk.image_new_from_file(image_name))
+    button.set_alignment(0.5, 0.5, 0, 0)
+    return button
+
+
+def create_menu_ui(theme_path):
     """Creates MenuWidget UI."""
 
     toplevel_table = gtk.Table(rows=1, columns=1)
@@ -39,21 +50,25 @@ def create_menu_ui():
     window.set_title('Mnemosyne for Maemo')
 
     # create menu buttons
-    buttons_table = gtk.Table(rows=2, columns=2)
+    buttons_table = gtk.Table(rows=2, columns=2, homogeneous=True)
     buttons_table.set_row_spacings(4)
     buttons_table.set_col_spacings(4)
-    button_review = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Review'))
-    button_input = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Input'))
-    button_tags = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Tags'))
-    button_stats = hildon.Button(gtk.HILDON_SIZE_AUTO, \
-        hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Stats'))
-    buttons_table.attach(button_review, 0, 1, 0, 1)
-    buttons_table.attach(button_input, 1, 2, 0, 1)
-    buttons_table.attach(button_tags, 0, 1, 1, 2)
-    buttons_table.attach(button_stats, 1, 2, 1, 2)
+    button_review = create_button(os.path.join(theme_path, 'review.png'), \
+        _('Review'))
+    button_input = create_button(os.path.join(theme_path, 'input.png'), \
+        _('Input'))
+    button_tags = create_button(os.path.join(theme_path, 'tags.png'), \
+        _('Tags'))
+    button_stats = create_button(os.path.join(theme_path, 'stats.png'), \
+        _('Stats'))
+    buttons_table.attach(button_review, 0, 1, 0, 1, \
+        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
+    buttons_table.attach(button_input, 1, 2, 0, 1, \
+        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
+    buttons_table.attach(button_tags, 0, 1, 1, 2, \
+        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
+    buttons_table.attach(button_stats, 1, 2, 1, 2, \
+        yoptions=gtk.SHRINK|gtk.EXPAND|gtk.FILL)
 
     # create AppMenu
     menu = hildon.AppMenu()
