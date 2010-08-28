@@ -205,3 +205,30 @@ msgstr "Последнее повторение"
 msgid "Next repetition"
 msgstr "Следующее повторение"
 
+msgid "Card type"
+msgstr "Тип карточки"
+
+msgid "Question type"
+msgstr "Вопрос"
+
+msgid "text"
+msgstr "Текст"
+
+msgid "sound"
+msgstr "Звуковой фрагмент"
+
+msgid "image"
+msgstr "Изображение"
+
+msgid "Front-to-back only"
+msgstr "Односторонняя"
+
+msgid "Front-to-back and back-to-front"
+msgstr "Двусторонняя"
+
+msgid "Foreign word with pronunciation"
+msgstr "Одностороняя с транскрипцией"
+
+msgid "Cloze deletion"
+msgstr "С подстановками"
+

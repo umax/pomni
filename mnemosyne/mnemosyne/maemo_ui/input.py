@@ -252,7 +252,7 @@ class InputWidget(UiComponent):
         #self._main_widget.soundplayer.stop()
         selected_cardtype = dialogs.show_items_dialog(None, self.window, \
             [card_type.name for card_type in self.card_types()], \
-            _('Card_type'), self.card_type.name)
+            _('Card type'), self.card_type.name)
         for card_type in self.card_types():
             if card_type.name == selected_cardtype:
                 selected_cardtype = card_type

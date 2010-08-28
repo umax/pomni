@@ -89,26 +89,40 @@ def show_items_dialog(widget, window, items, caption, cur_item=None):
 
     dialog = hildon.PickerDialog(window)
     dialog.set_title(caption)
-    selector = hildon.TouchSelector(text=True)
+    selector = hildon.TouchSelector()
     dialog.set_selector(selector)
     selector.set_column_selection_mode( \
         hildon.TOUCH_SELECTOR_SELECTION_MODE_SINGLE)
 
-    # fill items list
-    current_item = cur_item or widget.get_value()
+    # creating items dict
     items_dict = dict([(index, item) for index, item in enumerate(items)])
+    model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
+    if cur_item:
+        current_item = cur_item
+    else:
+        translated_item = widget.get_value()
+        for index, item in items_dict.iteritems():
+            if translated_item == _(item):
+                current_item = item
+                break
+
+    # populating list
     for item in items_dict.values():
-        selector.append_text(item)
+        model.append((_(item), item))
+    selector.append_text_column(model, True)
+
+    # mark active item
+    selector.unselect_all(0)
     for key in items_dict:
         if items_dict[key] == current_item:
             selector.set_active(0, key)
             break
 
     dialog.run()
-    selected_item = items_dict[selector.get_active(0)]
+    selected_item = selector.get_model(0)[selector.get_active(0)][1]
     dialog.destroy()
     if widget is not None:
-        widget.set_value(selected_item)
+        widget.set_value(_(selected_item))
     return selected_item
 
 
@@ -262,7 +276,7 @@ def show_tts_settings_dialog(config):
 
     voice_button = create_button(_('Voice'), config['tts_voice'])
     voice_button.connect('clicked', show_items_dialog, dialog, \
-        [_('Male'), _('Female')], _('Voice'))
+        ['Male', 'Female'], _('Voice'))
     widgets_box.pack_start(voice_button, expand=False, fill=False)
 
     speed_button = create_button(_('Pronunciation speed'), \
