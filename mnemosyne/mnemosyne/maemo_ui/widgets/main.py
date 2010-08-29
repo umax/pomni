@@ -55,6 +55,7 @@ def create_information_dialog(window, text, title=_('Information')):
     dialog.set_title(title)
     label = gtk.Label()
     label.set_justify(gtk.JUSTIFY_CENTER)
+    label.set_line_wrap(True)
     label.set_text('\n' + text + '\n')
     dialog.vbox.add(label)
     dialog.vbox.show_all()
