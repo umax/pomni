@@ -100,6 +100,7 @@ def show_items_dialog(widget, window, items, caption, cur_item=None):
     if cur_item:
         current_item = cur_item
     else:
+        current_item = items_dict[0]
         translated_item = widget.get_value()
         for index, item in items_dict.iteritems():
             if translated_item == _(item):
@@ -123,6 +124,7 @@ def show_items_dialog(widget, window, items, caption, cur_item=None):
     dialog.destroy()
     if widget is not None:
         widget.set_value(_(selected_item))
+        widget.set_data('title', selected_item)
     return selected_item
 
 
@@ -269,12 +271,14 @@ def show_tts_settings_dialog(config):
     widgets_box = gtk.VBox()
     widgets_box.set_spacing(4)
 
-    language_button = create_button(_('Language'), config['tts_language'])
+    language_button = create_button(_('Language'), _(config['tts_language']))
+    language_button.set_data('title', config['tts_language'])
     language_button.connect('clicked', show_items_dialog, dialog, \
         tts.get_languages(), _('Language'))
     widgets_box.pack_start(language_button, expand=False, fill=False)
 
-    voice_button = create_button(_('Voice'), config['tts_voice'])
+    voice_button = create_button(_('Voice'), _(config['tts_voice']))
+    voice_button.set_data('title', config['tts_voice'])
     voice_button.connect('clicked', show_items_dialog, dialog, \
         ['Male', 'Female'], _('Voice'))
     widgets_box.pack_start(voice_button, expand=False, fill=False)
@@ -298,8 +302,8 @@ def show_tts_settings_dialog(config):
 
     response = dialog.run()
     if response == gtk.RESPONSE_OK:
-        config['tts_language'] = language_button.get_value()
-        config['tts_voice'] = voice_button.get_value()
+        config['tts_language'] = language_button.get_data('title')
+        config['tts_voice'] = voice_button.get_data('title')
         config['tts_speed'] = int(speed_button.get_value())
         config['tts_pitch'] = int(pitch_button.get_value())
 
