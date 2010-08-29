@@ -232,6 +232,12 @@ msgstr "Одностороняя с транскрипцией"
 msgid "Cloze deletion"
 msgstr "С подстановками"
 
+msgid "You've memorised 15 new cards."
+msgstr "Вы выучили 15 новых карточек."
+
+msgid "If you do this for many days, you could get a big workload later."
+msgstr "Если вы будете делать это слишком часто, то получите большую загрузку в будущем."
+
 msgid "english"
 msgstr "Английский"
 
