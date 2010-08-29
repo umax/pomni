@@ -44,7 +44,7 @@ def show_about_dialog():
     program_name_label.set_use_markup(True)
     program_name_label.set_markup("<span foreground='white' size='large'><b>" \
         "Mnemosyne for Maemo</b></span>\n<span foreground='white' size=" \
-        "'medium'>" + _('version') + " 2.0.0~beta12~rc1</span>\n")
+        "'medium'>" + _('version') + " 2.0.0~beta12</span>\n")
 
     pannable_area = hildon.PannableArea()
     pannable_area.set_size_request_policy(hildon.SIZE_REQUEST_CHILDREN)
