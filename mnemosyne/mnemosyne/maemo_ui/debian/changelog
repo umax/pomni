@@ -1,3 +1,9 @@
+mnemosyne (2.0.0~beta13~rc1) unstable; urgency=low
+
+  * use bugs.maemo.org as bugtracker link
+
+ -- Max Usachev <maxusachev@gmail.com>  Sun, 29 Aug 2010 19:38:05 +0200
+
 mnemosyne (2.0.0~beta12) unstable; urgency=low
 
   * added bugtracker field to control file
