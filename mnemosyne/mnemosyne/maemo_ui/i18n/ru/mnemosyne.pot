@@ -232,3 +232,141 @@ msgstr "Одностороняя с транскрипцией"
 msgid "Cloze deletion"
 msgstr "С подстановками"
 
+msgid "english"
+msgstr "Английский"
+
+msgid "italian"
+msgstr "Итальянский"
+
+msgid "russian_test"
+msgstr "Русский"
+
+msgid "russian"
+msgstr "Русский"
+
+msgid "polish"
+msgstr "Польский"
+
+msgid "latvian"
+msgstr "Латвийский"
+
+msgid "greek"
+msgstr "Греческий"
+
+msgid "albanian"
+msgstr "Албанский"
+
+msgid "finnish"
+msgstr "Финский"
+
+msgid "croatian"
+msgstr "Хорватский"
+
+msgid "greek-ancient"
+msgstr "Древнегреческий"
+
+msgid "macedonian-test"
+msgstr "Македонский"
+
+msgid "armenian-west"
+msgstr "Армянский (западный)"
+
+msgid "armenian"
+msgstr "Армянский"
+
+msgid "afrikaans"
+msgstr "Африканский"
+
+msgid "portugal"
+msgstr "Португальский"
+
+msgid "czech"
+msgstr "Чешкий"
+
+msgid "french"
+msgstr "Французский"
+
+msgid "french (Belgium)"
+msgstr "Французский (Бельгия)"
+
+msgid "swedish"
+msgstr "Шведский"
+
+msgid "slovak"
+msgstr "Словацкий"
+
+msgid "tamil"
+msgstr "Тамильский"
+
+msgid "kurdish"
+msgstr "Курдский"
+
+msgid "spanish"
+msgstr "Испанский"
+
+msgid "welsh-test"
+msgstr "Валлийский"
+
+msgid "dutch-test"
+msgstr "Голландский"
+
+msgid "esperanto"
+msgstr "Эсперанто"
+
+msgid "brazil"
+msgstr "Бразильский"
+
+msgid "hindi-test"
+msgstr "Хинди"
+
+msgid "icelandic-test"
+msgstr "Исландский"
+
+msgid "indonesian-test"
+msgstr "Индонезийский"
+
+msgid "turkish"
+msgstr "Турецкий"
+
+msgid "romanian"
+msgstr "Румынский"
+
+msgid "german"
+msgstr "Немецкий"
+
+msgid "norwegian"
+msgstr "Норвежский"
+
+msgid "en-scottish"
+msgstr "Шотландский"
+
+msgid "english-us"
+msgstr "Американский"
+
+msgid "danish"
+msgstr "Датский"
+
+msgid "spanish-latin-american"
+msgstr "Испанский (Латинская Америка)"
+
+msgid "vietnam-test"
+msgstr "Вьетнамский"
+
+msgid "catalan"
+msgstr "Каталанский"
+
+msgid "serbian"
+msgstr "Сербский"
+
+msgid "default"
+msgstr "По умолчанию"
+
+msgid "bosnian"
+msgstr "Боснийский"
+
+msgid "latin"
+msgstr "Латинский"
+
+msgid "hungarian"
+msgstr "Венгерский"
+
