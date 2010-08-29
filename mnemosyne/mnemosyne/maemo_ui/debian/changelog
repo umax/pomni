@@ -1,3 +1,10 @@
+mnemosyne (2.0.0~beta11+nmu1) unstable; urgency=low
+
+  * fixed bug #156
+  * finished work on Russian localization
+
+ -- plastun <plastun@lenovo>  Sun, 29 Aug 2010 18:15:39 +0300
+
 mnemosyne (2.0.0~beta11) unstable; urgency=low
 
   * added icons to menu buttons
