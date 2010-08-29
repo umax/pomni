@@ -178,7 +178,7 @@ class InputWidget(UiComponent):
     def check_complete_input(self):
         """Check for non empty fields."""
 
-        pattern_list = ['<%s>' % caption.upper() for caption in self.areas]
+        pattern_list = ['<%s>' % _(caption).upper() for caption in self.areas]
         pattern_list.append("")
         for selector in self.selectors[self.card_type.id]['widgets']:
             buf = selector[1].get_buffer()
@@ -216,7 +216,8 @@ class InputWidget(UiComponent):
         """Clear widgets data."""
 
         for caption in self.areas:
-            self.areas[caption].get_buffer().set_text('<%s>' % caption.upper())
+            self.areas[caption].get_buffer().set_text( \
+                '<%s>' % _(caption).upper())
         if self.content_type in ('image', 'sound'):
             widgets.change_media_button_image(self.widgets['MediaButton'], \
                 self.content_type, self.renderer, folder_mode=True)
@@ -336,7 +337,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
     def clear_text_cb(self, widget, event):
         """Clear textview content."""
 
-        if self.get_textview_text(widget) in ['<%s>' % caption.upper() \
+        if self.get_textview_text(widget) in ['<%s>' % _(caption).upper() \
             for caption in self.areas]:
             widget.get_buffer().set_text('')
 

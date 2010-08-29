@@ -22,6 +22,9 @@ msgstr "Синхронизация"
 msgid "Delete this card and 1 related card?"
 msgstr "Удалить эту карточку и связанные с ней?"
 
+msgid "Delete this card?"
+msgstr "Удалить эту карточку?"
+
 msgid "Card deletion"
 msgstr "Удаление карточки"
 
@@ -237,6 +240,30 @@ msgstr "Вы выучили 15 новых карточек."
 
 msgid "If you do this for many days, you could get a big workload later."
 msgstr "Если вы будете делать это слишком часто, то получите большую загрузку в будущем."
+
+msgid "Show answer"
+msgstr "Показать ответ"
+
+msgid "Learn ahead of schedule"
+msgstr "Учить, опережая расписание"
+
+msgid "question"
+msgstr "вопрос"
+
+msgid "answer"
+msgstr "ответ"
+
+msgid "pronunciation"
+msgstr "транскрипция"
+
+msgid "cloze"
+msgstr "фраза с подстановками"
+
+msgid "translation"
+msgstr "перевод"
+
+msgid "foreign"
+msgstr "слово"
 
 msgid "english"
 msgstr "Английский"

@@ -110,8 +110,9 @@ class Html(Renderer):
     def render_hint(self, widget, text):
         """Render html text for show answer button."""
 
-        html = "<html><head><style>*{font-size:30px;font-family:Nokia Sans}" \
-            "body {background:#FFFFFF;color:#000000;}table {height:100;" \
+        html = "<html><head><meta http-equiv='Content-Type' content='text/" \
+            "html; charset=UTF-8'><style>*{font-size:30px;font-family:Nokia " \
+            "Sans} body {background:#FFFFFF;color:#000000;}table {height:100;" \
             "margin-left:auto;margin-right:auto;}</style></head><body><table>" \
             "<tr><td>%s</td></tr></table></body></html>" % text
         return self.render_html(widget, self.change_font_size(html))
