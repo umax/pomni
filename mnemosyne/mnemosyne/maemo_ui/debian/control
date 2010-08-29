@@ -19,7 +19,7 @@ Description: Learning tool based on spaced repetition technique
  often, while Mnemosyne won't waste your time on things you remember well.
 XB-Vcs-Git: git://github.com/umax/pomni.git
 XB-Vcs-Browser: http://github.com/umax/pomni/tree/n900/mnemosyne/mnemosyne/maemo_ui/
-XSBC-Bugtracker: mailto:maxusachev@gmail.com
+XSBC-Bugtracker: https://bugs.maemo.org/enter_bug.cgi?product=mnemosyne
 XB-Maemo-Display-Name: Mnemosyne
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
