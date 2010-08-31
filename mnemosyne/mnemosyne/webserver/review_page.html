@@ -6,16 +6,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 table {
+  align: center;
   width: 100%;
   border: 1px solid black;
   padding: 1em;
 }
-table.buttonarea {
+#buttonarea table {
   border: 0;
   padding: 0;
-  background-color: white;
 }
-input {
+input.button {
   width: 100%;
 }
 $card_css
@@ -23,11 +23,13 @@ $card_css
 </head>
 <body>
 
-<table class="buttonarea">
-  <tr>
-  $buttons
-  </tr>   
-</table>
+<div id="buttonarea">
+  <table>
+    <tr>
+    $buttons
+    </tr>   
+  </table>
+</div>
 
 <p>$question_label</p>
 
