@@ -2,6 +2,8 @@
 -""" vs "
 -formatting
 
+-statistics page is not remembered
+-rename sync_server_password in config to something more general
 -apply activity criterion after sync, for both partners + test
 
 -warn when creating a new database that this is not the recommended way to organise your cards.
@@ -193,6 +195,8 @@ pylint:
 * After 2.0:
 
 -post nose 0.11: add cover branches
+
+-matplotlib screen corruption, reenble resize?
 
 -hack tarfile to add progress bar?
 -compression on backup to reduce write time to SD card?

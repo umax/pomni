@@ -56,8 +56,9 @@ class StatisticsDlg(QtGui.QDialog, Ui_StatisticsDlg, StatisticsDialog):
         page.display_variant(variant_index)
         self.config()["previous_statistics_page"] = page_index
         width, height = self.config()["statistics_dlg_size"]
-        if width:
-            self.resize(width, height)
+        # Disabled, seems to cause corruption with current Matplotlib.
+        #if width:
+        #    self.resize(width, height)
 
 
 class StatisticsPageWdgt(QtGui.QWidget, Component):
