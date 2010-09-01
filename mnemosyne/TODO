@@ -4,9 +4,6 @@
 -make use of new renderer mechanism
 -less hacky way to get to the widget, as opposed to via the review controller
 
-
--statistics page is not remembered
--rename sync_server_password in config to something more general
 -apply activity criterion after sync, for both partners + test
 
 -warn when creating a new database that this is not the recommended way to organise your cards.
@@ -137,6 +134,10 @@ the GUI function itself?
 
 -integrate webserver in GUI, login mechanism, session_token, cookies
 -add webserver in testsuite, case when the database is empty
+-sound files suffer from connection reset by peer. Try other WSGI server?
+-add html caching support for media files
+-send absolute filenames when running server locally, so that we don't need to
+ send them over http
 
 -have hierarchy in plugin names
 
@@ -288,6 +289,8 @@ pylint:
 -skritter/cpod interop mail
 
 -better supermemo import
+
+-API for statusbar widgets
 
 -get rid of mp3 clip prevention?
 
