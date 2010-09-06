@@ -12,6 +12,9 @@ class WebserverRenderer(HtmlCss):
         
     """
 
-    def render_fields(self, data, fields, card_type, **render_args):
-        return self.body(data, fields, **render_args)
+    used_for = "webserver"
+    
+    def render_fields(self, field_data, fields, card_type,
+                      render_chain, **render_args):
+        return self.body(field_data, fields, render_chain, **render_args)
 
