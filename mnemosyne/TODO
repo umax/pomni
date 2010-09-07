@@ -26,16 +26,9 @@
 
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
 
--preview card formatting changes; cancel does not undo the changes (vestige of card_type.renderer())
-
--add full html header to stardard renderer. Still need MW table hack?
 -test and time renderer on MW. Need to cache it?
 
 -edit vs update
-
--""" vs ", also in renderer
--make use of new renderer mechanism
--less hacky way to get to the widget, as opposed to via the review controller
 
 -apply activity criterion after sync, for both partners + test
 
