@@ -193,6 +193,7 @@ class DefaultController(Controller):
                 for card in cards_to_be_edited:
                     card.card_type = new_card_type
                     card.fact = fact
+                fact.data = new_fact_data
                 # Do the conversion.
                 new_cards, edited_cards, deleted_cards = \
                    converter.convert(cards_to_be_edited, old_card_type,
@@ -217,7 +218,8 @@ class DefaultController(Controller):
                 if new_cards and self.review_controller().learning_ahead:
                     self.review_controller().reset()
                     
-        # Update fact and create or delete cards.
+        # Update fact and create or delete cards (due to updating of fact
+        # data, not changing of card type).
         new_cards, edited_cards, deleted_cards = \
             new_card_type.edit_related_cards(fact, new_fact_data)
         fact.data = new_fact_data
@@ -484,6 +486,14 @@ class DefaultController(Controller):
         self.flush_sync_server()
         self.component_manager.current("browse_cards_dialog")\
             (self.component_manager).activate()
+
+        #rebuild_queue()
+        #if not in_queue(self.card):
+        #    self.newQuestion()
+        #else:
+        #    remove_from_queue(self.card) # It's already being asked.
+        #self.review_controller().update_dialog(redraw_all=True)
+        
         self.stopwatch().unpause()
         
     def card_appearance(self):
