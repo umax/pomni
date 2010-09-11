@@ -1,5 +1,10 @@
--better next_rep, last rep representation, Q sort role
--add 'date added', ('date_edited' will be for later, requires extra column?)
+-cardtype.q --> create question? relationship.
+-have 'activate plugin for card type work on card types, not on ids
+-tag column, sort tags
+-make q,a and tags column optional for some clients (default None, so as to make sure each client sets it)
+-reorder card fields in sql and in card.py
+
+-better next_rep, last rep representation
 -grey for inactive cards
 -reorder card fields
 -respect fonts
