@@ -33,6 +33,12 @@ class Map(CardType):
     fact_views = [v1, v2]
     unique_fields = ["loc"]
     required_fields = ["loc", "blank", "marked"]
+    
+    def create_question(self, card, render_chain="default", **render_args):
+        # Insert a blank line to improve layout.
+        card.fact["_"] = "<br>"
+        return CardType.create_question(self, card, render_chain,
+            **render_args)
 
 
 class MapPlugin(Plugin):

@@ -90,11 +90,17 @@ class CardType(Component, CompareOnId):
 
     # The following functions can be overridden by speciality card types.
         
-    def fact_data(self, card):
-        return card.fact.data
+    def create_question(self, card, render_chain="default", **render_args):
+        return self.renderer(render_chain).render_fields(card.fact,
+            card.fact_view.q_fields, self, render_chain, **render_args)
 
-    def create_answer_data(self, card):
-        return card.fact.data
+    def create_answer(self, card, render_chain="default", **render_args):
+        return self.renderer(render_chain).render_fields(card.fact,
+            card.fact_view.a_fields, self, render_chain, **render_args)
+    
+    # The following functions should only deal with creating, deleting, ...
+    # Card objects. Initial grading and storing in the database is done in
+    # the main controller.
 
     def create_related_cards(self, fact):
 
