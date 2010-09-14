@@ -85,10 +85,12 @@ class Card(CompareOnId):
         self.next_rep = -1
 
     def question(self, render_chain="default", **render_args):
-        return self.card_type.question(self, render_chain, **render_args)
+        return self.card_type.render_question\
+            (self, render_chain, **render_args)
        
-    def answer(self, render_chain="default", **render_args):                
-        return self.card_type.answer(self, render_chain, **render_args)
+    def answer(self, render_chain="default", **render_args):
+        return self.card_type.render_answer\
+            (self, render_chain, **render_args)
 
     def tag_string(self):
         return ", ".join([tag.name for tag in self.tags if \

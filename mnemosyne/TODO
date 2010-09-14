@@ -1,6 +1,14 @@
--cardtype.q --> create question? relationship.
--have 'activate plugin for card type work on card types, not on ids
--tag column, sort tags
+-still render question in card type? Document why we can't do this in card directly
+-make 'field_data' 'fields' terminology uniform
+-renderer: used for: card_type, None
+-filter: no used for
+-create folder with renderchains
+-update renderers
+-test webserver
+-see if we can reduce the argument count in render_q and render_a
+-update overview document, add render chain to pages
+-test blank line hack in map card type
+
 -make q,a and tags column optional for some clients (default None, so as to make sure each client sets it)
 -reorder card fields in sql and in card.py
 
