@@ -1,6 +1,22 @@
--more renderer.set_property to config
--question_box, etc: remove box
--rename relative_paths to Media_paths
+-blocking calls, like question
+-do we need the buffer, can't we send immediately?
+-http://code.activestate.com/recipes/408859-socketrecv-three-ways-to-turn-it-into-recvall/
+-both in client and server, wait until everything has been initialised
+-clean server shutdown
+-flesh out calls
+-so far, we don't seem to need threads
+-note that we don't profit from prefetching in the review controller. Fixable by blocking?
+ add comment in code
+-time open database connection
+-way to shutdown server, self.socket.close
+-get rid of socket server for overhead?
+-allow port number to be passed to server as argument on command line
+-name == main trick for webserver too?
+-inform maemo people of thread trick
+-remove print statements from production server
+
+
+-server embedded in C
 
 -make q,a and tags column optional for some clients (default None, so as to make sure each client sets it)
 -reorder card fields in sql and in card.py
@@ -32,6 +48,20 @@
 -apply activity criterion after sync, for both partners + test
 -sync to empty webserver
 -add support for error messages on protocol mismatch, expired credit
+-add support for render chain selection
+
+-larger interval for initial grade 5?
+
+-media file handler
+-don't do media check in database, but in controller?
+-rename relative_paths to Media_paths
+-create latex dir in filter plugin?
+-delete orphaned media files. Do it in controller, not in database, so that it needs to 
+ happen only once when batch deleting a set of cards.
+
+-card formatting options on remote web server: act on config info that the client sent across
+ Add hook in set_partner_info
+
 
 -warn when creating a new database that this is not the recommended way to organise your cards.
 -right click to add cards or sound, comma to separate tag names, :: to separate hierarchies
@@ -78,6 +108,8 @@
  (also make sure they are on webpage)
 
 -Faq about how to pronounce Mnemosyne
+-check if online username is still free
+-threading or forking sync and review servers
 
 
 -import
