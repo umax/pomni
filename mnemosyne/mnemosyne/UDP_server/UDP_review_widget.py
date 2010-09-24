@@ -19,10 +19,13 @@ class UDP_ReviewWidget(ReviewWidget):
         self.show_button_enabled = True              
         self.grade_buttons_enabled = False
         self.status_bar = ""
+
+    def write_to_socket(self, data):
+        self.main_widget().write_to_socket(data)
         
     def set_question_label(self, text):
         self.write_to_socket\
-            ("@@review_widget.set_question_label(\"%s\")" % text)
+            ("< review_widget.set_question_label(\"%s\")" % text)
         
     def set_question(self, text):
         self.question = text
@@ -35,7 +38,7 @@ class UDP_ReviewWidget(ReviewWidget):
 
     def set_answer(self, text):
         self.write_to_socket\
-            ("@@review_widget.set_answer(\"%s\")" % text)
+            ("< review_widget.set_answer(\"%s\")" % text)
 
     def clear_answer(self):
 		self.answer = ""
