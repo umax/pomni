@@ -21,8 +21,8 @@ class UDP_ReviewWidget(ReviewWidget):
         self.status_bar = ""
         
     def set_question_label(self, text):
-        self.main_widget().buffer += \
-            ("< review_widget.set_question_label(\"%s\")\n" % text)
+        self.write_to_socket\
+            ("@@review_widget.set_question_label(\"%s\")" % text)
         
     def set_question(self, text):
         self.question = text
@@ -34,7 +34,8 @@ class UDP_ReviewWidget(ReviewWidget):
         self.question_box_visible = visible
 
     def set_answer(self, text):
-        self.answer = text
+        self.write_to_socket\
+            ("@@review_widget.set_answer(\"%s\")" % text)
 
     def clear_answer(self):
 		self.answer = ""
