@@ -19,6 +19,13 @@ class Client(object):
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.connect(("localhost", PORT))
+        connected = False
+        while not connected:
+            try:
+                self.send_command("# Waiting for server...")
+                connected = True
+            except:
+                time.sleep(0.1)
 
     def send_command(self, command):
         self.socket.send(command)
@@ -56,72 +63,14 @@ class Client(object):
         self.socket.send(str(data) + "\n")
 
 
-# Simple example of loading an existing database and doing a review.
-if __name__ == "__main__":
-    import subprocess
-    subprocess.Popen(["./bin/python", "./mnemosyne/UDP_server/server.py",
-        str(PORT)])
+c = Client()
+c.send_command("mnemosyne.initialise(data_dir=\"%s\", filename=\"%s\")" % (data_dir, filename))
+c.send_command("mnemosyne.start_review()")
+c.send_command("mnemosyne.review_controller().show_answer()")
+c.send_command("mnemosyne.review_controller().grade_answer(0)")
+c.send_command("mnemosyne.finalise()")
 
-    import os
-    data_dir = os.path.abspath("dot_mnemosyne2")
-    filename = "default.db"
+c.send_command("mnemosyne.main_widget().show_question(\"a\", \"1\", \"2\", \"3\")")
+c.send_command("1/0")
 
-    c = Client()
-    c.send_command("mnemosyne.initialise(data_dir=\"%s\", filename=\"%s\")" \
-        % (data_dir, filename))
-    c.send_command("mnemosyne.start_review()")
-    c.send_command("mnemosyne.review_controller().show_answer()")
-    c.send_command("mnemosyne.review_controller().grade_answer(0)")
-    c.send_command("mnemosyne.finalise()")
-    c.send_command("exit()")
-
-# This results in the following exchange:
-
-#>># Waiting for server...
-#Server listening on port 6666
-#>># Waiting for server...
-#>>mnemosyne.initialise(
-# data_dir="/home/pbienst/source/mnemosyne-proj-pbienst/mnemosyne/dot_mnemosyne2",
-# filename="default.db")
-#@@main_widget.set_window_title("""Mnemosyne""")
-#>>mnemosyne.start_review()
-#@@review_widget.set_question_box_visible("""True""")
-#@@review_widget.set_question_label("""Question: my tag""")
-#@@review_widget.set_question("""
-#...html...
-#""")
-#@@review_widget.clear_answer()
-#@@review_widget.update_show_button("""Show answer""","""True""","""True""")
-#@@review_widget.set_grades_enabled("""False""")
-#@@review_widget.update_status_bar()
-#@@main_widget.enable_edit_current_card("""True""")
-#@@main_widget.enable_delete_current_card("""True""")
-#@@main_widget.enable_browse_cards("""True""")
-#>>mnemosyne.review_controller().show_answer()
-#@@review_widget.set_answer_box_visible("""True""")
-#@@review_widget.set_question_label("""Question: my tag""")
-#@@review_widget.set_answer("""
-#...html...
-#""")
-#@@review_widget.update_show_button("""Show answer""","""True""","""False""")
-#@@review_widget.set_grades_enabled("""True""")
-#@@review_widget.set_default_grade("""4""")
-#@@review_widget.update_status_bar()
-#@@main_widget.enable_edit_current_card("""True""")
-#@@main_widget.enable_delete_current_card("""True""")
-#@@main_widget.enable_browse_cards("""True""")
-#>>mnemosyne.review_controller().grade_answer(0)
-#@@review_widget.set_question_box_visible("""True""")
-#@@review_widget.set_question_label("""Question: my tag""")
-#@@review_widget.set_question("""
-#...html...
-#""")
-#@@review_widget.clear_answer()
-#@@review_widget.update_show_button("""Show answer""","""True""","""True""")
-#@@review_widget.set_grades_enabled("""False""")
-#@@review_widget.update_status_bar()
-#@@main_widget.enable_edit_current_card("""True""")
-#@@main_widget.enable_delete_current_card("""True""")
-#@@main_widget.enable_browse_cards("""True""")
-#>>mnemosyne.finalise()
-#>>exit()
+c.send_command("exit()")
