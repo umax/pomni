@@ -12,8 +12,7 @@ class MyHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         data = self.request[0].strip()
         socket = self.request[1]
-        print "> " + data
-        
+        sys.stdout = sys.stderr = socket.makefile("w")
         mnemosyne = self.server.mnemosyne
         # Hijack the component manager to store some more global data there.
         mnemosyne.component_manager.socket = socket
