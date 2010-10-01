@@ -1,4 +1,9 @@
--be sure to use strncopy, also expose buffer size in interface
+-read up on ref counting
+-callback with a return value
+-export function names, clean up
+-treat exceptions
+-clean up paths
+-capture stdout/err needed?
 -test for memory leaks
 -treat exceptions
 -clean up paths
