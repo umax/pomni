@@ -91,7 +91,13 @@ int main(int argc, char *argv[])
   PyObject* pyIntObject = PyInt_FromLong(5);
   if (pyIntObject == NULL) ; // Error
 
-  Py_DECREF(pyIntObject);
+  PyObject* module = PyImport_ImportModule("__builtin__");
+  PyObject* obj = PyRun_String("unicode(1).encode(\"utf-8\")", Py_eval_input, PyModule_GetDict(module), NULL);
+  Py_DECREF(module);
+  char* s = PyString_AsString(obj);
+  //PyErr_Print();
+  printf("string: %s\n", s);  
+  Py_DECREF(obj);
 
   Py_Finalize();
   return 0;
