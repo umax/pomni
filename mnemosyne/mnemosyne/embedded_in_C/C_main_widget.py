@@ -2,6 +2,7 @@
 # C_main_widget.py <Peter.Bienstman@UGent.be>
 #
 
+import _C_main_widget
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
 
 
@@ -14,10 +15,6 @@ class C_MainWidget(MainWidget):
 
     def read_from_socket(self):
         pass
-    
-
-    def __init__(self, component_manager):
-        MainWidget.__init__(self, component_manager)
 
     def status_bar_message(self, message):
         self.callback(message)
@@ -25,9 +22,10 @@ class C_MainWidget(MainWidget):
     def show_information(self, message):
         self.callback(message)
         
-    def show_question(self, question, option0, option1, option2):
-        self.callback(question, option0, option1, option2)
-        return int(self.read_from_socket())
+    def show_question(self, question, option0, option1, option2=""):
+        a = _C_main_widget._show_question(question, option0, option1, option2)
+        print 'got', a
+        return a
     
     def show_error(self, message):
         self.callback(message)
@@ -65,4 +63,5 @@ class C_MainWidget(MainWidget):
         return self.read_from_socket()
 
     def set_window_title(self, title):
-        self.callback(title)
+        _C_main_widget._set_window_title(title)
+

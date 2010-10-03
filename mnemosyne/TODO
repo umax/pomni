@@ -1,6 +1,10 @@
--server embedded in C
--treat exceptions
+-be sure to use strncopy, also expose buffer size in interface
 -test for memory leaks
+-treat exceptions
+-clean up paths
+-hook up dialogs, also in UDP
+-capture stdout/err needed?
+
 
 -option not have pregenerated columns on initial binary download is sync
 
