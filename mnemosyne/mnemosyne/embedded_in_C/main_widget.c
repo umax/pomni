@@ -1,29 +1,16 @@
+
+//
 // main_widget.c <Peter.Bienstman@UGent.be>
+//
 
-#include <Python.h>
+#include <stdio.h>
 
-static PyObject* _set_window_title(PyObject* self, PyObject* args)
+int main_widget_show_question(char* question, char* option_0, char* option_1,
+                              char* option_2)
 {
- char* title = NULL;
- if (!PyArg_ParseTuple(args, "s", &title)) 
-   return NULL;
-
- // ----------------------------------------------------------------
- // Replace this by something useful.
- printf("set_window_title: %s\n", title);
- // ----------------------------------------------------------------
-
- Py_INCREF(Py_None);
- return Py_None;
-}
-
-static PyMethodDef main_widget_methods[] = {
- {"_set_window_title", _set_window_title, METH_VARARGS, "_set_window_title"},
- {NULL, NULL, 0, NULL}
-};
-
-PyMODINIT_FUNC
-init_C_main_widget(void)
-{
-  Py_InitModule("_C_main_widget", main_widget_methods);
+  printf("show_question: %s, %s, %s, %s\n", question, option_0, option_1,
+         option_2);
+  // We should ask the user which option he chooses, but here, we just 
+  // hardcode option 0.
+  return 0;
 }

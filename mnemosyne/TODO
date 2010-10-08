@@ -1,11 +1,12 @@
--read up on ref counting
--callback with a return value
--export function names, clean up
--treat exceptions
--clean up paths
--capture stdout/err needed?
--test for memory leaks
--treat exceptions
+-move ALL python related code to python_bridge.c, in correct order, also run simple string
+-rename WM main window class
+-review widget: order functions, in all clients
+-create libmnemosyne.a, improve makefile
+-hook up review widget
+-hook up dialogs, also in UDP
+-clean up example client, more useful command, sync, ...
+-revisit all files, make as parallel with UDP as possible
+-treat exceptions?
 -clean up paths
 -hook up dialogs, also in UDP
 -capture stdout/err needed?

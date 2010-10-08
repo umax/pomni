@@ -102,9 +102,7 @@ class TestMainController(MnemosyneTest):
         w = MainWidget(self.mnemosyne.component_manager)
         w.show_information("")
         w.show_error("")
-        w.status_bar_message("")
-        w.add_to_status_bar(None)
-        w.clear_status_bar()
+        w.set_status_bar_message("")
 
         self.controller().add_cards()
         self.controller().edit_current_card()
