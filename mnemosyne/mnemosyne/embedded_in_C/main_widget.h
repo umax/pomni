@@ -15,6 +15,7 @@ void main_widget_show_error(char* message);
 void main_widget_get_filename_to_open(char* path, char* filter, char *caption,
                                       char* filename, int str_size);
 
+<<<<<<< HEAD
 // The following function should warn about overwritin existing file.
 void main_widget_get_filename_to_save(char* path, char* filter, char *caption,
                                       char* filename, int str_size);
@@ -46,3 +47,10 @@ void main_widget_enable_delete_current_card(int enable);
 
 void main_widget_enable_browse_cards(int enable);
 
+=======
+void main_widget_get_filename_to_save(char* path, char* filter, char *caption,
+                                      char* filename, int str_size);
+// Should check for overwritin existing file.
+
+
+>>>>>>> 15b42fb... More C api work.

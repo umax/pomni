@@ -2,6 +2,8 @@
 // python_bridge.c <Peter.Bienstman@UGent.be>
 //
  
+#define STR_SIZE 128
+
 #include <string.h>
 #include <stdlib.h>
 #include <Python.h>
@@ -91,6 +93,18 @@ static PyObject* _main_widget_get_filename_to_save(PyObject* self,
   return PyUnicode_FromString(filename);
 }
 
+
+static PyObject* _main_widget_set_status_bar_message(PyObject* self, 
+                                                     PyObject* args)
+{
+  char* message = NULL;
+  if (!PyArg_ParseTuple(args, "s", &message))
+    return NULL;
+
+  // --------------------------------------------------------------------------
+  // Replace this by something useful.
+  printf("set_status_bar_message: %s\n", message);
+  // --------------------------------------------------------------------------
 
 static PyObject* _main_widget_set_status_bar_message(PyObject* self, 
                                                      PyObject* args)
@@ -198,7 +212,7 @@ static PyObject* _main_widget_enable_browse_cards(PyObject* self,
 }
 
 
-static PyMethodDef main_widget_methods[] = {
+static PyMethodDef C_main_widget_methods[] = {
  {"set_window_title",             _main_widget_set_window_title, 
   METH_VARARGS, ""},
  {"show_information",             _main_widget_show_information, 
@@ -269,6 +283,7 @@ PyObject* log_CaptureStderr(PyObject* self, PyObject* pArgs)
  Py_INCREF(Py_None);
  return Py_None;
 }
+
 
 static PyMethodDef logMethods[] = {
  {"CaptureStdout", log_CaptureStdout, METH_VARARGS, "Logs stdout"},
