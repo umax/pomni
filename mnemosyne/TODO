@@ -1,16 +1,13 @@
--main widget.h
--move ALL python related code to python_bridge.c, in correct order, also run simple string
--rename WM main window class
--review widget: order functions, in all clients
--create libmnemosyne.a, improve makefile
--hook up review widget
+-review_wdgt and main widget both have update_status bar
+-what to call text arguments: 'text' or something more specific?
+-fix crash
+-eval python does not refer to main context
 -hook up dialogs, also in UDP
 -clean up example client, more useful command, sync, ...
 -treat exceptions?
 -clean up paths
 -capture stdout/err needed?
--README file
-
+-make docs
 
 -add preambe/postamble in latex signature
 -option not have pregenerated columns on initial binary download is sync
