@@ -21,7 +21,17 @@ class Mnemosyne(Component):
 
     """
 
-    def __init__(self):
+    def __init__(self, upload_science_logs):
+
+        """For mobile clients, it is recommended that you set
+        'upload_science_logs' to 'False'.
+        We need to specify 'upload_science_logs' as an argument here, so
+        that we can inject it on time to prevent the uploader thread from
+        starting.
+
+        """
+        
+        self.upload_science_logs = upload_science_logs
         self.component_manager = new_component_manager()
         self.components = [
          ("mnemosyne.libmnemosyne.databases.SQLite",
