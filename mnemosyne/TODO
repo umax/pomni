@@ -1,3 +1,6 @@
+-wrap repaint now in UDP and embedded C server
+-document repaint now in 'how to write a new frontend'
+
 -option not have pregenerated columns on initial binary download in sync
 
 -better next_rep, last rep representation
