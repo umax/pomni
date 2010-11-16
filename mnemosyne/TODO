@@ -1,12 +1,8 @@
--mouse over / selection color
--ellisis / scroll bars not possible?
--what to do with br?
--don't display background colour? Or revert it on selection?
+-compare with qt book
+-background colour: probably not
 -respect fonts, but not size or alignment
--font colors or not? If not, remove
--don't display images, latex?
--is html_css_light a good name?
--add tests for new render chain
+-itemdelegate for column only
+-make sure images, latex, ... are displayed as such
 
 
 -searching
