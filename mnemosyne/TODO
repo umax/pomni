@@ -1,6 +1,13 @@
--background colour
--respect fonts
--regular expressions get recompiled everytime?
+-mouse over / selection color
+-ellisis / scroll bars not possible?
+-what to do with br?
+-don't display background colour? Or revert it on selection?
+-respect fonts, but not size or alignment
+-font colors or not? If not, remove
+-don't display images, latex?
+-is html_css_light a good name?
+-add tests for new render chain
+
 
 -searching
 -make sure searching for a single unicode character works
