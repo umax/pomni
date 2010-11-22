@@ -29,7 +29,7 @@ class HtmlCssLight(HtmlCss):
             try:
                 colour = self.config()["font_colour"][card_type.id][key]
                 colour_string = ("%X" % colour)[2:] # Strip alpha.
-                css += "color: #%s;" % colour_string
+                css += "color: #%s; " % colour_string
             except:
                 pass
             # Text font.
@@ -64,7 +64,8 @@ class HtmlCssLight(HtmlCss):
         css = self.css(card_type)
         if "ignore_text_colour" in render_args and \
             render_args["ignore_text_colour"] == True:
-            css = colour_re.sub("", css)
+            # TODO
+            pass
         body = self.body(data, fields, **render_args)
         return """
         <html>
