@@ -2,8 +2,11 @@
 # html_css_light.py <Peter.Bienstman@UGent.be>
 #
 
+import re
+
 from mnemosyne.libmnemosyne.renderers.html_css import HtmlCss
 
+colour_re = re.compile(r"color:.+?;")
 
 class HtmlCssLight(HtmlCss):
 
@@ -59,6 +62,9 @@ class HtmlCssLight(HtmlCss):
                 
     def render_fields(self, data, fields, card_type, **render_args):
         css = self.css(card_type)
+        if "ignore_text_colour" in render_args and \
+            render_args["ignore_text_colour"] == True:
+            css = colour_re.sub("", css)
         body = self.body(data, fields, **render_args)
         return """
         <html>
