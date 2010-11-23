@@ -40,11 +40,9 @@ class CurrentCard(HtmlStatisticsPage):
                 % (card.interval / DAY)
             date_format = locale.nl_langinfo(locale.D_FMT)
             self.html += _("Last repetition") + ": %s<br>" \
-                % time.strftime(date_format, time.gmtime(card.last_rep))\
-                .decode("utf-8")           
+                % self.scheduler().last_rep_to_interval_string(card.last_rep)
             self.html += _("Next repetition") + ": %s<br>" \
-                % time.strftime(date_format, time.gmtime(card.next_rep))\
-                .decode("utf-8")
+                % self.scheduler().next_rep_to_interval_string(card.next_rep)
             self.html += _("Average thinking time (secs)") + ": %d<br>" \
                 % self.database().average_thinking_time(card)
             self.html += _("Total thinking time (secs)") + ": %d<br>" \
