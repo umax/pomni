@@ -1,4 +1,3 @@
--tests?
 
 -use font colour from card type for all fields, but use 
  lighter color function from Qt if card is inactive
