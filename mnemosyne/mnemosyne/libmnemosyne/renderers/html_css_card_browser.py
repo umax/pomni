@@ -30,27 +30,26 @@ class HtmlCssCardBrowser(HtmlCss):
                 colour = self.config()["font_colour"][card_type.id][key]
                 colour_string = ("%X" % colour)[2:] # Strip alpha.
                 css += "color: #%s; " % colour_string
-            except KeyError:
+            except:
                 pass
             # Text font.
             try:
                 font_string = self.config()["font"][card_type.id][key]
-                if font_string:
-                    family,size,x,x,w,i,u,s,x,x = font_string.split(",")
-                    css += "font-family: \"%s\"; " % family
-                    if w == "25":
-                        css += "font-weight: light; "
-                    if w == "75":
-                        css += "font-weight: bold; "
-                    if i == "1":
-                        css += "font-style: italic; "
-                    if i == "2":
-                        css += "font-style: oblique; "
-                    if u == "1":
-                        css += "text-decoration: underline; "
-                    if s == "1":
-                        css += "text-decoration: line-through; "
-            except KeyError:
+                family,size,x,x,w,i,u,s,x,x = font_string.split(",")
+                css += "font-family: \"%s\"; " % family
+                if w == "25":
+                    css += "font-weight: light; "
+                if w == "75":
+                    css += "font-weight: bold; "                    
+                if i == "1":
+                    css += "font-style: italic; "
+                if i == "2":
+                    css += "font-style: oblique; "
+                if u == "1":
+                    css += "text-decoration: underline; "
+                if s == "1":
+                    css += "text-decoration: line-through; "
+            except:
                 pass                
             css += "}\n"
         return css
@@ -67,11 +66,10 @@ class HtmlCssCardBrowser(HtmlCss):
             render_args["ignore_text_colour"] == True:
             css = colour_re.sub("", css)
         if "search_string" in render_args and render_args["search_string"]:
-            search_re = re.compile("(" + render_args["search_string"] + ")",
-                re.IGNORECASE)
+            search_string = render_args["search_string"]
+            replace_string = "<span class=\"_search\">%s</span>" % search_string
             for field in fields:
-                data[field] = search_re.sub(\
-                    "<span class=\"_search\">\\1</span>", data[field])
+                data[field] = data[field].replace(search_string, replace_string)
         body = self.body(data, fields, **render_args)
         return """
         <html>
