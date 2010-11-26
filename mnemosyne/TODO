@@ -1,14 +1,9 @@
--don't have slider for search box
+-break out tag tree widget:
+ -fix expand on scaling
+ -implement selection to criterion
 
--default vsplit ratio 1/3 as opposed to 1/1?
-
--search colouring is case sensitive, sqlfilter is case insensitive
-
--filtering on tag and card type. Time single statement vs current multiple statements
- in criterion applier
-
--rename activity criterion to criterion?
-
+-searching
+-make sure searching for a single unicode character works
 -auto search after timeout?
 -filtering on tag and card type
 -show number of cards per tag and cardtype?
