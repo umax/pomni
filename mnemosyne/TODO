@@ -1,22 +1,17 @@
--filtering on tag and card type. Time single statement vs current multiple statements
- in criterion applier
--rename activity criterion to criterion?
+-document tag tree
+-test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]
+-UNTAGGED always gets added?
+-where to put untagged in hierarchy? last, first, top level, just below?
 
--auto search after timeout?
--show on update tree selection or only when pressing button?
- if latter, colour button if selection changes.
-
--show number of cards per tag and cardtype?
 -save column sizes
 -save sort order
+-edit tag name, also partially. Rebuild wigdet after that. Need to release db connection?
 -right click menu options: edit, preview, delete, change card type, add tags, remove tags
 -repopulate tree widgets after editing/deleting
 -add controller logic for after editing/deleting a card in browse cards
 -throwing an exception in browse cards does not release database
 
 -apply activity criterion after sync, for both partners + test
-
--larger interval for initial grade 5?
 
 -media file handler
 -don't do media check in database, but in controller?
@@ -36,7 +31,6 @@
  (update comment in scheduler too)
 
 
--test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 
 -go through all source
 -communicate SQLite_no_pregerated_data, save interval, ..., repaint now to client writers
@@ -286,6 +280,7 @@ a good alternative, as it does not obey selection coloring
 -rewrite card browser in C++, or at least delegate? In that case, move question and answer getting
  to data, and eliminate the text colors at selection using Qt.
 -inline editing in card browser
+-editing names of card type clones, also in browser
 
 -send across cards as pictures (see stubs in client.py and server.py). Add resolution to filename? (device rotation)
 -Tim's gogorender plugin

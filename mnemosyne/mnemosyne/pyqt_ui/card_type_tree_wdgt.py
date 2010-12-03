@@ -6,7 +6,6 @@ from PyQt4 import QtCore, QtGui
 
 from mnemosyne.libmnemosyne.translator import _
 from mnemosyne.libmnemosyne.component import Component
-from mnemosyne.libmnemosyne.criteria.default_criterion import DefaultCriterion
 
 
 class CardTypesTreeWdgt(QtGui.QWidget, Component):
@@ -21,10 +20,7 @@ class CardTypesTreeWdgt(QtGui.QWidget, Component):
         self.card_type_tree.setHeaderHidden(True)
         self.layout.addWidget(self.card_type_tree)
 
-    def display(self, criterion=None):
-        # Create criterion if needed.
-        if criterion is None:
-            criterion = DefaultCriterion(self.component_manager)
+    def display(self, criterion):
         # Determine number of cards at each level of the tree.
         root_count = 0
         count_for_card_type = {}
