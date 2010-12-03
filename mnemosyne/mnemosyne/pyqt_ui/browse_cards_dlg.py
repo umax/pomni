@@ -210,9 +210,14 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         self.label_3 = QtGui.QLabel(_("containing this text:"),
             self.container_2)
         self.layout_2.addWidget(self.label_3)
+        self.layout_3 = QtGui.QHBoxLayout()
         self.search_box = QtGui.QLineEdit(self.container_2)
-        self.search_box.textChanged.connect(self.update_filter)
-        self.layout_2.addWidget(self.search_box)
+        self.layout_3.addWidget(self.search_box)
+        self.show_button = QtGui.QPushButton( _("Update"), self.container_2)
+        self.show_button.setDefault(True)
+        self.show_button.clicked.connect(self.update_criterion)
+        self.layout_3.addWidget(self.show_button)
+        self.layout_2.addLayout(self.layout_3)
         self.splitter_1.insertWidget(1, self.container_2)
         # Fill tree widgets.
         criterion = DefaultCriterion(self.component_manager)
@@ -255,10 +260,6 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
             ACQ_REPS_SINCE_LAPSE, RET_REPS_SINCE_LAPSE,
             EXTRA_DATA, ACTIVE, SCHEDULER_DATA):
             self.table.setColumnHidden(column, True)
-        query = QtSql.QSqlQuery("select count() from tags")
-        query.first()
-        self.tag_count = query.value(0).toInt()[0]
-        self.update_counters()
         # Restore settings.
         width, height = self.config()["browse_dlg_size"]
         if width:
@@ -272,7 +273,7 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         if not splitter_2_sizes:
             self.splitter_2.setSizes([333, 630])
         else:
-            self.splitter_2.setSizes(splitter_2_sizes)
+            self.splitter_2.setSizes(splitter_2_sizes)                       
         
     def activate(self):
         self.exec_()
@@ -312,7 +313,5 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
     def closeEvent(self, event):
         self.db.close()
         self.config()["browse_dlg_size"] = (self.width(), self.height())
-        self.config()["browse_cards_dlg_splitter_1"] \
-            = self.splitter_1.sizes()
-        self.config()["browse_cards_dlg_splitter_2"] \
-           = self.splitter_2.sizes()        
+        self.config()["browse_cards_dlg_splitter_1"] = self.splitter_1.sizes()
+        self.config()["browse_cards_dlg_splitter_2"] = self.splitter_2.sizes()        

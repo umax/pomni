@@ -1,11 +1,14 @@
--rename activity criterion to criterion
--shortcut if all tags are active/inactive
--total number of cards in selection
--show number of cards per tag and cardtype
--do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
+-filtering on tag and card type. Time single statement vs current multiple statements
+ in criterion applier
+-rename activity criterion to criterion?
+
+-auto search after timeout?
+-show on update tree selection or only when pressing button?
+ if latter, colour button if selection changes.
+
+-show number of cards per tag and cardtype?
 -save column sizes
 -save sort order
-
 -right click menu options: edit, preview, delete, change card type, add tags, remove tags
 -repopulate tree widgets after editing/deleting
 -add controller logic for after editing/deleting a card in browse cards
