@@ -1,14 +1,19 @@
+-rename activity criterion to criterion
+-shortcut if all tags are active/inactive
+-total number of cards in selection
 -show number of cards per tag and cardtype
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
 -save column sizes
 -save sort order
--edit tag name, also partially
+
 -right click menu options: edit, preview, delete, change card type, add tags, remove tags
 -repopulate tree widgets after editing/deleting
 -add controller logic for after editing/deleting a card in browse cards
 -throwing an exception in browse cards does not release database
 
 -apply activity criterion after sync, for both partners + test
+
+-larger interval for initial grade 5?
 
 -media file handler
 -don't do media check in database, but in controller?

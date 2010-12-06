@@ -212,7 +212,6 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         self.layout_2.addWidget(self.label_3)
         self.search_box = QtGui.QLineEdit(self.container_2)
         self.search_box.textChanged.connect(self.update_filter)
-        self.search_box.setFocus()
         self.layout_2.addWidget(self.search_box)
         self.splitter_1.insertWidget(1, self.container_2)
         # Fill tree widgets.
@@ -291,9 +290,8 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         filter = filter.rsplit("and ", 1)[0]
         # Tags.
         self.tags_tree_wdgt.selection_to_active_tags_in_criterion(criterion)
-        if len(criterion.active_tag__ids) == 0:
-            filter = "_id='not_there'"
-        elif len(criterion.active_tag__ids) != self.tag_count:
+        #tag_count = db.con.execute("select count() from tags").fetchone()[0]
+        if 1: #len(criterion.active_tag__ids) != tag_count:
             if filter:
                 filter += "and "
             filter += "_id in (select _card_id from tags_for_card where "
@@ -310,28 +308,7 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
                 % (search_string, search_string)
         self.card_model.setFilter(filter)
         self.card_model.select()
-        self.update_counters()
-
-    def update_counters(self):
-        filter = self.card_model.filter()
-        # Selected count.
-        query_string = "select count() from cards"
-        if filter:
-            query_string += " where " + filter
-        query = QtSql.QSqlQuery(query_string)
-        query.first()
-        selected = query.value(0).toInt()[0]
-        # Active selected count.
-        if not filter:
-            query_string += " where active=1"
-        else:
-            query_string += " and active=1"
-        query = QtSql.QSqlQuery(query_string)
-        query.first()
-        active = query.value(0).toInt()[0]
-        self.counter_label.setText(\
-            "%d cards selected, of which %d are active" % (selected, active))
-        
+            
     def closeEvent(self, event):
         self.db.close()
         self.config()["browse_dlg_size"] = (self.width(), self.height())
