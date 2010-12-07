@@ -14,9 +14,8 @@ from mnemosyne.pyqt_ui.tags_tree_wdgt import TagsTreeWdgt
 from mnemosyne.libmnemosyne.utils import make_interval_string
 from mnemosyne.pyqt_ui.ui_browse_cards_dlg import Ui_BrowseCardsDlg
 from mnemosyne.pyqt_ui.card_types_tree_wdgt import CardTypesTreeWdgt
-from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
-     DefaultCriterion
 from mnemosyne.libmnemosyne.ui_components.dialogs import BrowseCardsDialog
+from mnemosyne.libmnemosyne.criteria.default_criterion import DefaultCriterion
 
 _ID = 0
 ID = 1
@@ -121,9 +120,6 @@ class CardModel(QtSql.QSqlTableModel, Component):
             old_data = QtSql.QSqlTableModel.data(self, index, role).toInt()[0]
             return QtCore.QVariant(time.strftime(self.date_format,
                 time.gmtime(old_data)))
-        if role == QtCore.Qt.TextAlignmentRole and column not in \
-            (QUESTION, ANSWER, TAGS):
-            return QtCore.QVariant(QtCore.Qt.AlignCenter)  
         return QtSql.QSqlTableModel.data(self, index, role)
 
  
@@ -192,8 +188,8 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         BrowseCardsDialog.__init__(self, component_manager)
         QtGui.QDialog.__init__(self, self.main_widget())
         self.setupUi(self)
-        # Set up tree widgets.
-        self.container_1 = QtGui.QWidget(self.splitter)
+        # Set up card type tree.
+        self.container_1 = QtGui.QWidget(self.splitter_1)
         self.layout_1 = QtGui.QVBoxLayout(self.container_1)
         self.label_1 = QtGui.QLabel(_("Show cards from these card types:"),
             self.container_1)
@@ -201,8 +197,9 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         self.card_types_tree_wdgt = \
             CardTypesTreeWdgt(component_manager, self.container_1)
         self.layout_1.addWidget(self.card_types_tree_wdgt)
-        self.splitter.insertWidget(0, self.container_1)
-        self.container_2 = QtGui.QWidget(self.splitter)
+        self.splitter_1.insertWidget(0, self.container_1)
+        # Set up tag tree plus search box.
+        self.container_2 = QtGui.QWidget(self.splitter_1)
         self.layout_2 = QtGui.QVBoxLayout(self.container_2)
         self.label_2 = QtGui.QLabel(_("having any of these tags:"),
             self.container_2)
@@ -210,12 +207,24 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         self.tags_tree_wdgt = \
             TagsTreeWdgt(component_manager, self.container_2)
         self.layout_2.addWidget(self.tags_tree_wdgt)
-        self.splitter.insertWidget(1, self.container_2)
+        self.label_3 = QtGui.QLabel(_("containing this text:"),
+            self.container_2)
+        self.layout_2.addWidget(self.label_3)
+        self.search_box = QtGui.QLineEdit(self.container_2)
+        self.search_box.textChanged.connect(self.update_filter)
+        self.search_box.setFocus()
+        self.layout_2.addWidget(self.search_box)
+        self.splitter_1.insertWidget(1, self.container_2)
+        # Fill tree widgets.
         criterion = DefaultCriterion(self.component_manager)
         for tag in self.database().tags():
             criterion.active_tag__ids.add(tag._id)
         self.card_types_tree_wdgt.display(criterion)
         self.tags_tree_wdgt.display(criterion)
+        self.card_types_tree_wdgt.card_types_tree.\
+            itemClicked.connect(self.update_filter)
+        self.tags_tree_wdgt.tags_tree.\
+            itemClicked.connect(self.update_filter)        
         # Set up database.
         self.database().release_connection()
         self.db = QtSql.QSqlDatabase.addDatabase("QSQLITE")
@@ -246,27 +255,87 @@ class BrowseCardsDlg(QtGui.QDialog, Ui_BrowseCardsDlg, BrowseCardsDialog):
         for column in (_ID, ID, CARD_TYPE_ID, _FACT_ID, _FACT_VIEW_ID,
             ACQ_REPS_SINCE_LAPSE, RET_REPS_SINCE_LAPSE,
             EXTRA_DATA, ACTIVE, SCHEDULER_DATA):
-            self.table.setColumnHidden(column, True)         
+            self.table.setColumnHidden(column, True)
+        query = QtSql.QSqlQuery("select count() from tags")
+        query.first()
+        self.tag_count = query.value(0).toInt()[0]
+        self.update_counters()
+        # Restore settings.
         width, height = self.config()["browse_dlg_size"]
         if width:
             self.resize(width, height)
+        splitter_1_sizes = self.config()["browse_cards_dlg_splitter_1"]
+        if not splitter_1_sizes:
+            self.splitter_1.setSizes([230, 320])
+        else:
+            self.splitter_1.setSizes(splitter_1_sizes)
+        splitter_2_sizes = self.config()["browse_cards_dlg_splitter_2"]
+        if not splitter_2_sizes:
+            self.splitter_2.setSizes([333, 630])
+        else:
+            self.splitter_2.setSizes(splitter_2_sizes)
         
     def activate(self):
         self.exec_()
 
-    def update_criterion(self):
-        search_string = unicode(self.search_box.text())        
+    def update_filter(self):
+        # Card types and fact views.
+        criterion = DefaultCriterion(self.component_manager)
+        self.card_types_tree_wdgt.selection_to_criterion(criterion)
+        filter = ""
+        for card_type_id, fact_view_id in \
+                criterion.deactivated_card_type_fact_view_ids:
+            filter += """not (cards.fact_view_id='%s' and
+                cards.card_type_id='%s') and """ \
+                % (fact_view_id, card_type_id)
+        filter = filter.rsplit("and ", 1)[0]
+        # Tags.
+        self.tags_tree_wdgt.selection_to_active_tags_in_criterion(criterion)
+        if len(criterion.active_tag__ids) == 0:
+            filter = "_id='not_there'"
+        elif len(criterion.active_tag__ids) != self.tag_count:
+            if filter:
+                filter += "and "
+            filter += "_id in (select _card_id from tags_for_card where "
+            for _tag_id in criterion.active_tag__ids:
+                filter += "_tag_id='%s' or " % (_tag_id, )
+            filter = filter.rsplit("or ", 1)[0] + ")"
+        # Search string.
+        search_string = unicode(self.search_box.text())
         self.card_model.search_string = search_string
-        self.card_model.setFilter(\
-            "question like '%%%s%%' or answer like '%%%s%%'" \
-            % (search_string, search_string))       
-            
+        if search_string:
+            if filter:
+                filter += "and "
+            filter += "(question like '%%%s%%' or answer like '%%%s%%')" \
+                % (search_string, search_string)
+        self.card_model.setFilter(filter)
+        self.card_model.select()
+        self.update_counters()
+
+    def update_counters(self):
+        filter = self.card_model.filter()
+        # Selected count.
+        query_string = "select count() from cards"
+        if filter:
+            query_string += " where " + filter
+        query = QtSql.QSqlQuery(query_string)
+        query.first()
+        selected = query.value(0).toInt()[0]
+        # Active selected count.
+        if not filter:
+            query_string += " where active=1"
+        else:
+            query_string += " and active=1"
+        query = QtSql.QSqlQuery(query_string)
+        query.first()
+        active = query.value(0).toInt()[0]
+        self.counter_label.setText(\
+            "%d cards selected, of which %d are active" % (selected, active))
+        
     def closeEvent(self, event):
         self.db.close()
         self.config()["browse_dlg_size"] = (self.width(), self.height())
-        
-    def accept(self):
-        self.db.close()
-        self.config()["browse_dlg_size"] = (self.width(), self.height())
-        return QtGui.QDialog.accept(self)       
-
+        self.config()["browse_cards_dlg_splitter_1"] \
+            = self.splitter_1.sizes()
+        self.config()["browse_cards_dlg_splitter_2"] \
+           = self.splitter_2.sizes()        

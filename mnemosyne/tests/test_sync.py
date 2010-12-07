@@ -15,8 +15,7 @@ from openSM2sync.log_entry import EventTypes
 from mnemosyne.libmnemosyne import Mnemosyne
 from mnemosyne.libmnemosyne.fact import Fact
 from mnemosyne.libmnemosyne.ui_components.main_widget import MainWidget
-from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
-     DefaultCriterion
+from mnemosyne.libmnemosyne.criteria.default_criterion import DefaultCriterion
 
 server_initialised = Condition()
 server_is_initialised = None
@@ -42,7 +41,7 @@ class Widget(MainWidget):
     def show_question(self, question, option0, option1, option2):
         return answer
 
-    def save_file_dialog(self, path, filter, caption):
+    def get_filename_to_save(self, path, filter, caption):
         return "default.db"
 
 
@@ -62,7 +61,7 @@ class MyServer(Server, Thread):
         Thread.__init__(self)
         if erase_previous:
             os.system("rm -fr " + data_dir)
-        self.mnemosyne = Mnemosyne()
+        self.mnemosyne = Mnemosyne(upload_science_logs=False)
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
             "GetTextTranslator"))
         self.mnemosyne.components.append(("test_sync", "Widget"))
@@ -140,7 +139,7 @@ class MyClient(Client):
             filename="default.db", erase_previous=True):
         if erase_previous:
             os.system("rm -fr " + data_dir)
-        self.mnemosyne = Mnemosyne()
+        self.mnemosyne = Mnemosyne(upload_science_logs=False)
         self.mnemosyne.components.insert(0, ("mnemosyne.libmnemosyne.translator",
                              "GetTextTranslator"))
         self.mnemosyne.components.append(("test_sync", "Widget"))

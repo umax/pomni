@@ -80,7 +80,7 @@ class Mnemosyne(Component):
           "MapPlugin"),
          ("mnemosyne.libmnemosyne.card_types.cloze",
           "ClozePlugin"),
-         ("mnemosyne.libmnemosyne.activity_criteria.default_criterion",
+         ("mnemosyne.libmnemosyne.criteria.default_criterion",
           "DefaultCriterion"),
          ("mnemosyne.libmnemosyne.databases.SQLite_criterion_applier",
           "DefaultCriterionApplier"),   
@@ -157,9 +157,15 @@ class Mnemosyne(Component):
         in the correct order: first config, followed by log.
         
         """
-        
-        for component in  ["config", "log", "database", "scheduler",
-                           "controller"]:
+
+        # Activate config and inject necessary settings.
+        try:
+            self.component_manager.current("config").activate()
+        except RuntimeError, e:
+            self.main_widget().show_error(unicode(e))
+        self.config()["upload_science_logs"] = self.upload_science_logs
+        # Activate other components.
+        for component in ["log", "database", "scheduler", "controller"]:
             try:
                 self.component_manager.current(component).activate()
             except RuntimeError, e:
