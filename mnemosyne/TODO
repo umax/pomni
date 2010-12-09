@@ -1,12 +1,7 @@
--rename foos_tree to foo_tree?
--UNTAGGED always gets added?
--add hooks so that Qt code can run in libmnemosyne? Tree walker in Qt?
+-do tag tree creation and number of cards calculation in libmnemosyne
 -test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 -show number of cards per tag
--move tagtree to separate file?
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
--add tag tree to docs
-
 -save column sizes
 -save sort order
 -edit tag name, also partially. Rebuild wigdet after that. Need to release db connection?
@@ -284,7 +279,6 @@ a good alternative, as it does not obey selection coloring
 -rewrite card browser in C++, or at least delegate? In that case, move question and answer getting
  to data, and eliminate the text colors at selection using Qt.
 -inline editing in card browser
--editing names of card type clones, also in browser
 
 -send across cards as pictures (see stubs in client.py and server.py). Add resolution to filename? (device rotation)
 -Tim's gogorender plugin
