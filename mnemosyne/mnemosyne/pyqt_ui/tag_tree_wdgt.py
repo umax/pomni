@@ -5,7 +5,7 @@
 from PyQt4 import QtCore, QtGui
 
 from mnemosyne.libmnemosyne.translator import _
-from mnemosyne.libmnemosyne.tag_tree import TagTree
+from mnemosyne.libmnemosyne.tag import TagsTree
 from mnemosyne.libmnemosyne.component import Component
 
 
@@ -17,27 +17,32 @@ class TagsTreeWdgt(QtGui.QWidget, Component):
         Component.__init__(self, component_manager)
         QtGui.QWidget.__init__(self, parent)
         self.layout = QtGui.QVBoxLayout(self)
-        self.tag_tree_wdgt = QtGui.QTreeWidget(self)
-        self.tag_tree_wdgt.setHeaderHidden(True)
-        self.layout.addWidget(self.tag_tree_wdgt)
+        self.tags_tree = QtGui.QTreeWidget(self)
+        self.tags_tree.setHeaderHidden(True)
+        self.layout.addWidget(self.tags_tree)
 
-    def create_tree(self, tree, qt_parent):
-        for node in tree:
-            node_name = "%s (%d)" % \
-                (self.tag_tree.display_name_for_node[node],
-                self.tag_tree.card_count_for_node[node])
-            node_item = QtGui.QTreeWidgetItem(qt_parent, [node_name], 0)
-            node_item.setFlags(node_item.flags() | \
-                QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsTristate)
+
+    def create_subtree(self, qt_parent, subtree):
+        for node in subtree:
             if type(node) == type([]):
-                self.create_tree(tree=node, qt_parent=node_item)
+                # Create Qt node item.
+                node_item = 0
+                self.create_subtree(qt_parent=node_item, node)
             else:
-                self.tag_for_node_item[node_item] = \
-                    self.database().get_or_create_tag_with_name(node)
+                # Create Qt leaf item
+                leaf_item = 0
         
     def display(self, criterion):
-        # Create tree.
-        self.tag_tree_wdgt.clear()
+        self.tags_tree.clear()
+
+        _tags_tree = TagsTree(self.component_manager)
+        parent = _tag_tree.tree["__ALL__"]
+        # create parent node
+        for nodes in parent
+        
+
+        
+        
         self.tag_for_node_item = {}
         self.tag_tree = TagTree(self.component_manager)
         node = "__ALL__"
@@ -48,7 +53,25 @@ class TagsTreeWdgt(QtGui.QWidget, Component):
         root_item.setFlags(root_item.flags() | \
            QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsTristate)
         root_item.setCheckState(0, QtCore.Qt.Checked)
-        self.create_tree(self.tag_tree.tree[node], qt_parent=root_item)            
+        self.tag_for_node_item = {}
+        node_item_for_partial_tag = {} # Not needed if libmnemosyne takes over?
+        for tag in self.database().tags():
+            if tag.name == "__UNTAGGED__":
+                tag.name = _("Untagged")
+            parent = root_item
+            partial_tag = ""
+            node_item = None
+            for node in tag.name.split("::"):
+                node += "::"
+                partial_tag += node
+                if partial_tag not in node_item_for_partial_tag:
+                    node_item = QtGui.QTreeWidgetItem(parent, [node[:-2]], 0)
+                    node_item.setFlags(node_item.flags() | \
+                        QtCore.Qt.ItemIsUserCheckable | \
+                        QtCore.Qt.ItemIsTristate)
+                    node_item_for_partial_tag[partial_tag] = node_item
+                parent = node_item_for_partial_tag[partial_tag]
+            self.tag_for_node_item[node_item] = tag
         # Set forbidden tags.
         if len(criterion.forbidden_tag__ids):
             for node_item, tag in self.tag_for_node_item.iteritems():
@@ -64,7 +87,7 @@ class TagsTreeWdgt(QtGui.QWidget, Component):
                 else:
                     node_item.setCheckState(0, QtCore.Qt.Unchecked)
         # Finalise.
-        self.tag_tree_wdgt.expandAll()
+        self.tags_tree.expandAll()
 
     def selection_to_active_tags_in_criterion(self, criterion):
         for item, tag in self.tag_for_node_item.iteritems():

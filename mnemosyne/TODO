@@ -1,7 +1,11 @@
--document tag tree
--test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]
+-rename foos_tree to foo_tree?
 -UNTAGGED always gets added?
--where to put untagged in hierarchy? last, first, top level, just below?
+-add hooks so that Qt code can run in libmnemosyne? Tree walker in Qt?
+-test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
+-show number of cards per tag
+-move tagtree to separate file?
+-do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
+-add tag tree to docs
 
 -save column sizes
 -save sort order
