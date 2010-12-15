@@ -1,6 +1,6 @@
--test case for hierarchy parsing ["a", "Z", "a::b", "a::c", "b::c::d"]
--make sure cards which are only labelled 'a' get counted correctly
-
+-dict interface for tag tree
+-test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]
+-test untagged
 
 -save column sizes
 -save sort order
