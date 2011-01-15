@@ -47,7 +47,7 @@ def create_tags_ui(database):
 
     # fill tags list
     tags_names = []
-    for tag in database.tags():
+    for tag in database.all_tags():
         tags_dict[tag.name] = tag._id
         tags_names.append(tag.name)
         cards_count = database.total_card_count_for__tag_id(tag._id)

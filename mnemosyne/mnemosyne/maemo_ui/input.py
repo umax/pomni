@@ -57,7 +57,7 @@ class InputWidget(UiComponent):
         self.card_type = None
         self.selected_tags = None   # user selected tags list
         self.tags = [unicode(tag) for tag in sorted( \
-            self.database().tag_names(), cmp=numeric_string_cmp) or \
+            self.database().real_tag_names(), cmp=numeric_string_cmp) or \
             [self.default_tag_name]]    # all tags list
         self._main_widget = self.main_widget()
         # create widgets

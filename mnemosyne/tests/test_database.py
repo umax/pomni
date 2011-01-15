@@ -19,10 +19,10 @@ class TestDatabase(MnemosyneTest):
     def test_tags(self):
         cat = Tag("test")
         self.database().add_tag(cat)
-        assert self.database().tag_names() == [u"test"]
+        assert self.database().real_tag_names() == [u"test"]
         cat.name = "test2"
         self.database().edit_tag(cat)
-        assert self.database().tag_names() == [u"test2"]        
+        assert self.database().real_tag_names() == [u"test2"]        
 
     def test_new_cards(self):
         fact_data = {"q": "question",
@@ -200,7 +200,7 @@ class TestDatabase(MnemosyneTest):
         self.database().delete_fact_and_related_cards(fact)
         
         assert self.database().fact_count() == 0
-        assert len(self.database().tag_names()) == 0
+        assert len(self.database().real_tag_names()) == 0
         
     @raises(RuntimeError)
     def test_missing_plugin(self):
@@ -287,7 +287,7 @@ class TestDatabase(MnemosyneTest):
         new_name = self.config()["path"] + ".bak"
         assert self.database().save(self.config()["path"] + ".bak") != -1
         assert self.config()["path"] == new_name
-        assert new_name != expand_path(new_name, self.config().basedir)
+        assert new_name != expand_path(new_name, self.config().data_dir)
 
     def test_duplicates_for_fact(self):
         fact_data = {"q": "question",
@@ -384,7 +384,7 @@ class TestDatabase(MnemosyneTest):
         assert self.database().count_related_cards_with_next_rep(card_1, card_1.next_rep) == 0
 
     def test_purge_backups(self):
-        backup_dir = os.path.join(self.config().basedir, "backups")
+        backup_dir = os.path.join(self.config().data_dir, "backups")
         for count in range(10):
             f = file(os.path.join(backup_dir, "default-%d.db" % count), "w")
         self.mnemosyne.finalise()

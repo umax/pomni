@@ -7,7 +7,7 @@ from mnemosyne.libmnemosyne.review_controller import ReviewController
 
 
 # Tooltip texts.  The first index deals with whether we have a card with
-# previous grade 0 or 1 (i.e. unmemorised).  The second index is the grade.
+# previous grade 0 or 1 (i.e. non memorised).  The second index is the grade.
 tooltip = [["", "", "", "", "", "", ""], ["", "", "", "", "", "", ""]]
 tooltip[0][0] = \
     _("You don't remember this card yet.")
@@ -205,7 +205,6 @@ class SM2Controller(ReviewController):
         question_label_text = _("Question: ")
         if self.card is not None:
             question_label_text += self.card.tag_string()
-        w.set_question_label(question_label_text.replace(_("<default>"), ""))
         # Update question content.
         if self.card is None:
             w.clear_question()
