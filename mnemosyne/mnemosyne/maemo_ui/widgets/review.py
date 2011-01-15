@@ -76,13 +76,12 @@ def create_review_ui():
         grades[num].set_name('grade%s' % num)
 
     # packing toolbar buttons
-    toolbar_table.attach(button_stats, 0, 1, 0, 1, xpadding=2)
-    toolbar_table.attach(button_speak, 0, 1, 1, 2, xpadding=2)
-    toolbar_table.attach(button_edit, 0, 1, 2, 3, xpadding=2)
-    toolbar_table.attach(button_delete, 0, 1, 3, 4, xpadding=2)
+    for index, button in enumerate([button_stats, button_speak, button_edit, \
+        button_delete]):
+        toolbar_table.attach(button, 0, 1, index, index + 1, xpadding=2)
 
     # packing grades buttons
-    for pos in grades.keys():
+    for pos in grades:
         grades_table.attach(grades[pos], 0, 1, 5 - pos, 6 - pos, xpadding=2)
 
     # packing other widgets

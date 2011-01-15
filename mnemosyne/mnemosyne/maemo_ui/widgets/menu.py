@@ -43,14 +43,13 @@ def create_button(image_name, title):
 def create_menu_ui(theme_path):
     """Creates MenuWidget UI."""
 
-    toplevel_table = gtk.Table(rows=1, columns=1)
-
     # create Menu window
     window = hildon.StackableWindow()
     window.set_title('Mnemosyne for Maemo')
 
     # create menu buttons
     buttons_table = gtk.Table(rows=2, columns=2, homogeneous=True)
+    buttons_table.set_border_width(6)
     buttons_table.set_row_spacings(4)
     buttons_table.set_col_spacings(4)
     button_review = create_button(os.path.join(theme_path, 'review.png'), \
@@ -93,8 +92,7 @@ def create_menu_ui(theme_path):
     menu.show_all()
 
     # packing window elements
-    toplevel_table.attach(buttons_table, 0, 1, 0, 1, xpadding=6, ypadding=6)
-    window.add(toplevel_table)
+    window.add(buttons_table)
     window.set_app_menu(menu)
 
     return window, {'tags': button_tags, 'review': button_review, \
