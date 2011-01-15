@@ -14,7 +14,7 @@ import calendar
 from mnemosyne.libmnemosyne.translator import _
 from mnemosyne.libmnemosyne.utils import expand_path
 from mnemosyne.libmnemosyne.file_format import FileFormat
-from mnemosyne.libmnemosyne.loggers.txt_log_parser import TxtLogParser
+from mnemosyne.libmnemosyne.loggers.science_log_parser import ScienceLogParser
         
 re_src = re.compile(r"""src=\"(.+?)\"""", re.DOTALL | re.IGNORECASE)
 re_sound = re.compile(r"""<sound src=\".+?\">""", re.DOTALL | re.IGNORECASE)
@@ -27,86 +27,23 @@ class Mnemosyne1Mem(FileFormat):
     import_possible = True
     export_possible = False
 
-    def _midnight_UTC(self, timestamp):
-        date_only = datetime.date.fromtimestamp(timestamp)
-        return int(calendar.timegm(date_only.timetuple()))
-    
-    def _set_card_attributes(self, card, item):
-        for attr in ["id", "grade", "easiness", "acq_reps", "ret_reps",
-                "lapses", "acq_reps_since_lapse", "ret_reps_since_lapse"]:
-            setattr(card, attr, getattr(item, attr))    
-        DAY = 24 * 60 * 60 # Seconds in a day.
-        card.last_rep = \
-            self._midnight_UTC(self.starttime + item.last_rep * DAY)
-        card.next_rep = \
-            self._midnight_UTC(self.starttime + item.next_rep * DAY)
-        if item.unseen and item.grade in [0, 1]:
-            card.grade = -1
-            card.acq_reps = 0
-            card.acq_reps_since_lapse = 0
-            card.last_rep = -1
-            card.next_rep = -1
-        self.database().update_card(card)
-
-    def _preprocess_media(self, fact_data):        
-        mediadir = self.config().mediadir()
-        # os.path.normpath does not convert Windows separators to Unix
-        # separators, so we need to make sure we internally store Unix paths.
-        for key in fact_data:
-            for match in re_src.finditer(fact_data[key]):
-                fact_data[key] = fact_data[key].replace(match.group(),
-                            match.group().replace("\\", "/"))
-        # Convert sound tags to audio tags.
-        for key in fact_data:
-            for match in re_sound.finditer(fact_data[key]):
-                fact_data[key] = fact_data[key].replace(match.group(),
-                            match.group().replace("sound", "audio"))
-        # Copy files to media directory, creating subdirectories as we go.
-        for key in fact_data:
-            for match in re_src.finditer(fact_data[key]):
-                filename = match.group(1)
-                if not os.path.isabs(filename):
-                    subdir = os.path.dirname(filename)
-                    subdirs = []
-                    while subdir:
-                        subdirs.insert(0, os.path.join(mediadir, subdir))
-                        subdir = os.path.dirname(subdir)
-                    for subdir in subdirs:
-                        if not os.path.exists(subdir):
-                            os.mkdir(subdir)
-                    source = expand_path(filename, self.importdir)
-                    dest = expand_path(filename, mediadir)
-                    if not os.path.exists(source):
-                        self.main_widget().information_box(\
-                            _("Missing media file") + " %s" % source)
-                        fact_data[key] = fact_data[key].replace(match.group(),
-                            "src_missing=\"%s\"" % match.group(1))
-                    else:
-                        shutil.copy(source, dest)
-
-    def _activate_map_plugin(self):
-        for plugin in self.plugins():
-            component = plugin.components[0]
-            if component.component_type == "card_type" and component.id == "4":
-                plugin.activate()
-    
-    def do_import(self, filename, tag_names, reset_learning_data=False):
+    def do_import(self, filename, tag_name=None, reset_learning_data=False):
         db = self.database()
         # Manage database indices.
         db.before_mem_import()
-        # The import process generates add card events with bogus ids which we
-        # should filter out afterwards, so as not to upset the 'cards added per
-        # day' statistics. We do keep the updated card events for the benefit
-        # of the syncing algorithm.
-        log_index = db.get_log_index()
-        result = self._import_mem_file(filename, tag_names, reset_learning_data)
+        # The import process generates card log entries, which we will delete
+        # in favour of those events that are recorded in the logs and which
+        # capture the true timestamps.
+        log_index = db.current_log_index()
+        result = self._import_mem_file(filename, tag_name, reset_learning_data)
         if result:
             return result
-        db.remove_added_card_events_since(log_index)
-        # The events that we import from the txt logs obviously should not be
-        # reexported to txt logs. So, before the import, we flush the SQL logs
-        # to the txt logs, and after the import we update the partership index.
-        db.dump_to_txt_log() 
+        db.remove_card_log_entries_since(log_index)
+        # The events that we import from the science logs obviously should not
+        # be reexported to these logs. So, before the import, we flush the SQL
+        # logs to the science logs, and after the import we edit the
+        # partership index.
+        db.dump_to_science_log()
         self._import_logs(filename)
         db.skip_science_log()
         # Force an ADDED_CARD log entry for those cards that did not figure in
@@ -116,17 +53,19 @@ class Mnemosyne1Mem(FileFormat):
         # In 2.x, repetition events are used to update a card's last_rep and
         # next_rep during sync. In 1.x, there was no such information, and
         # calculating it from the logs will fail if they are incomplete.
-        # Therefore, we force a card update event for all cards.
+        # Therefore, we force a card edit event for all cards.
         timestamp = int(time.time())
         for item in self.items:
-            db.log_updated_card(timestamp, item.id)
+            db.log_edited_card(timestamp, item.id)
         # Mananage database indices.
         db.after_mem_import()
         db.save()
             
-    def _import_mem_file(self, filename, tag_names, reset_learning_data=False):
+    def _import_mem_file(self, filename, tag_name=None,
+                         reset_learning_data=False):        
         self.importdir = os.path.dirname(os.path.abspath(filename))
-        w = self.main_widget()    
+        w = self.main_widget()
+        
         # Mimick 1.x module structure.
         class MnemosyneCore(object):                          
             class StartTime:                                    
@@ -136,7 +75,8 @@ class Mnemosyne1Mem(FileFormat):
             class Item:                                         
                 pass
         sys.modules["mnemosyne.core"] = object()       
-        sys.modules["mnemosyne.core.mnemosyne_core"] = MnemosyneCore()       
+        sys.modules["mnemosyne.core.mnemosyne_core"] = MnemosyneCore()
+        
         # Load data.
         try:
             memfile = file(filename, "rb")
@@ -148,14 +88,15 @@ class Mnemosyne1Mem(FileFormat):
             return -1
         # See if the file was imported before.
         try:
-            card = self.database().get_card(self.items[0].id,
+            card = self.database().card(self.items[0].id,
                 id_is_internal=False)
         except:
             card = None
         if card:
             w.error_box(\
                 _("This file seems to have been imported before. Aborting..."))
-            return -2          
+            return -2
+            
         # Convert to 2.x data structures.
         w.set_progress_text(_("Importing cards..."))
         w.set_progress_range(0, len(self.items))
@@ -185,7 +126,7 @@ class Mnemosyne1Mem(FileFormat):
                 _("No history found to import."))
             return
         filenames = [os.path.join(log_dir, logname) for logname in \
-            sorted(os.listdir(log_dir)) if logname.endswith(".bz2")]       
+            sorted(os.listdir(unicode(log_dir))) if logname.endswith(".bz2")]       
         # log.txt can also contain data we need to import, especially on the
         # initial upgrade from 1.x. 'ids_to_parse' will make sure we only pick
         # up the relevant events. (If we do the importing after having used
@@ -294,7 +235,7 @@ class Mnemosyne1Mem(FileFormat):
             card.acq_reps_since_lapse = 0
             card.last_rep = -1
             card.next_rep = -1
-        self.database().update_card(card)
+        self.database().edit_card(card)
         
     def _preprocess_media(self, fact_data):        
         mediadir = self.database().mediadir()

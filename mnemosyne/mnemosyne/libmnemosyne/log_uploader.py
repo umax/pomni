@@ -31,11 +31,11 @@ class LogUploader(Thread, Component):
         # PUT, but then we need to change the server side script which would
         # cause problems with backwards compatibility.
     
-        host, port = self.config()["upload_server"].split(":")
+        host, port = self.config()["science_server"].split(":")
         uri = '/cgi-bin/cgiupload.py'
         boundary = '%s%s_%s_%s' % \
                     ('-----', int(time.time()), os.getpid(),
-                     random.randint(1,10000))
+                     random.randint(1, 10000))
         f = file(filename, 'rb')
         data = f.read()
         f.close()
@@ -61,13 +61,13 @@ class LogUploader(Thread, Component):
         html = response.read()
 
     def run(self):
-        data_dir = self.config().data_dir
+        basedir = self.config().basedir
         join = os.path.join
-        dir = os.listdir(unicode(join(data_dir, "history")))
+        dir = os.listdir(unicode(join(basedir, "history")))
         # Compress files which haven't been compressed yet (e.g. because they
         # come from a mobile device).
         for filename in [x for x in dir if x.endswith(".txt")]:
-            filename = os.path.join(data_dir, "history", filename)
+            filename = os.path.join(basedir, "history", filename)
             compressed_filename = filename.replace(".txt", ".bz2")
             compressed_file = bz2.BZ2File(compressed_filename, "w")
             for l in file(filename):
@@ -75,11 +75,11 @@ class LogUploader(Thread, Component):
             compressed_file.close()
             os.remove(filename)
         # Find out which files haven't been uploaded yet.
-        dir = os.listdir(unicode(join(data_dir, "history")))
+        dir = os.listdir(unicode(join(basedir, "history")))
         history_files = [x for x in dir if x.endswith(".bz2")]
         uploaded = None
         try:
-            upload_log = file(join(data_dir, "history", "uploaded"))
+            upload_log = file(join(basedir, "history", "uploaded"))
             uploaded = [x.strip() for x in upload_log]
             upload_log.close()
         except:
@@ -88,11 +88,11 @@ class LogUploader(Thread, Component):
         if len(to_upload) == 0:
             return
         # Upload them to our server.
-        upload_log = file(join(data_dir, "history", "uploaded"), 'a')
+        upload_log = file(join(basedir, "history", "uploaded"), 'a')
         try:
             for f in to_upload:
                 print _("Uploading"), f, "...",
-                filename = join(data_dir, "history", f)
+                filename = join(basedir, "history", f)
                 self.upload(filename)
                 print >> upload_log, f
                 print _("done!")           

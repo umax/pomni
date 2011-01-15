@@ -107,7 +107,7 @@ class MainWdgt(MainWidget):
 
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.component_manager.get_current('activate_cards_dialog') \
+        self.component_manager.current('activate_cards_dialog') \
             (self.component_manager).activate()
 
     def input_(self):
@@ -115,7 +115,7 @@ class MainWdgt(MainWidget):
 
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.component_manager.get_current('add_cards_dialog') \
+        self.component_manager.current('add_cards_dialog') \
             (self.component_manager).activate()
 
     def review_(self):

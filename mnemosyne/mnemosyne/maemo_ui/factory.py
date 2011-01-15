@@ -109,13 +109,13 @@ def app_factory(interface=None):
             "MaemoStatisticsWidget"))
         #app.components.append(("mnemosyne.maemo_ui.importcards", \
         #    "ImportCardsWidget"))
-        app.components.append(("mnemosyne.libmnemosyne.file_formats.tsv", \
-            "TabSeparated"))
-        app.components.append(\
-            ("mnemosyne.libmnemosyne.file_formats.mnemosyne_XML", \
-            "MnemosyneXML"))
-        app.components.append(("mnemosyne.maemo_ui.widgets.progress", \
-            "MaemoProgressDlg"))
+        #app.components.append(("mnemosyne.libmnemosyne.file_formats.tsv", \
+        #    "TabSeparated"))
+        #app.components.append(\
+        #    ("mnemosyne.libmnemosyne.file_formats.mnemosyne_XML", \
+        #    "MnemosyneXML"))
+        #app.components.append(("mnemosyne.maemo_ui.widgets.progress", \
+        #    "MaemoProgressDlg"))
         app.components.append(\
             ("mnemosyne.libmnemosyne.card_types.cloze", "Cloze"))
         # FIXME

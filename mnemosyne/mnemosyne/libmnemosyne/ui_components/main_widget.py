@@ -16,6 +16,9 @@ class MainWidget(UiComponent):
 
     instantiate = UiComponent.IMMEDIATELY
     
+    def activate(self):
+        pass
+        
     def information_box(self, message):
         raise NotImplementedError
             
@@ -27,6 +30,15 @@ class MainWidget(UiComponent):
     
     def error_box(self, message):
         raise NotImplementedError
+
+    def status_bar_message(self, message):
+        pass
+
+    def add_to_status_bar(self, widget):
+        pass
+
+    def clear_status_bar(self):
+        pass
 
     def enable_edit_current_card(self, enabled):
         pass

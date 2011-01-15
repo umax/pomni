@@ -1,92 +1,30 @@
--just copy everything + log.txt first, then import.
--on import, make distinction between logs that were uploaded and those that were not (log.txt e.g.)
--add tests for that
--mediadir --> media_dir
--add sqlite sync to docs?
--update tests to make upgrade testable
--changelog
-
--more fine grained resource_limited. Put in __init__ or in initialise?
+-make docs
 
 -current active set not marked upon entering
-
+-get_activity_criterion also returns default criterion. Make sure it is not used to construct the criteria list in the GUI
 
 -empty tags
 -convert default tags on import
 -test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 -add update after import
--sync adding sets
 
+-where to move txt_log_parser
 -need component.statisticspages and configuration widgets?
--pressing enter on configuration pages does not equal 'OK'
 
 -check if media files exist?
 
--remove 'style' tag from css and move it to html
+-number of unmemorised cards to hold in your hand? (i.e. grade 0 + 1)
+-rework give initial grade dialog
 
--warn when creating a new database that this is not the recommended way to organise your cards.
+-move ~/.mnemosyne to .config/mnemosyne as per freedesktop standard?
+https://bugzilla.gnome.org/show_bug.cgi?id=518585
+
+-post nose 0.11: add cover branches
 
 -eliminate double save on finalise
--where to put review_controller.reset, in initialise or main_window activate?
+-compression on backup to reduce write time to SD card?
 
--card browser
--make sure searching for a single unicode character works
--qsortfilter proxy
--show number of cards selected
--card.in_view needed?
--MVC: http://doc.trolltech.com/qq/qq24-delegates.html
--make card browser remember its size
 
--time how long it takes to extract all media from a set of cards. If it takes too
- long, consider adding a media field to the fact table
-
--do better numeric sort on card browser and activate cards
-
--add tests with unicode in data_dir
-
--... after menu options that open a dialog
--suppress autorepeat on review dialog
-
--do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
-
--see if graphical glitch is fixed with latest matplotlib version, reenable
- remember size
-
--in add card window with custum font size, typing text and then deleting it reverts the font size to
- the UI default instead of the card type default.
-
--delete 1.99 logs
--reenable upload
-
--make distrib
--http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
-
--auto vacuum after every N openings? What about WM?
-
--bug in Qt: setting default colour to black does not register the colour clicks.
--Qt bug? different font size in edit box and in css
-
--windows: test auto upgrade
--windows: test unicode filenames in sync protocol
--test running from usb, update instructions
-
--reenable datadir in setup.py
-
--Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev
-
--Faq about how to pronounce Mnemosyne
-
--delete key shortcut for saved sets
-
--ampersand mnemonics everywhere
-
--test uploading of logs, also in rollover
-
--implement duplicate checking
--confirmation dialog for deleted cards
--explain check for duplicates after import of 1.x? Also give a hint of its working in
-the GUI function itself?
--card preview
 -duplicates for fact speedup
 >         """Return fact with the same 'unique_fields' data as 'fact'."""
 >         
@@ -108,44 +46,101 @@ the GUI function itself?
 >         return duplicates
 
 
+-more tests
+
+-windows: upgrade config?
+-windows: HOME
+-test unicode filenames in sync protocol
+
+
+-card browser
+-make sure searching for a single unicode character works
+-qsortfilter proxy
+-show number of cards selected
+-card.in_view needed?
+-make card browser remember its size
+
+-time how long it takes to extract all media from a set of cards. If it takes too
+ long, consider adding a media field to the fact table
+
+-do better numeric sort on card browser and activate cards
+
+-mobile client: even more agressive prefetch?
+
+-add tests with unicode in basedir
+
+-implement duplicate checking
+-confirmation dialog for deleted cards
+-explain check for duplicates after import of 1.x? Also give a hint of its working in
+the GUI function itself?
+-card preview
+-MVC: http://doc.trolltech.com/qq/qq24-delegates.html
+
+-don't auto vacuum? what for WM?
+-more fine grained resource_limited
+
+-delete 1.99 logs
+-reenable upload
+
+
+-... after menu options that open a dialog
+-suppress autorepeat on review dialog
+
+-do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
+
+-new translation infrastructure
+-handle deferred translation
+-different translators for different users?
+
+-remove port from GUI syncing options?
+
 -import
 -update data if same id present on import
 -on import, activate plugins, created card types if necessary
 -on import don't add cards for which card type is not present
 -warn when not importing a duplicate card
 -xml import tests (wcu, memaid, plconv)
+-rewrite test_mem_import test_sch to go through the controller
 -option to detect and mark inverses on import?
 -update XML import/export to new database format
+-make XML import tolerant to extra new lines in header
 -warn when importing card type with duplicate id
 -option to add tags on import
 -save import dir
+-make sure after import all sync events fire
 -make sure enter does not close the import dialog
 -make sure we log new card creation on import
 -make sure to detect media and do slash normalisation from importing text files
--'teacher mode' on export, which allows pupils to update previously imported
- cards, as opposed to adding new cards. Implemented through id's of the form
- T.<fixed card id for all pupils>.<pupil user id>?
--when resetting learning data on export, can we export facts only? Tags are on
- a per card basis.
 -utf16?
+-make sure there is an error message to the user if xml import fails.
+-mention Mnemosyne XML instead of XML
 -make sure all grades are shown on first revision of imported card. Adapt button group title
-
--new translation infrastructure
--handle deferred translation
--different translators for different users?
+-http://gitorious.org/hooq/hooq? Qt4 testing
+ http://www.fredemmott.co.uk/blog/2010/01/18/Qt4%20GUI%20Testing%20with%20Hooq
 
 -tips (both on startup and on use): right click to add cards or sound, comma to 
  separate tag names, :: to separate hierarchies
 -comment/tip about not having to do all your scheduled repetitions in
  one sitting
--tip on selecting 'new database' to keep everything in one database
 -upgrade docs on duplicate checking
 -update tooltips, inform Patrick
+-tar file size estimate sometimes off by one record.
 
--http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
+http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
 -have hierarchy in plugin names
 
+-test uploading of logs, also in rollover
+
 -better mechanism to have different renderers
+
+-see if graphical glitch is fixed with latest matplotlib version, reenable
+ remember size
+
+-make distrib
+-http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
+
+-in add card window with custum font size, typing text and then deleting it reverts the font size to
+ the UI default instead of the card type default.
 
 -http://www.mblondel.org/journal/2008/08/01/web-canvas/
 
@@ -156,6 +151,8 @@ the GUI function itself?
 
 -mark cards plugin
 
+-ampersand mnemonics everywhere
+
 -partial implementation of type answer (none/all/special tag? Db Attribute? Button?)
 -draw answer, make configurable by card type
 
@@ -165,6 +162,7 @@ the GUI function itself?
 -leech detection (mod 15)
 
 -ask people about biggest gripe in Mnemosyne, things that did not behave as expected
+
 
 -copy card and create a new one that way
 
@@ -183,23 +181,29 @@ the GUI function itself?
 -make file handling more robust, detect all errors (see mail by
  OldGrantonian)
 
+-reenable datadir in setup.py
+
 -make filters more efficients by using regex instead of loops.
 
 -easier function to do tag detection in plugin
+
+-bug in Qt: setting default colour to black does not register the colour clicks.
 
 -document cntrl enter in edit dialog instead of clicking ok
 
 pylint:
 	find ./mnemosyne/libmnemosyne/ -name \*.py | while read f ; do echo $f;pylint $f 2>&1|grep ^E:; done
 
+-Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev
+
+-Faq about how to pronounce Mnemosyne
+
+-delete key shortcut for saved sets
 
 
 * After 2.0:
 
--post nose 0.11: add cover branches
-
 -hack tarfile to add progress bar?
--compression on backup to reduce write time to SD card?
 
 -'shared deck' export
 -is 'client_info["shared_dack"] the best way to signal this? Or have entirely new
@@ -284,6 +288,9 @@ pylint:
 
 -update ohloh?
 
+-synchronise history folder to guard against mobile clients not uploading their
+ logs, even though they set upload_logs=True?
+
 -skritter/cpod interop mail
 
 -better supermemo import
@@ -315,6 +322,9 @@ http://pythoscope.org/
 
 -improve learn ahead, by learing ahead per day and prioritising within each day
 
+http://lost-theory.org/python/ltchinese/
+
+-control B format character in supermemo import?
 
 Windows Mobile client:
 
@@ -323,6 +333,7 @@ If your phone has a touchscreen use the pocket pc version. Otherwise try the sma
 -integrate sync
 -better way of making default actions visible? Call layout()?
 -hook up scheduler rollover
+-document save after n rep
 -cramming widget, cache counters
 -implement hide question
 -icon
@@ -331,8 +342,8 @@ If your phone has a touchscreen use the pocket pc version. Otherwise try the sma
 -set basedir in registry key
 -install only pyc files
 -mark card
--play around with MW5torage for easier sync and document this if it works.
 -button color
+-sonud: http://watersprite.awardspace.com/python/
 
 Multiuser statistics analysis:
 
@@ -408,6 +419,8 @@ Multiuser statistics analysis:
 -integrate Mnemosyne analysis, advanced statistics, history,
  forgetting index, histogram of grades and intervals... (look at graphs
  in JMemorize)
+
+-research papers: http://act-r.psy.cmu.edu/people/index.php?id=11
 
 -importing cards from rss feed
 

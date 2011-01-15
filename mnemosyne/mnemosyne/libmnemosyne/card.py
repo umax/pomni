@@ -16,7 +16,11 @@ class Card(CompareOnId):
     objects.
 
     'scheduler_data' is a variable that can be used by a scheduler to save
-    state.
+    state. It is an integer as opposed to a complex datatype to to allow for
+    fast sql queries. If a scheduler needs additional data, it can be stored
+    in 'extra_data', but then the custom scheduler needs to make sure it
+    explicitly logs an 'edited_card' event so that 'extra data' gets sent
+    across during sync.
 
     'active' is used to determine whether a card is included in the review
     process. Currently, the UI allows setting cards active when then belong to
@@ -84,16 +88,19 @@ class Card(CompareOnId):
         False are not run. 
         
         """
-
+                
         return self.fact.card_type.question(self, exporting)
        
-    def answer(self):        
-        return self.fact.card_type.answer(self)
+    def answer(self, exporting=False):
+
+        """When 'exporting' is True, filters that have 'run_on_export' set to
+        False are not run. 
+        
+        """
+                
+        return self.fact.card_type.answer(self, exporting)
 
     def tag_string(self):
-        tag_string = ""
-        for tag in self.tags:
-            tag_string += tag.name + ", "
-        return tag_string[:-2]
+        return ", ".join([tag.name for tag in self.tags])
         
     interval = property(lambda self : self.next_rep - self.last_rep)

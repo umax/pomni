@@ -7,7 +7,7 @@ from mnemosyne.libmnemosyne.review_controller import ReviewController
 
 
 # Tooltip texts.  The first index deals with whether we have a card with
-# previous grade 0 or 1 (i.e. non memorised).  The second index is the grade.
+# previous grade 0 or 1 (i.e. unmemorised).  The second index is the grade.
 tooltip = [["", "", "", "", "", "", ""], ["", "", "", "", "", "", ""]]
 tooltip[0][0] = \
     _("You don't remember this card yet.")
@@ -49,7 +49,8 @@ class SM2Controller(ReviewController):
         self.non_memorised_count = None
         self.scheduled_count = None
         self.active_count = None
-        self.widget = self.component_manager.get_current("review_widget")\
+        self.rep_count = 0
+        self.widget = self.component_manager.current("review_widget")\
                       (self.component_manager)
         self.widget.activate()
         self.scheduler().reset()
@@ -67,6 +68,7 @@ class SM2Controller(ReviewController):
         sch = self.scheduler()
         sch.reset()
         sch.rebuild_queue()
+        self.reload_counters()
         # If previously there was no card active, perhaps there is one now.
         if self.card is None:
             self.new_question()
@@ -74,7 +76,7 @@ class SM2Controller(ReviewController):
         # Reload the card, as its data might have changed or deleted, e.g.
         # during sync.
         try:
-            self.card = self.database().get_card(self.card._id,
+            self.card = self.database().card(self.card._id,
                 id_is_internal=True)
         except TypeError: # The card was deleted.
             self.new_question()
@@ -106,7 +108,7 @@ class SM2Controller(ReviewController):
             self.state = "EMPTY"
             self.card = None
         else:
-            self.card = self.scheduler().get_next_card(self.learning_ahead)
+            self.card = self.scheduler().next_card(self.learning_ahead)
             if self.card is not None:
                 self.state = "SELECT SHOW"
             else:
@@ -131,15 +133,18 @@ class SM2Controller(ReviewController):
         card_to_grade = self.card
         old_grade = card_to_grade.grade
         self.update_counters(old_grade, grade)
+        self.rep_count += 1
         if self.scheduler().allow_prefetch():
             self.new_question()
             interval = self.scheduler().grade_answer(card_to_grade, grade)
-            self.database().update_card(card_to_grade, repetition_only=True)
-            self.database().save()
+            self.database().edit_card(card_to_grade, repetition_only=True)
+            if self.rep_count % self.config()["save_after_n_reps"] == 0:
+                self.database().save()
         else:
             interval = self.scheduler().grade_answer(card_to_grade, grade)
-            self.database().update_card(card_to_grade, repetition_only=True)
-            self.database().save()
+            self.database().edit_card(card_to_grade, repetition_only=True)
+            if self.rep_count % self.config()["save_after_n_reps"] == 0:
+                self.database().save()
             self.new_question()     
         if self.config()["show_intervals"] == "status_bar":
             import math
@@ -155,7 +160,7 @@ class SM2Controller(ReviewController):
         else:
             return '\n' + _("Next repetition in ") + str(days) + _(" days.")
 
-    def get_counters(self):
+    def counters(self):
         if not self.non_memorised_count:
             self.reload_counters()
         return self.scheduled_count, self.non_memorised_count, self.active_count

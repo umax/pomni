@@ -17,7 +17,6 @@ class ReviewController(Component):
     def __init__(self, component_manager):
         Component.__init__(self, component_manager)
         self.card = None
-        self.learning_ahead = False
 
     def reset(self):
         raise NotImplementedError
@@ -57,7 +56,7 @@ class ReviewController(Component):
         
         raise NotImplementedError
 
-    def get_counters(self):
+    def counters(self):
 
         """Returns tuple (scheduled_count, non_memorised_count, active_count)."""
         
@@ -72,7 +71,7 @@ class ReviewController(Component):
     def update_dialog(self):
         raise NotImplementedError
 
-    def update_statusbar(self, message=None):
+    def update_status_bar(self, message=None):
         raise NotImplementedError 
 
     def is_question_showing(self):

@@ -8,14 +8,14 @@ import os
 if os.name == "ce":
 	import ppygui.api as gui
 else:
-	import emulator.api as gui
+	import mnemosyne.ppygui_ui.emulator.api as gui
 
 from mnemosyne.libmnemosyne import Mnemosyne
 
-# TODO: create mechanism which will make it easier to change the data_dir,
+# TODO: create mechanism which will make it easier to change the basedir,
 # e.g. by a first run wizard, of from an option in the program. Perhaps a
 # text file in the location of libmnemosyne?
-data_dir = "\SDMMC\mnemosyne2"
+basedir = "\SDMMC\.mnemosyne"
 
 # Load the Mnemosyne library.
 mnemosyne = Mnemosyne(resource_limited=True)
@@ -37,10 +37,12 @@ mnemosyne.components = [
      "SQLite"), 
     ("mnemosyne.libmnemosyne.configuration",
      "Configuration"), 
-    ("mnemosyne.libmnemosyne.loggers.sql_logger",
-     "SqlLogger"),          
+    ("mnemosyne.libmnemosyne.loggers.database_logger",
+     "DatabaseLogger"),          
     ("mnemosyne.libmnemosyne.schedulers.SM2_mnemosyne",
-     "SM2Mnemosyne"),                   
+     "SM2Mnemosyne"),
+    ("mnemosyne.libmnemosyne.stopwatch",
+     "Stopwatch"),
     ("mnemosyne.libmnemosyne.card_types.front_to_back",
      "FrontToBack"),
     ("mnemosyne.libmnemosyne.card_types.both_ways",
@@ -51,10 +53,10 @@ mnemosyne.components = [
      "HtmlCssOld"),
     ("mnemosyne.libmnemosyne.filters.escape_to_html",
      "EscapeToHtml"),
-    ("mnemosyne.libmnemosyne.filters.expand_paths",
-     "ExpandPaths"),
     ("mnemosyne.libmnemosyne.filters.latex",
      "Latex"),
+    ("mnemosyne.libmnemosyne.filters.expand_paths",
+     "ExpandPaths"),
     ("mnemosyne.libmnemosyne.controllers.default_controller",
      "DefaultController"),
     ("mnemosyne.libmnemosyne.review_controllers.SM2_controller",
@@ -63,12 +65,16 @@ mnemosyne.components = [
      "MapPlugin"),
     ("mnemosyne.libmnemosyne.card_types.cloze",
      "ClozePlugin"),
+    ("mnemosyne.libmnemosyne.activity_criteria.default_criterion",
+     "DefaultCriterion"),
+    ("mnemosyne.libmnemosyne.databases.SQLite_criterion_applier",
+     "DefaultCriterionApplier"),   
     ("mnemosyne.libmnemosyne.plugins.cramming_plugin",
      "CrammingPlugin") ]
 
 # Run Mnemosyne.
-mnemosyne.initialise(data_dir=data_dir)
+mnemosyne.initialise(basedir=basedir)
 mnemosyne.config()["upload_science_logs"] = False
 app.mainframe = mnemosyne.main_widget()
 app.run()
-nemosyne.finalise()
+mnemosyne.finalise()

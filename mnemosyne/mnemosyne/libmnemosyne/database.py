@@ -11,12 +11,14 @@ class Database(Component):
     actual database classes.
 
     Apart from the basic interface defined here, depending on the situation
-    a database can also implement functions for logging and statistics
-    (see SQLite_logging.py and SQLite_statistics.py for the interface).
+    a database can also implement functions for logging, statistics and
+    syncing (see SQLite_logging.py, SQLite_statistics.py, SQLite_sync.py).
 
     """
 
     version = ""
+    default_name = "default"  # Without suffix, should not be translated.
+    suffix = ""
     component_type = "database"
 
     def deactivate(self):
@@ -57,13 +59,16 @@ class Database(Component):
         """
 
     def new(self, path):
-        raise NotImplementedError
+        raise NotImplementedError       
 
     def save(self, path=None):
         raise NotImplementedError
 
     def backup(self):
         raise NotImplementedError
+
+    def restore(self, path):
+        raise NotImplementedError        
 
     def load(self, path):
         raise NotImplementedError
@@ -76,16 +81,27 @@ class Database(Component):
 
     def is_loaded(self):
         raise NotImplementedError
+    
+    def is_empty(self):
+        raise NotImplementedError
 
+    # Functions to conform to openSM2sync API.
+
+    def user_id(self):
+        return self.config()["user_id"]
+
+    def set_user_id(self, user_id):
+        self.config().change_user_id(user_id)
+    
     # Tags.
 
     def add_tag(self, tag):
         raise NotImplementedError
 
-    def get_tag(self, id, id_is_internal):
+    def tag(self, id, id_is_internal):
         raise NotImplementedError
     
-    def update_tag(self, tag):
+    def edit_tag(self, tag):
         raise NotImplementedError
 
     def delete_tag(self, tag):
@@ -97,10 +113,10 @@ class Database(Component):
     def remove_tag_if_unused(self, tag):
         raise NotImplementedError
     
-    def get_tags(self):
+    def tags(self):
         raise NotImplementedError
     
-    def get_tag_names(self):
+    def tag_names(self):
         raise NotImplementedError
     
     # Facts.
@@ -108,13 +124,13 @@ class Database(Component):
     def add_fact(self, fact):
         raise NotImplementedError
     
-    def get_fact(self, id, id_is_internal):
+    def fact(self, id, id_is_internal):
         raise NotImplementedError
     
-    def update_fact(self, fact):
+    def edit_fact(self, fact):
         raise NotImplementedError
 
-    def delete_fact_and_related_data(self, fact):
+    def delete_fact_and_related_cards(self, fact):
         raise NotImplementedError
     
     # Cards.
@@ -122,24 +138,38 @@ class Database(Component):
     def add_card(self, card):
         raise NotImplementedError
         
-    def get_card(self, id, id_is_internal):
+    def card(self, id, id_is_internal):
         raise NotImplementedError
     
-    def update_card(self, card, repetition_only=False):
+    def edit_card(self, card, repetition_only=False):
         raise NotImplementedError
 
     def delete_card(self, card):
         raise NotImplementedError
+    
+    # Fact views.
+    
+    def add_fact_view(self, fact_view):
+        raise NotImplementedError
 
+    def fact_view(self, id, id_is_internal):
+        raise NotImplementedError
+    
+    def edit_fact_view(self, fact_view):
+        raise NotImplementedError
+
+    def delete_fact_view(self, fact_view):
+        raise NotImplementedError
+    
     # Card types.
     
     def add_card_type(self, card_type):
         raise NotImplementedError
 
-    def get_card_type(self, id, id_is_internal):
+    def card_type(self, id, id_is_internal):
         raise NotImplementedError
     
-    def update_card_type(self, card_type):
+    def edit_card_type(self, card_type):
         raise NotImplementedError
 
     def delete_card_type(self, card_type):
@@ -150,10 +180,10 @@ class Database(Component):
     def add_activity_criterion(self, criterion):
         raise NotImplementedError
 
-    def get_activity_criterion(self, id, id_is_internal):
+    def activity_criterion(self, id, id_is_internal):
         raise NotImplementedError
     
-    def update_activity_criterion(self, criterion):
+    def edit_activity_criterion(self, criterion):
         raise NotImplementedError
 
     def delete_activity_criterion(self, criterion):
@@ -165,7 +195,7 @@ class Database(Component):
     def current_activity_criterion(self):
         raise NotImplementedError
     
-    def get_activity_criteria(self):
+    def activity_criteria(self):
         raise NotImplementedError    
     
     # Queries.
@@ -242,9 +272,3 @@ class Database(Component):
 
     def scheduler_data_count(self, scheduler_data):        
         raise NotImplementedError
-
-    # Synchronization
-
-    def get_history_events(self):
-        raise NotImplementedError
-

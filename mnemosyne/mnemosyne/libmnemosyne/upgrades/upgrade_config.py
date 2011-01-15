@@ -25,11 +25,11 @@ class UpgradeConfig(Component):
             # Migrate settings.
             config["grade_0_cards_in_hand"] = config["grade_0_items_at_once"]
             for card_type in self.card_types():
-                card_type.get_renderer().set_property("font", config["QA_font"],
+                card_type.renderer().set_property("font", config["QA_font"],
                                                       card_type)
             if config["left_align"]:
                 for card_type in self.card_types():                
-                    card_type.get_renderer().set_property(\
+                    card_type.renderer().set_property(\
                         "alignment", "left", card_type)
             del config["hide_toolbar"]
             del config["QA_font"]
@@ -48,6 +48,9 @@ class UpgradeConfig(Component):
             del config["sort_column"]            
             del config["sort_order"]
             del config["locale"]
+            config["upload_science_logs"] = config["upload_logs"]
+            del config["upload_logs"]
+            del config["upload_server"]
             # Migrate latex settings.
             setting_for_file = {"dvipng": "dvipng",
                                 "preamble": "latex_preamble",
@@ -58,6 +61,8 @@ class UpgradeConfig(Component):
                 for line in file(full_filename):
                     config[setting] += line
                 os.rename(full_filename, full_filename + ".NO_LONGER_USED")
+            os.rename(os.path.join(config.basedir, "latex"),
+                      os.path.join(config.basedir, "latex.NO_LONGER_USED"))
             
                      
             

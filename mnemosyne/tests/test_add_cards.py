@@ -33,7 +33,7 @@ class TestAddCards(MnemosyneTest):
             ("test_add_cards", "Widget"))
         self.mnemosyne.components.append(\
             ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))
-        self.mnemosyne.initialise(os.path.abspath("dot_test"),  automatic_upgrades=False)
+        self.mnemosyne.initialise(os.path.abspath("dot_test"))
         self.review_controller().reset()
 
     def test_1(self):
@@ -45,7 +45,18 @@ class TestAddCards(MnemosyneTest):
         self.controller().file_save()
         assert self.database().fact_count() == 1
         assert self.database().card_count() == 1
-
+        
+    def test_src(self):
+        fact_data = {"q": """<font face="courier">src</font>""",
+                     "a": "answer"}
+        card_type = self.card_type_by_id("1")
+        card = self.controller().create_new_cards(fact_data, card_type,
+                                              grade=-1, tag_names=["default"])[0]
+        card.question()
+        self.controller().file_save()
+        assert self.database().fact_count() == 1
+        assert self.database().card_count() == 1
+        
     def test_comparisons(self):
         fact_data = {"q": "question",
                      "a": "answer"}
@@ -119,7 +130,7 @@ class TestAddCards(MnemosyneTest):
         self.review_controller().new_question()
         assert self.review_controller().card == card_1
         self.review_controller().grade_answer(0)
-        self.database().delete_fact_and_related_data(card_3.fact)
+        self.database().delete_fact_and_related_cards(card_3.fact)
         self.review_controller().reset()
         for i in range(6):
             assert self.review_controller().card != card_3
@@ -155,9 +166,9 @@ class TestAddCards(MnemosyneTest):
         card = self.controller().create_new_cards(fact_data, card_type,
                                               grade=-1, tag_names=["default"])[0]
         self.review_controller().new_question()
-        self.controller().update_related_cards(card.fact, fact_data, \
+        self.controller().edit_related_cards(card.fact, fact_data, \
             card_type, ["new"], correspondence={})     
-        new_card = self.database().get_card(card._id, id_is_internal=True)
+        new_card = self.database().card(card._id, id_is_internal=True)
         tag_names = [tag.name for tag in new_card.tags]
         assert len(tag_names) == 1
         assert "new" in tag_names

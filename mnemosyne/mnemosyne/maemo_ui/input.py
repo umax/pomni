@@ -47,7 +47,7 @@ class InputWidget(UiComponent):
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
         self.conf = self.config()
-        self.renderer = self.component_manager.get_current('renderer')
+        self.renderer = self.component_manager.current('renderer')
         self.default_tag_name = unicode(_('<default>'))
         self.content_type = None
         self.last_input_page = None
@@ -57,7 +57,7 @@ class InputWidget(UiComponent):
         self.card_type = None
         self.selected_tags = None   # user selected tags list
         self.tags = [unicode(tag) for tag in sorted( \
-            self.database().get_tag_names(), cmp=numeric_string_cmp) or \
+            self.database().tag_names(), cmp=numeric_string_cmp) or \
             [self.default_tag_name]]    # all tags list
         self._main_widget = self.main_widget()
         # create widgets
@@ -277,7 +277,7 @@ class InputWidget(UiComponent):
             self.conf['%sdir' % self.content_type])
         if not fname:
             return
-        renderer = self.component_manager.get_current('renderer')
+        renderer = self.component_manager.current('renderer')
         if self.content_type == 'image':
             # draw fname picture
             widgets.change_media_button_image(self.widgets['MediaButton'], \

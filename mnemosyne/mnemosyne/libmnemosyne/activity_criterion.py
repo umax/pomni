@@ -35,6 +35,8 @@ class ActivityCriterion(Component):
         write to the database. Called after creating or updating cards, to
         see whether these cards should start out their life as active or not.
 
+        Also called after reviewing a card.
+
         The tag and card type creation and deletion function are callbacks
         called by the rest of libmnemosyne when these objects get created or
         destroyed, such that ActivityCriteria can update their status if
@@ -56,9 +58,6 @@ class ActivityCriterion(Component):
     def card_type_deleted(self, card_type):
         pass
     
-    def card_reviewed(self, card):
-        pass
-    
     def data_to_string(self):
 
         """Convert variables to a string for storage in the database. We don't
@@ -69,8 +68,19 @@ class ActivityCriterion(Component):
         
         raise NotImplementedError
 
-    def data_from_string(self, data):
-        raise NotImplementedError        
+    def set_data_from_string(self, data_string):
+        raise NotImplementedError
+    
+    def data_to_sync_string(self):
+
+        """Convert variables to a string for sending across during syncing.
+        Could be different from 'data_to_string', as it should use ids instead
+        of _ids."""
+
+        raise NotImplementedError
+    
+    def set_data_from_sync_string(self, data_string):
+        raise NotImplementedError
 
 
 class CriterionApplier(Component):

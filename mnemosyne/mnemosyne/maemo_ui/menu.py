@@ -103,7 +103,7 @@ class MenuWidget(UiComponent):
 
         dialogs.show_import_dialog( \
             self.component_manager.get_all('file_format'),
-            self.component_manager.get_current('file_format'),
+            self.component_manager.current('file_format'),
             self.database(), self.review_controller(),
             self._main_widget.error_box)
 

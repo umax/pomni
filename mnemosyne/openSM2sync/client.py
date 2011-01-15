@@ -84,9 +84,9 @@ class Client(Partner):
             if self.do_backup:
                 backup_file = self.database.backup()
             # We check if files were updated outside of the program. This can
-            # generate MEDIA_UPDATED log entries, so it should be done first.
+            # generate MEDIA_EDITED log entries, so it should be done first.
             if self.check_for_updated_media_files:
-                self.database.check_for_updated_media_files()
+                self.database.check_for_edited_media_files()
             self.login(socket.gethostbyname(server), port, username, password)
             # First sync.
             if self.database.is_empty():
@@ -199,7 +199,7 @@ class Client(Partner):
             self.server_info["machine_id"])
         for buffer in self.stream_log_entries(log_entries, number_of_entries):
             self.con.send(buffer)        
-        self.ui.set_progress_text("Waiting for server to finish...")
+        self.ui.set_progress_text("Waiting for server...")
         response = self.con.getresponse().read()
         if response == "CANCEL":
             raise SyncError("Sending log entries: server error.")

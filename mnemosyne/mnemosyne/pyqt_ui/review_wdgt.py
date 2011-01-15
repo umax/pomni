@@ -114,9 +114,13 @@ class ReviewWdgt(QtGui.QWidget, Ui_ReviewWdgt, ReviewWidget):
 
     def update_status_bar(self, message=None):
         scheduled_count, non_memorised_count, active_count = \
-                   self.review_controller().get_counters()
+                   self.review_controller().counters()
         self.sched.setText(_("Scheduled: %d ") % scheduled_count)
         self.notmem.setText(_("Not memorised: %d ") % non_memorised_count)
         self.act.setText(_("Active: %d ") % active_count)
         if message:
+<<<<<<< HEAD
             self.parent().statusBar().showMessage(message)
+=======
+            self.main_widget().status_bar_message(message)
+>>>>>>> d62aafc... API cleanup.

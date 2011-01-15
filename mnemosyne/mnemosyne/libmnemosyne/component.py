@@ -63,59 +63,60 @@ class Component(object):
     # libmnemosyne from within a component.
     
     def _(self):
-        return self.component_manager.get_current("translator")
+        return self.component_manager.current("translator")
     
     def config(self):
-        return self.component_manager.get_current("config")
+        return self.component_manager.current("config")
 
     def log(self):
-        return self.component_manager.get_current("log")
+        return self.component_manager.current("log")
 
     def database(self):
-        return self.component_manager.get_current("database")
+        return self.component_manager.current("database")
 
     def scheduler(self):
-        return self.component_manager.get_current("scheduler")
+        return self.component_manager.current("scheduler")
     
     def stopwatch(self):
-        return self.component_manager.get_current("stopwatch")
+        return self.component_manager.current("stopwatch")
     
     def main_widget(self):
-        return self.component_manager.get_current("main_widget")
+        return self.component_manager.current("main_widget")
 
     def controller(self):
-        return self.component_manager.get_current("controller")
+        return self.component_manager.current("controller")
 
     def review_controller(self):
-        return self.component_manager.get_current("review_controller")
+        return self.component_manager.current("review_controller")
 
     def card_types(self):
-        return self.component_manager.get_all("card_type")
+        return self.component_manager.all("card_type")
 
     def filters(self):
-        return self.component_manager.get_all("filter")
+        return self.component_manager.all("filter")
 
     def plugins(self):
-        return self.component_manager.get_all("plugin")
+        return self.component_manager.all("plugin")
 
     def statistics_pages(self):
-        return self.component_manager.get_all("statistics_page")
+        return self.component_manager.all("statistics_page")
     
     def configuration_widgets(self):
-        return self.component_manager.get_all("configuration_widget")
+        return self.component_manager.all("configuration_widget")
     
     def card_type_by_id(self, id):
         return self.component_manager.card_type_by_id[id]
 
     def flush_sync_server(self):
 
-        """If there are still dangling sessions in the sync server, we should
-        flush them and make sure they restore from backup before doing anything
-        that could change the database. Otherwise, if these sessions close
-        later, their backup restoration will override these changes.
+        """If there are still dangling sessions (i.e. those waiting in vain
+        for more client input) in the sync server, we should flush them and
+        make sure they restore from backup before doing anything that could
+        change the database. Otherwise, if these sessions close during program
+        shutdown, their backup restoration will override the changes.
 
         """
 
-        server = self.component_manager.get_current("sync_server")
+        server = self.component_manager.current("sync_server")
         if server:
             server.flush_sync_server()

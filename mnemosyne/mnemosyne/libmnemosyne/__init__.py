@@ -16,9 +16,6 @@ class Mnemosyne(Component):
     """This class groups the functionality needed to initialise and finalise
     Mnemosyne in a typical scenario.
 
-    The automatic upgrades of the database can be turned off by setting
-    'automatic_upgrade' to False. This is mainly useful for the testsuite.
-
     """
 
     def __init__(self, resource_limited=False):
@@ -27,8 +24,8 @@ class Mnemosyne(Component):
           "SQLite"),
          ("mnemosyne.libmnemosyne.configuration",
           "Configuration"),
-         ("mnemosyne.libmnemosyne.loggers.sql_logger",
-          "SqlLogger"), 
+         ("mnemosyne.libmnemosyne.loggers.database_logger",
+          "DatabaseLogger"), 
          ("mnemosyne.libmnemosyne.schedulers.SM2_mnemosyne",
           "SM2Mnemosyne"),
          ("mnemosyne.libmnemosyne.stopwatch",
@@ -55,10 +52,10 @@ class Mnemosyne(Component):
           "HtmlCss"),
          ("mnemosyne.libmnemosyne.filters.escape_to_html",
           "EscapeToHtml"),
-         ("mnemosyne.libmnemosyne.filters.expand_paths",
-          "ExpandPaths"),
          ("mnemosyne.libmnemosyne.filters.latex",
           "Latex"),
+         ("mnemosyne.libmnemosyne.filters.expand_paths",
+          "ExpandPaths"),
          ("mnemosyne.libmnemosyne.filters.html5_media",
           "Html5Media"),
          ("mnemosyne.libmnemosyne.controllers.default_controller",
@@ -91,13 +88,12 @@ class Mnemosyne(Component):
           "Mnemosyne1Mem")]
         self.extra_components_for_plugin = {}
         self.resource_limited = resource_limited
+        self.upgrade_needed = False
 
-    def initialise(self, data_dir=None, filename=None,
-                   automatic_upgrades=True):
-        self.component_manager = new_component_manager()          
+    def initialise(self, basedir, filename=None):
+        self.component_manager = new_component_manager()
         self.register_components()
-        if data_dir:
-            self.config().data_dir = data_dir
+        self.config().basedir = basedir
         self.config().resource_limited = self.resource_limited 
         self.activate_components()
         self.initialise_error_handling()
@@ -112,12 +108,12 @@ class Mnemosyne(Component):
         self.log().started_program()
         self.log().started_scheduler()
         self.log().loaded_database()
-        # Upgrade if needed.
-        if automatic_upgrades:
-            from mnemosyne.libmnemosyne.upgrades.upgrade1 import Upgrade1
-            Upgrade1(self.component_manager).run()  
-        # Finally, we can activate the main widget.
+        # Finally, we can activate the main widget and upgrade if needed.
         self.main_widget().activate()
+        if self.upgrade_needed:
+            from mnemosyne.libmnemosyne.upgrades.upgrade_database \
+                 import UpgradeDatabase
+            UpgradeDatabase(self.component_manager).run(self.file_to_upgrade)
                     
     def register_components(self):
 
@@ -153,22 +149,30 @@ class Mnemosyne(Component):
         for component in  ["config", "log", "database", "scheduler",
                            "controller"]:
             try:
-                self.component_manager.get_current(component).activate()
+                self.component_manager.current(component).activate()
             except RuntimeError, e:
                 self.main_widget().error_box(unicode(e))
-        server = self.component_manager.get_current("sync_server")
+        server = self.component_manager.current("sync_server")
         if server:
             server.activate()
 
     def initialise_error_handling(self):
         if sys.platform == "win32":
-            error_log = os.path.join(self.config().data_dir, "error_log.txt")
+            error_log = os.path.join(self.config().basedir, "error_log.txt")
             sys.stderr = file(error_log, "a")
                     
     def execute_user_plugin_dir(self):
-        plugin_dir = unicode(os.path.join(self.config().data_dir, "plugins"))
-        sys.path.insert(0, plugin_dir)
-        for component in os.listdir(unicode(plugin_dir)):
+        # Coming from 1.x, upgrade the config and don't run the old plugins.
+        if self.config()["path"].endswith(".mem"):
+            from mnemosyne.libmnemosyne.upgrades.upgrade_config \
+                 import UpgradeConfig
+            UpgradeConfig(self.component_manager).run()
+            return
+        # Else, proceed nomally. 
+        basedir = self.config().basedir
+        plugindir = unicode(os.path.join(basedir, "plugins"))
+        sys.path.insert(0, plugindir)
+        for component in os.listdir(unicode(plugindir)):
             if component.endswith(".py"):
                 try:
                     __import__(component[:-3])
@@ -194,7 +198,11 @@ class Mnemosyne(Component):
     def load_database(self, filename):
         if not filename:
             filename = self.config()["path"]
-        filename = expand_path(filename, self.config().data_dir)
+        filename = expand_path(filename, self.config().basedir)
+        if filename.endswith(".mem"):
+            self.file_to_upgrade = filename
+            filename = filename.replace(".mem", ".db")
+            self.upgrade_needed = True
         try:
             if not os.path.exists(filename):
                 self.database().new(filename)
@@ -216,7 +224,7 @@ class Mnemosyne(Component):
     def finalise(self):
         # Deactivate the sync server first, so that we make sure it reverts
         # to the right backup file.
-        server = self.component_manager.get_current("sync_server")
+        server = self.component_manager.current("sync_server")
         if server:
             server.deactivate()
         # Saving the config should happen before we deactivate the plugins,

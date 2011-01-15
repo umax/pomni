@@ -29,7 +29,7 @@ class TestCrammingScheduler(MnemosyneTest):
             ("test_cramming", "Widget"))
         self.mnemosyne.components.append(\
             ("mnemosyne.libmnemosyne.ui_components.review_widget", "ReviewWidget"))
-        self.mnemosyne.initialise(os.path.abspath("dot_test"),  automatic_upgrades=False)
+        self.mnemosyne.initialise(os.path.abspath("dot_test"))
 
         from mnemosyne.libmnemosyne.plugins.cramming_plugin import CrammingPlugin
         for plugin in self.plugins():
@@ -56,30 +56,30 @@ class TestCrammingScheduler(MnemosyneTest):
         card_4 = self.controller().create_new_cards(fact_data, card_type,
                      grade=2, tag_names=["default"])[0]
         card_4.next_rep -= 1000
-        self.database().update_card(card_4)
+        self.database().edit_card(card_4)
 
         assert self.database().scheduler_data_count(Cramming.UNSEEN) == 4 
         assert self.database().scheduler_data_count(Cramming.WRONG) == 0
-        card = self.scheduler().get_next_card()
+        card = self.scheduler().next_card()
         self.scheduler().grade_answer(card, 0)
-        self.database().update_card(card)
+        self.database().edit_card(card)
         assert self.database().scheduler_data_count(Cramming.UNSEEN) == 3 
         assert self.database().scheduler_data_count(Cramming.WRONG) == 1
-        card = self.scheduler().get_next_card()
+        card = self.scheduler().next_card()
         self.scheduler().grade_answer(card, 5)
-        self.database().update_card(card)
+        self.database().edit_card(card)
         assert self.database().scheduler_data_count(Cramming.UNSEEN) == 2
         assert self.database().scheduler_data_count(Cramming.WRONG) == 1
         # Fail the cards a couple of times.
         for i in range(8):
-            card = self.scheduler().get_next_card()
+            card = self.scheduler().next_card()
             self.scheduler().grade_answer(card, 0)
-            self.database().update_card(card)
+            self.database().edit_card(card)
         # Pass the cards a couple of times.
         for i in range(8):
-            card = self.scheduler().get_next_card()
+            card = self.scheduler().next_card()
             self.scheduler().grade_answer(card, 5)
-            self.database().update_card(card)
+            self.database().edit_card(card)
  
     def test_2(self):
         card_type = self.card_type_by_id("1")
@@ -102,7 +102,7 @@ class TestCrammingScheduler(MnemosyneTest):
         self.review_controller().new_question()
 
         self.mnemosyne.finalise()
-        self.mnemosyne.initialise(os.path.abspath("dot_test"), automatic_upgrades=False)
+        self.mnemosyne.initialise(os.path.abspath("dot_test"))
 
         assert self.scheduler().name == "cramming"
         

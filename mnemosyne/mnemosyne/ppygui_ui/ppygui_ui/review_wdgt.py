@@ -6,7 +6,7 @@ import os
 if os.name == "ce":
 	import ppygui.api as gui
 else:
-	import emulator.api as gui
+	import mnemosyne.ppygui_ui.emulator.api as gui
 
 from mnemosyne.libmnemosyne.ui_components.review_widget import ReviewWidget
 
@@ -20,7 +20,7 @@ class ReviewWdgt(gui.Frame, ReviewWidget):
         parent.set_central_widget(self)
        
         # Note: ppygui makes heavy use of properties, so we can't use e.g.
-        # self.question, as the presence of self.get_question would then
+        # self.question, as the presence of self.question would then
         # require a function self.set_question too.
         self._question_label = gui.Label(self, "Question:")
         self._question = gui.Html(self)
@@ -115,7 +115,7 @@ class ReviewWdgt(gui.Frame, ReviewWidget):
 
     def update_status_bar(self):
         scheduled_count, non_memorised_count, active_count = \
-                   self.review_controller().get_counters()
+                   self.review_controller().counters()
         self.status_bar.text = "Sch.:%d Not mem.:%d Act.:%d" % \
             (scheduled_count, non_memorised_count, active_count)
         
