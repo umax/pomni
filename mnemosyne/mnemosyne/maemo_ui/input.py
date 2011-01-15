@@ -436,13 +436,13 @@ class EditFactWidget(EditFactDialog, InputWidget):
 
         review_controller = self.review_controller()
         new_tags = [unicode(tag.strip()) for tag in self.selected_tags]
-        self.controller().update_related_cards(self.fact, fact_data,
+        self.controller().edit_related_cards(self.fact, fact_data,
           self.card_type, new_tags, None)
 
         # this part is the second part of
         # edit_current_fact from default controller
         review_controller.reload_counters()
-        review_controller.card = self.database().get_card(\
+        review_controller.card = self.database().card( \
             review_controller.card._id, id_is_internal=True)
         review_controller.update_dialog(redraw_all=True)
         self.stopwatch().unpause()
