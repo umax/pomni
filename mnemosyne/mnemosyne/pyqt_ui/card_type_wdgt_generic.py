@@ -83,8 +83,4 @@ class GenericCardTypeWdgt(QtGui.QWidget, GenericCardTypeWidget):
         self.top_edit_box.setFocus()
     
     def text_changed(self):
-<<<<<<< HEAD
         self.parent().set_valid(self.card_type.is_data_valid(self.data()))
-=======
-        self.parent().set_valid(self.card_type.is_data_valid(self.data()))
->>>>>>> d62aafc... API cleanup.

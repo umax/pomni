@@ -184,8 +184,4 @@ class AddCardsDlg(QtGui.QDialog, Ui_AddCardsDlg, AddEditCards, AddCardsDialog):
                 QtGui.QDialog.reject(self)
                 return
         else:
-<<<<<<< HEAD
             QtGui.QDialog.reject(self)
-=======
-            QtGui.QDialog.reject(self)
->>>>>>> d62aafc... API cleanup.

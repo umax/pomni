@@ -40,11 +40,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, MainWidget):
         self.connect(self.timer_2, QtCore.SIGNAL("timeout()"),
                      self.controller().heartbeat)
         self.timer_2.start(1000 * 60 * 60 * 24)
-        self.review_controller().reset()
-        
-    def add_to_statusbar(self, widget):
-        self.statusbar_widgets.append(widget)
-        self.statusbar.addPermanentWidget(widget)
 
     def status_bar_message(self, message):
         self.status_bar.showMessage(message)
@@ -186,7 +181,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow, MainWidget):
 
     def cleanDuplicates(self):
         stopwatch.pause()
-        self.statusbar.message(_("Please wait..."))
+        self.status_bar.message(_("Please wait..."))
         clean_duplicates(self)
         rebuild_queue()
         if not in_queue(self.card):

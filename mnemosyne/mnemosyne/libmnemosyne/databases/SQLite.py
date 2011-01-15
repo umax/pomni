@@ -246,14 +246,14 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
             return os.path.basename(self.config()["path"]).\
                    split(self.database().suffix)[0]
         
-    def mediadir(self):
-        return os.path.join(self.config().basedir,
+    def media_dir(self):
+        return os.path.join(self.config().data_dir,
             os.path.basename(self.config()["path"]) + "_media")
     
     def new(self, path):
         if self.is_loaded():
             self.unload()
-        self._path = expand_path(path, self.config().basedir)
+        self._path = expand_path(path, self.config().data_dir)
         if os.path.exists(self._path):
             os.remove(self._path)
         # Create tables.
@@ -263,17 +263,17 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
         self.con.execute("""insert into partnerships(partner, _last_log_id)
             values(?,?)""", ("log.txt", 0))
         self.con.commit()
-        self.config()["path"] = contract_path(self._path, self.config().basedir)
+        self.config()["path"] = contract_path(self._path, self.config().data_dir)
         # Create default criterion.
         from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
              DefaultCriterion
         self._current_criterion = DefaultCriterion(self.component_manager)
         self.add_activity_criterion(self._current_criterion)
         # Create media directory.
-        mediadir = self.mediadir()
-        if not os.path.exists(mediadir):
-            os.mkdir(mediadir)
-            os.mkdir(os.path.join(mediadir, "latex"))
+        media_dir = self.media_dir()
+        if not os.path.exists(media_dir):
+            os.mkdir(media_dir)
+            os.mkdir(os.path.join(media_dir, "latex"))
 
     def _activate_plugin_for_card_type(self, card_type_id):
         found = False
@@ -294,7 +294,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
     def load(self, path):
         if self.is_loaded():
             self.unload()
-        self._path = expand_path(path, self.config().basedir)
+        self._path = expand_path(path, self.config().data_dir)
         # Check database version.
         try:
             sql_res = self.con.execute("""select value from global_variables
@@ -335,7 +335,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
                 raise exception
         self._current_criterion = self.activity_criterion\
             (1, id_is_internal=True)
-        self.config()["path"] = contract_path(path, self.config().basedir)
+        self.config()["path"] = contract_path(path, self.config().data_dir)
         for f in self.component_manager.all("hook", "after_load"):
             f.run()
         # We don't log the database load here, as we prefer to log the start
@@ -349,11 +349,11 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
         self.con.commit()
         if not path:
             return
-        dest_path = expand_path(path, self.config().basedir)
+        dest_path = expand_path(path, self.config().data_dir)
         if dest_path != self._path:
             shutil.copy(self._path, dest_path)
             self._path = dest_path
-        self.config()["path"] = contract_path(path, self.config().basedir)
+        self.config()["path"] = contract_path(path, self.config().data_dir)
         # We don't log every save, as that would result in an event after
         # card repetitions.
 
@@ -361,7 +361,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
         self.save()
         if self.config()["backups_to_keep"] == 0:
             return
-        backupdir = os.path.join(self.config().basedir, "backups")
+        backupdir = os.path.join(self.config().data_dir, "backups")
         db_name = os.path.basename(self._path).rsplit(".", 1)[0]
         backupfile = db_name + "-" + \
             datetime.datetime.today().strftime("%Y%m%d-%H%M%S.db")
@@ -391,7 +391,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
 
     def restore(self, path):
         self.abandon()
-        db_path = expand_path(self.config()["path"], self.config().basedir)
+        db_path = expand_path(self.config()["path"], self.config().data_dir)
         shutil.copy(path, db_path)
         self.load(db_path)
 
@@ -400,7 +400,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
             f.run()
         self.log().dump_to_science_log()
         if self._connection:
-            self.save()
+            self.backup()  # Saves too.
             self._connection.close()
             self._connection = None
         self._path = None
@@ -864,7 +864,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
 
         """
         
-        return str(os.path.getmtime(os.path.join(self.mediadir(),
+        return str(os.path.getmtime(os.path.join(self.media_dir(),
             os.path.normcase(filename))))
     
     def _process_media(self, fact):
@@ -889,7 +889,7 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
             # the user clicks 'Add image' e.g., but he could have typed in the
             # full path directly.
             if os.path.isabs(filename):
-                filename = copy_file_to_dir(filename, self.mediadir())
+                filename = copy_file_to_dir(filename, self.media_dir())
             else:  # We always store Unix paths internally.
                 filename = filename.replace("\\", "/")
             for key, value in fact.data.iteritems():

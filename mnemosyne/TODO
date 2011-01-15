@@ -1,4 +1,4 @@
--make docs
+-get rid of event filter for key repeat, also for grade 0
 
 -current active set not marked upon entering
 -get_activity_criterion also returns default criterion. Make sure it is not used to construct the criteria list in the GUI
@@ -8,49 +8,33 @@
 -test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 -add update after import
 
--where to move txt_log_parser
--need component.statisticspages and configuration widgets?
-
 -check if media files exist?
+-time how long it takes to extract all media from a set of cards. If it takes too
+ long, consider adding a media field to the fact table
 
--number of unmemorised cards to hold in your hand? (i.e. grade 0 + 1)
--rework give initial grade dialog
+-warn when creating a new database that this is not the recommended way to organise your cards.
+- right click to add cards or sound, comma to 
+ separate tag names, :: to separate hierarchies
+-document cntrl enter in edit dialog instead of clicking ok (also manual?)
 
--move ~/.mnemosyne to .config/mnemosyne as per freedesktop standard?
-https://bugzilla.gnome.org/show_bug.cgi?id=518585
+-auto vacuum after every N openings? What about WM?
 
--post nose 0.11: add cover branches
+-see if graphical glitch is fixed with latest matplotlib version, reenable
+ remember size
 
--eliminate double save on finalise
--compression on backup to reduce write time to SD card?
+-delete key shortcut for saved sets
 
+-ampersand mnemonics everywhere
 
--duplicates for fact speedup
->         """Return fact with the same 'unique_fields' data as 'fact'."""
->         
->         query = "select _id from facts where card_type_id=?"
->         args = (fact.card_type.id,)
->         if fact._id:
->             query += " and not _id=?"
->             args = (fact.card_type.id, fact._id)
->         duplicates = []            
->         for cursor in self.con.execute(query, args):
->             data = dict([(cursor2["key"], cursor2["value"]) for cursor2 in \
->                 self.con.execute("""select * from data_for_fact where
->                 _fact_id=?""", (cursor[0], ))])
->             for field in fact.card_type.unique_fields:
->                 if data[field] == fact[field]:
->                     duplicates.append(\
->                         self.get_fact(cursor[0], id_is_internal=True))
->                     break
->         return duplicates
+-test uploading of logs in rollover
 
+-bug in Qt: setting default colour to black does not register the colour clicks.
 
--more tests
+-in add card window with custum font size, typing text and then deleting it reverts the font size to
+ the UI default instead of the card type default. hook upcurrentCharFormatChanged()? 
 
--windows: upgrade config?
--windows: HOME
--test unicode filenames in sync protocol
+-check for related cards on same day could fail if minute level scheduler is used in the meantime
+ (update comment in scheduler too)
 
 
 -card browser
@@ -58,41 +42,36 @@ https://bugzilla.gnome.org/show_bug.cgi?id=518585
 -qsortfilter proxy
 -show number of cards selected
 -card.in_view needed?
--make card browser remember its size
-
--time how long it takes to extract all media from a set of cards. If it takes too
- long, consider adding a media field to the fact table
-
--do better numeric sort on card browser and activate cards
-
--mobile client: even more agressive prefetch?
-
--add tests with unicode in basedir
-
--implement duplicate checking
--confirmation dialog for deleted cards
--explain check for duplicates after import of 1.x? Also give a hint of its working in
-the GUI function itself?
--card preview
 -MVC: http://doc.trolltech.com/qq/qq24-delegates.html
+-make card browser remember its size
+-do better numeric sort on card browser and activate cards
+-better mechanism to have different renderers?
 
--don't auto vacuum? what for WM?
--more fine grained resource_limited
+-do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
 -delete 1.99 logs
 -reenable upload
 
 
--... after menu options that open a dialog
--suppress autorepeat on review dialog
+-alpha 1
 
--do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
--new translation infrastructure
--handle deferred translation
--different translators for different users?
+-make distrib
+-http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
 
--remove port from GUI syncing options?
+-Qt bug? different font size in edit box and in css
+
+-windows: test auto upgrade
+-windows: test unicode filenames in sync protocol
+-test running from usb, update instructions
+-add tests with unicode in data_dir
+
+-reenable datadir in setup.py
+
+-Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev
+
+-Faq about how to pronounce Mnemosyne
+
 
 -import
 -update data if same id present on import
@@ -118,40 +97,55 @@ the GUI function itself?
 -http://gitorious.org/hooq/hooq? Qt4 testing
  http://www.fredemmott.co.uk/blog/2010/01/18/Qt4%20GUI%20Testing%20with%20Hooq
 
+
+-implement duplicate checking
+-confirmation dialog for deleted cards
+-explain check for duplicates after import of 1.x? Also give a hint of its working in
+the GUI function itself?
+-card preview
+-duplicates for fact speedup
+>         """Return fact with the same 'unique_fields' data as 'fact'."""
+>         
+>         query = "select _id from facts where card_type_id=?"
+>         args = (fact.card_type.id,)
+>         if fact._id:
+>             query += " and not _id=?"
+>             args = (fact.card_type.id, fact._id)
+>         duplicates = []            
+>         for cursor in self.con.execute(query, args):
+>             data = dict([(cursor2["key"], cursor2["value"]) for cursor2 in \
+>                 self.con.execute("""select * from data_for_fact where
+>                 _fact_id=?""", (cursor[0], ))])
+>             for field in fact.card_type.unique_fields:
+>                 if data[field] == fact[field]:
+>                     duplicates.append(\
+>                         self.get_fact(cursor[0], id_is_internal=True))
+>                     break
+>         return duplicates
+
+
+
+-new translation infrastructure
+-handle deferred translation
+-different translators for different users?
+
 -tips (both on startup and on use): right click to add cards or sound, comma to 
  separate tag names, :: to separate hierarchies
 -comment/tip about not having to do all your scheduled repetitions in
  one sitting
+-tip on selecting 'new database' to keep everything in one database
 -upgrade docs on duplicate checking
 -update tooltips, inform Patrick
 -tar file size estimate sometimes off by one record.
 
-http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
+-http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
 -have hierarchy in plugin names
 
--test uploading of logs, also in rollover
-
--better mechanism to have different renderers
-
--see if graphical glitch is fixed with latest matplotlib version, reenable
- remember size
-
--make distrib
--http://blog.oak-tree.us/index.php/2010/05/27/pyqt-snow-leopard
-
--in add card window with custum font size, typing text and then deleting it reverts the font size to
- the UI default instead of the card type default.
-
 -http://www.mblondel.org/journal/2008/08/01/web-canvas/
-
--check for related cards on same day could fail if minute level scheduler is used in the meantime
- (update comment in scheduler too)
 
 -infrastructure to make it easier to type certain symbols
 
 -mark cards plugin
-
--ampersand mnemonics everywhere
 
 -partial implementation of type answer (none/all/special tag? Db Attribute? Button?)
 -draw answer, make configurable by card type
@@ -162,7 +156,6 @@ http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
 -leech detection (mod 15)
 
 -ask people about biggest gripe in Mnemosyne, things that did not behave as expected
-
 
 -copy card and create a new one that way
 
@@ -181,29 +174,23 @@ http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
 -make file handling more robust, detect all errors (see mail by
  OldGrantonian)
 
--reenable datadir in setup.py
-
 -make filters more efficients by using regex instead of loops.
 
 -easier function to do tag detection in plugin
-
--bug in Qt: setting default colour to black does not register the colour clicks.
 
 -document cntrl enter in edit dialog instead of clicking ok
 
 pylint:
 	find ./mnemosyne/libmnemosyne/ -name \*.py | while read f ; do echo $f;pylint $f 2>&1|grep ^E:; done
 
--Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev
-
--Faq about how to pronounce Mnemosyne
-
--delete key shortcut for saved sets
 
 
 * After 2.0:
 
+-post nose 0.11: add cover branches
+
 -hack tarfile to add progress bar?
+-compression on backup to reduce write time to SD card?
 
 -'shared deck' export
 -is 'client_info["shared_dack"] the best way to signal this? Or have entirely new
@@ -282,8 +269,6 @@ pylint:
 
 -don't activate plugins until after clicking ok
 
--respect font in fact editor
-
 -card type with prefilled fields
 
 -update ohloh?
@@ -326,6 +311,7 @@ http://lost-theory.org/python/ltchinese/
 
 -control B format character in supermemo import?
 
+
 Windows Mobile client:
 
 If your phone has a touchscreen use the pocket pc version. Otherwise try the smartphone version. 
@@ -344,6 +330,7 @@ If your phone has a touchscreen use the pocket pc version. Otherwise try the sma
 -mark card
 -button color
 -sonud: http://watersprite.awardspace.com/python/
+
 
 Multiuser statistics analysis:
 
