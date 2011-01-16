@@ -39,9 +39,8 @@ class HelpWidget(UiComponent):
         pannable_area.connect('panning-started', self.on_start_panning)
         pannable_area.connect('panning-finished', self.on_stop_panning)
         pannable_area.connect('horizontal-movement', self.on_hor_panning)
-        self.component_manager.get_current('renderer').render_html( \
-            self.help_html, open(os.path.join(self.config()['help_path'], \
-            'help.html')).read())
+        self.renderer().render_html(self.help_html, \
+            open(os.path.join(self.config()['help_path'], 'help.html')).read())
 
     def activate(self):
         """Shows window."""

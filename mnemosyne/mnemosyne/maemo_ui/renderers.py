@@ -34,6 +34,8 @@ ICONS_PATH = '/usr/share/icons/hicolor/48x48/hildon/'
 class Html(Renderer):
     """Hildon Html renderer."""
 
+    used_for = "default"
+
     def __init__(self, component_manager):
         Renderer.__init__(self, component_manager)
         self._css = {} # {card_type: css}
@@ -55,7 +57,7 @@ class Html(Renderer):
             self._css[card_type.id] += "</style>"
         return self._css[card_type.id]
 
-    def render_card_fields(self, fact, fields, exporting=False):
+    def render_fields(self, fact, fields, card_type, render_chain):
         """Renders cards fileds."""
 
         self.tts_text = fact[fields[0]]

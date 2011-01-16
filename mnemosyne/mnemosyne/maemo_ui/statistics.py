@@ -36,7 +36,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
 
     def __init__(self, component_manager, mode=None):
         StatisticsDialog.__init__(self, component_manager)
-        self.renderer = self.component_manager.current('renderer')
+        self.renderer = self.renderer()
         self.statistics_page = None
         self.html = '<html><head><meta http-equiv="Content-Type" content='\
         '"text/html;charset=UTF-8"><style type="text/css">*{font-size:28px;'\

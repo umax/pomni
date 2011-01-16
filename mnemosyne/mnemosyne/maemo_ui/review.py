@@ -40,7 +40,7 @@ class ReviewWdgt(ReviewWidget):
         ReviewWidget.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         self._review_controller = self.review_controller()
-        self.renderer = self.component_manager.current('renderer')
+        self.renderer = self.renderer()
         self.tts = None
         self.sndtext = None
         self.is_sound_card = False
