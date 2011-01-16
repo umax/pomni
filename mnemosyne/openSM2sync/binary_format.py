@@ -15,8 +15,7 @@ class BinaryFormat(object):
     def supports(self, program_name, program_version, database_version):
         raise NotImplementedError
 
-    def binary_file_and_size(self, store_pregenerated_data,
-            interested_in_old_reps):
+    def binary_file_and_size(self, interested_in_old_reps=True):
 
         """Returns a file object and its size. Set size=0 for unknown."""
         

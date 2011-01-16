@@ -1,41 +1,28 @@
--statistics dlg from designer? also hide tabbar there
-
--new style connect
-
--reapply activity criterion after sync
+-apply activity criterion after sync, for both partners + test
 
 -warn when creating a new database that this is not the recommended way to organise your cards.
 -right click to add cards or sound, comma to separate tag names, :: to separate hierarchies
 -document cntrl enter in edit dialog instead of clicking ok (also manual?)
 
--auto vacuum after every N openings? What about WM?
-
--see if graphical glitch is fixed with latest matplotlib version, reenable
- remember size
-
--ampersand mnemonics everywhere
-
--test uploading of logs in rollover
-
--bug in Qt: setting default colour to black does not register the colour clicks.
-
--in add card window with custum font size, typing text and then deleting it reverts the font size to
- the UI default instead of the card type default. hook upcurrentCharFormatChanged()? 
-
 -check for related cards on same day could fail if minute level scheduler is used in the meantime
  (update comment in scheduler too)
 
+-better mechanism to have different renderers, e.g. filters that only run on sync. revisit review_widget.empty?
+-allow arguments to renders, e.g. for picture resolution
+-unify renderers and filters? probably not, renderer can be specific for card type, filters are more general
+-replace filter.run_on_export by run_for_renderers?
+-unify render_text and render_card_fields?
+-plugin hook mechanism for 'check_for_updated_media_files', to move latex code out of DB code.
 
 -card browser
 -make sure searching for a single unicode character works
 -test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 -qsortfilter proxy
--show number of cards selected
+-show number of cards selected?
 -card.in_view needed?
 -MVC: http://doc.trolltech.com/qq/qq24-delegates.html
 -make card browser remember its size
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
--better mechanism to have different renderers, e.g. filters that only run on sync.
 
 -do review_controller.rebuild_queue, reload counter after edit deck, clean duplicates
 
@@ -74,6 +61,7 @@
 -make XML import tolerant to extra new lines in header
 -warn when importing card type with duplicate id
 -option to add tags on import
+-mention that txt format does not have tag info?
 -save import dir
 -make sure after import all sync events fire
 -make sure enter does not close the import dialog
@@ -82,9 +70,18 @@
 -utf16?
 -make sure there is an error message to the user if xml import fails.
 -mention Mnemosyne XML instead of XML
--make sure all grades are shown on first revision of imported card. Adapt button group title
+
 -http://gitorious.org/hooq/hooq? Qt4 testing
  http://www.fredemmott.co.uk/blog/2010/01/18/Qt4%20GUI%20Testing%20with%20Hooq
+
+
+-better initial size of activate cards dialog. Autoresizing?
+-Select saved set, switch tab to other criterion (deselects set) and switch back to original one.
+ The set should then be autoselected again.
+-being able to edit existing set, replace input box by combobox with old sets
+-removing plugin with criterion should not happen if it is in use. 
+-warn when syncing and the other criterion plugin is not present?
+-make 'grade activity criterion' an official plugin? Add tests?
 
 
 -implement duplicate checking
@@ -127,14 +124,19 @@ the GUI function itself?
 -update tooltips, inform Patrick
 -tar file size estimate sometimes off by one record.
 
--http://pysnippet.blogspot.com/2010/02/qtabwidget-hiding-bar.html
 -have hierarchy in plugin names
+
+-auto vacuum after every N openings? What about WM?
+-profile startup/shutdown
 
 -http://www.mblondel.org/journal/2008/08/01/web-canvas/
 
 -infrastructure to make it easier to type certain symbols
 
 -mark cards plugin
+
+-move button group in review widget to designer code after pyqt upgrade. 
+ Also possible in add cards?
 
 -partial implementation of type answer (none/all/special tag? Db Attribute? Button?)
 -draw answer, make configurable by card type

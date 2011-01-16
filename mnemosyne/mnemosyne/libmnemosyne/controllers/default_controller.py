@@ -86,6 +86,8 @@ class DefaultController(Controller):
 
         if grade in [0,1]:
             raise AttributeError, "Use -1 as grade for yet to learn cards."
+        if grade not in [-1, 2, 3, 4, 5]:
+            raise AttributeError, "Invalid initial grade."            
         db = self.database()
         fact = Fact(fact_data, card_type)
         if check_for_duplicates:
@@ -313,8 +315,6 @@ class DefaultController(Controller):
         self.stopwatch().pause()
         self.flush_sync_server()
         db = self.database()
-        old_path = db.path()
-        old_partnerships = db.partners()
         suffix = db.suffix
         filename = self.main_widget().save_file_dialog(\
             path=self.config().data_dir, filter=_("Mnemosyne databases") + \
@@ -333,10 +333,6 @@ class DefaultController(Controller):
         db.new(filename)
         db.load(self.config()["path"])
         self.log().loaded_database()
-        if old_path == db.path():
-            # Don't spuriously trigger sync cycle warning.
-            for partner in old_partnerships:
-                db.create_partnership_if_needed_for(partner)
         self.review_controller().reset()
         self.review_controller().update_dialog()
         self.update_title()
@@ -421,7 +417,9 @@ class DefaultController(Controller):
         filename, massage it, and return it to the widget to be inserted.
         There is more media file logic inside the database code too, as the
         user could also just type in the html tags as opposed to passing
-        through the fileselector here.
+        through the file selector here. The reason we don't do all the
+        operations in the database code, is that we want to display a nice
+        short relative path back in the edit field.
 
         """
 

@@ -6,8 +6,6 @@
 #
 ##############################################################################
 
-import re
-
 re0 = re.compile(r"&#(.+?);", re.DOTALL | re.IGNORECASE)
 
 def process_html_unicode(s):
@@ -153,10 +151,10 @@ def export_txt(filename, cat_names_to_export, reset_learning_data=False):
     return True
     
 
-#register_file_format(_("Text with tab separated Q/A"),
-#                     filter=_("Text files (*.txt *.TXT)"),
-#                     import_function=import_txt,
-#                     export_function=export_txt)
+register_file_format(_("Text with tab separated Q/A"),
+                     filter=_("Text files (*.txt *.TXT)"),
+                     import_function=import_txt,
+                     export_function=export_txt)
 
 
 ##############################################################################
@@ -226,7 +224,7 @@ def import_txt_2(filename, default_cat, reset_learning_data=False):
 
     return imported_cards
 
-#register_file_format(_("Text with Q and A each on separate line"),
-#                     filter=_("Text files (*.txt *.TXT)"),
-#                     import_function=import_txt_2,
-#                     export_function=False)
+register_file_format(_("Text with Q and A each on separate line"),
+                     filter=_("Text files (*.txt *.TXT)"),
+                     import_function=import_txt_2,
+                     export_function=False)
