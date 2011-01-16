@@ -121,7 +121,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
         html = self.html
         html += "<tr><td><br><br>" + _('Total cards') + ": %d<br><br><br>" \
             "</td></tr>" % sum([database.total_card_count_for__tag_id(tag._id) \
-                for tag in database.all_tags()])
+                for tag in database.tags()])
         html += "<tr><td><b>" + _('Grade statistics for all cards') + "</b>" \
             "</td></tr>"
         for grade in range(-1, 6):
@@ -137,7 +137,7 @@ class MaemoStatisticsWidget(StatisticsDialog):
         self.window.set_title(_('Tags statistics'))
         self.html_container.hide()
         self.info_label.hide()
-        tags = [(tag._id, tag.name) for tag in self.database().all_tags()]
+        tags = [(tag._id, tag.name) for tag in self.database().tags()]
             #self.database().get_tags__id_and_name()]
             #zip(self.database().tags(), self.database().tag_names())]
         if not tags:
