@@ -80,6 +80,9 @@ class CardType(Component, CompareOnId):
                 return False
         return True
 
+    # Note: we don't call render_chain in card.question because Card is not
+    # a Component and has no access to the render chains.
+
     def render_question(self, card, render_chain="default", **render_args):
         return self.render_chain(render_chain).\
             render_question(card, **render_args)
@@ -90,17 +93,11 @@ class CardType(Component, CompareOnId):
 
     # The following functions can be overridden by speciality card types.
         
-    def create_question(self, card, render_chain="default", **render_args):
-        return self.renderer(render_chain).render_fields(card.fact,
-            card.fact_view.q_fields, self, render_chain, **render_args)
+    def fact_data(self, card):
+        return card.fact.data
 
-    def create_answer(self, card, render_chain="default", **render_args):
-        return self.renderer(render_chain).render_fields(card.fact,
-            card.fact_view.a_fields, self, render_chain, **render_args)
-    
-    # The following functions should only deal with creating, deleting, ...
-    # Card objects. Initial grading and storing in the database is done in
-    # the main controller.
+    def create_answer_data(self, card):
+        return card.fact.data
 
     def create_related_cards(self, fact):
 

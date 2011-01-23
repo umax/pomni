@@ -22,7 +22,7 @@ class ComponentManager(object):
         self.card_type_by_id = {}
         self.render_chain_by_id = {}
         
-    def register(self, component, in_front=False):
+    def register(self, component):
         comp_type = component.component_type
         used_for = component.used_for   
         if not self.components.has_key(used_for):
@@ -30,19 +30,10 @@ class ComponentManager(object):
         if not self.components[used_for].has_key(comp_type):
             self.components[used_for][comp_type] = [component]
         else:
-            used_fors = used_for
-        for used_for in used_fors:
-            if not self.components.has_key(used_for):
-                self.components[used_for] = {}
-            if not self.components[used_for].has_key(comp_type):
-                self.components[used_for][comp_type] = [component]
-            else:
-                if component not in self.components[used_for][comp_type]:
-                    if not in_front:
-                        self.components[used_for][comp_type].append(component)
-                    else:
-                        self.components[used_for][comp_type].\
-                            insert(0, component)
+            if component not in self.components[used_for][comp_type]:
+                self.components[used_for][comp_type].append(component)
+        # We could abuse the component's used_for as the id here, but that
+        # would hamper readability.
         if comp_type == "card_type":
             self.card_type_by_id[component.id] = component
         elif comp_type == "render_chain":
