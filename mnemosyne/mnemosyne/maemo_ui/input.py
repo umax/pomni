@@ -56,9 +56,12 @@ class InputWidget(UiComponent):
         self.imagedir = None
         self.card_type = None
         self.selected_tags = None   # user selected tags list
-        self.tags = [unicode(tag.name) for tag in sorted( \
-            self.database().tags(), cmp=numeric_string_cmp) or \
-            [self.default_tag_name]]    # all tags list
+        tags = self.database().tags()
+        if tags:
+            self.tags = [unicode(tag.name) for tag in sorted(tags, \
+                cmp=numeric_string_cmp)]
+        else:
+            self.tags = [self.default_tag_name]    # all tags list
         self._main_widget = self.main_widget()
         # create widgets
         self.window, card_type_button, content_type_button, tags_button, \
