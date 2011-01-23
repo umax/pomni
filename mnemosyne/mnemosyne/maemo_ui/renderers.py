@@ -61,7 +61,7 @@ class Html(Renderer):
         """Renders cards fileds."""
 
         self.tts_text = fact[fields[0]]
-        html = "<html><head>" + self.css(fact.card_type) + \
+        html = "<html><head>" + self.css(card_type) + \
             "</head><body><table><tr><td>"
         for field in fields:
             text = fact[field]
