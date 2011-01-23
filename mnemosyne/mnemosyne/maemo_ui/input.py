@@ -391,13 +391,13 @@ class EditFactWidget(EditFactDialog, InputWidget):
 
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
-        self.fact = self.review_controller().card.fact
+        self.card = self.review_controller().card
         self.selected_tags = [tag.name for tag in \
-            self.database().cards_from_fact(self.fact)[0].tags]
+            self.database().cards_from_fact(self.card.fact)[0].tags]
         # set grade of the current card active
         for num in range(6):
             self.grades[num].set_sensitive(False)
-        current_grade = self.review_controller().card.grade
+        current_grade = self.card.grade
         if current_grade == -1:
             current_grade = 0
         self.grades[current_grade].set_sensitive(True)
@@ -412,11 +412,12 @@ class EditFactWidget(EditFactDialog, InputWidget):
         # edit_current_card from default controller
         self.stopwatch().pause()
 
-        self.set_card_type(self.fact.card_type)
+        self.set_card_type(self.card.card_type)
         if self.card_type.id is FrontToBack.id:
-            if 'img src=' in self.fact.data['q']:
+            question_data = self.card.fact.data['q']
+            if 'img src=' in question_data:
                 content_type = 'image'
-            elif 'snd src=' in self.fact.data['q']:
+            elif 'snd src=' in question_data:
                 content_type = 'sound'
             else:
                 content_type = 'text'
@@ -426,7 +427,7 @@ class EditFactWidget(EditFactDialog, InputWidget):
         self.widgets['CardTypeButton'].set_sensitive(False)
         self.widgets['ContentTypeButton'].set_sensitive(False)
         self.set_content_type(content_type)
-        self.set_widgets_data(self.fact)
+        self.set_widgets_data(self.card.fact)
         self.update_tags()
 
     def update_card_cb(self, widget):
@@ -439,13 +440,13 @@ class EditFactWidget(EditFactDialog, InputWidget):
 
         review_controller = self.review_controller()
         new_tags = [unicode(tag.strip()) for tag in self.selected_tags]
-        self.controller().edit_related_cards(self.fact, fact_data,
+        self.controller().edit_related_cards(self.card.fact, fact_data,
           self.card_type, new_tags, None)
 
         # this part is the second part of
         # edit_current_fact from default controller
         review_controller.reload_counters()
-        review_controller.card = self.database().card( \
+        review_controller.card = self.database().card(\
             review_controller.card._id, id_is_internal=True)
         review_controller.update_dialog(redraw_all=True)
         self.stopwatch().unpause()
