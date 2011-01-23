@@ -27,11 +27,12 @@ class HtmlCss(Renderer):
         # devices.
         self._css = {} # {card_type.id: css}
 
-    def update(self, card_type):      
-        self._css[card_type.id] = \
-            """body { height: 98%; margin: 0; padding: 0; border: thin solid #8F8F8F; }\n"""
+    def body_css(self):
+        return "body { margin: 0; padding: 0; border: thin solid #8F8F8F; }\n"
+
+    def card_type_css(self, card_type):
         # Set aligment of the table (but not the contents within the table).
-        self._css[card_type.id] += "table { height: 100%; width: 100%; "
+        css = "table { height: " + self.table_height + "; width: 100%; "
         try:
             alignment = self.config()["alignment"][card_type.id]
         except:
@@ -41,15 +42,15 @@ class HtmlCss(Renderer):
         elif alignment == "right":
             css += "margin-left: auto; margin-right: 0; "
         else:
-            self._css[card_type.id] += "margin-left: auto; margin-right: auto; "
+            css += "margin-left: auto; margin-right: auto; "
         # Background colours.
         try:
             colour = self.config()["background_colour"][card_type.id]
             colour_string = ("%X" % colour)[2:] # Strip alpha.
-            self._css[card_type.id] += "background-color: #%s;" % colour_string
+            css += "background-color: #%s;" % colour_string
         except:
             pass        
-        self._css[card_type.id] += "}\n"
+        css += "}\n"
         # Field tags.
         for key in card_type.keys():
             css += "div#%s { " % key
@@ -70,8 +71,8 @@ class HtmlCss(Renderer):
             try:
                 font_string = self.config()["font"][card_type.id][key]
                 family,size,x,x,w,i,u,s,x,x = font_string.split(",")
-                self._css[card_type.id] += "font-family: \"%s\"; " % family
-                self._css[card_type.id] += "font-size: %spt; " % size
+                css += "font-family: \"%s\"; " % family
+                css += "font-size: %spt; " % size
                 if w == "25":
                     css += "font-weight: light; "
                 if w == "75":

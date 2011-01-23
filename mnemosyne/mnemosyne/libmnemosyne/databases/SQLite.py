@@ -56,6 +56,8 @@ SCHEMA = """
         card_type_id text,
         _fact_id integer,
         fact_view_id text,
+        creation_time integer,
+        modification_time integer,
         question text,
         answer text,
         grade integer,
@@ -567,8 +569,8 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
             fact_view_id, creation_time, modification_time, grade, easiness, acq_reps, ret_reps, lapses,
             acq_reps_since_lapse, ret_reps_since_lapse, last_rep, next_rep,
             extra_data, scheduler_data, active, question, answer)
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (card.id, card.fact._id, card.fact_view.id, card.grade,
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (card.id, card.card_type.id, card.fact._id, card.fact_view.id, card.creation_time, card.modification_time, card.grade,
             card.easiness, card.acq_reps, card.ret_reps, card.lapses,
             card.acq_reps_since_lapse, card.ret_reps_since_lapse,
             card.last_rep, card.next_rep,
@@ -600,9 +602,10 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
                 card = Card(card_type, fact, fact_view,
                     creation_time=sql_res["creation_time"])
                 break
-        for attr in ("id", "_id", "grade", "easiness", "acq_reps", "ret_reps",
-            "lapses", "acq_reps_since_lapse", "ret_reps_since_lapse",
-            "last_rep", "next_rep", "scheduler_data", "active"):
+        for attr in ("id", "_id", "modification_time", "grade", "easiness",
+            "acq_reps", "ret_reps", "lapses", "acq_reps_since_lapse",
+            "ret_reps_since_lapse", "last_rep", "next_rep", "scheduler_data",
+            "active"):
             setattr(card, attr, sql_res[attr])
         self._get_extra_data(sql_res, card)
         for cursor in self.con.execute("""select _tag_id from tags_for_card
@@ -613,15 +616,12 @@ class SQLite(Database, SQLiteSync, SQLiteLogging, SQLiteStatistics):
     def edit_card(self, card, repetition_only=False):
         self.con.execute("""update cards set grade=?, easiness=?, acq_reps=?, ret_reps=?, lapses=?,
             acq_reps_since_lapse=?, ret_reps_since_lapse=?, last_rep=?,
-            next_rep=?, extra_data=?, scheduler_data=?, active=?,
-            question=?, answer=? where _id=?""",
-            (card.fact._id, card.fact_view.id, card.grade, card.easiness,
+            next_rep=?, scheduler_data=?, active=? where _id=?""",
+            (card.grade, card.easiness,
             card.acq_reps, card.ret_reps, card.lapses,
             card.acq_reps_since_lapse, card.ret_reps_since_lapse,
             card.last_rep, card.next_rep,
-            self._repr_extra_data(card.extra_data),
-            card.scheduler_data, card.active, card.question("plain_text"),
-            card.answer("plain_text"), card._id))
+            card.scheduler_data, card.active, card._id))
         if repetition_only:
             return
         self.con.execute("""update cards set card_type_id=?, _fact_id=?, fact_view_id=?,
