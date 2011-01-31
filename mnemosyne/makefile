@@ -22,7 +22,9 @@ test: install-virtual-env
 	./bin/nosetests tests
 
 coverage: install-virtual-env
-	./bin/nosetests --with-coverage --cover-erase --cover-html --cover-package=mnemosyne.libmnemosyne
+	# nose post 0.11: add --cover-branches
+	./bin/nosetests --with-coverage --cover-erase --cover-html \
+	--cover-package=mnemosyne.libmnemosyne,openSM2sync
 	firefox cover/index.html
 
 profile: install-virtual-env
@@ -36,7 +38,8 @@ benchmark: install-virtual-env
 	./bin/python tests/benchmark.py
 
 wm: install-virtual-env
-	./bin/python mnemosyne/ppygui_ui/ppygui_ui/Mnemosyne\ Mobile.py -d dot_mnemosyne2
+	cp mnemosyne/ppygui_ui/ppygui_ui/*.py mnemosyne/ppygui_ui/
+	./bin/python mnemosyne/ppygui_ui/Mnemosyne\ Mobile.py
 
 docs:
 	cd mnemosyne/libmnemosyne/docs && make html
