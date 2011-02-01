@@ -1,26 +1,10 @@
--blocking calls, like question
--do we need the buffer, can't we send immediately?
--http://code.activestate.com/recipes/408859-socketrecv-three-ways-to-turn-it-into-recvall/
--both in client and server, wait until everything has been initialised
--clean server shutdown
--flesh out calls
--so far, we don't seem to need threads
--note that we don't profit from prefetching in the review controller. Fixable by blocking?
- add comment in code
--time open database connection
--way to shutdown server, self.socket.close
--get rid of socket server for overhead?
--allow port number to be passed to server as argument on command line
--name == main trick for webserver too?
--inform maemo people of thread trick
--remove print statements from production server
+-reorder card fields in sql queries
+-make q,a and tags column optional
 
-
+-UDP server
 -server embedded in C
 
--make q,a and tags column optional for some clients (default None, so as to make sure each client sets it)
--reorder card fields in sql and in card.py
--option not have these columns on initial binary download
+-option not have pregenerated columns on initial binary download is sync
 
 -better next_rep, last rep representation
 -grey for inactive cards
@@ -42,15 +26,12 @@
 
 -add full html header to stardard renderer. Still need MW table hack?
 -test and time renderer on MW. Need to cache it?
-
--edit vs update
+-test no_pregenerated_data on WM
 
 -apply activity criterion after sync, for both partners + test
--sync to empty webserver
+-sync to empty webserver (add 'database_is_empty' to server and act upon it)
 -add support for error messages on protocol mismatch, expired credit
 -add support for render chain selection
-
--larger interval for initial grade 5?
 
 -media file handler
 -don't do media check in database, but in controller?
@@ -70,12 +51,12 @@
 -check for related cards on same day could fail if minute level scheduler is used in the meantime
  (update comment in scheduler too)
 
--delete orphaned media files
 
 -test case for hierarchy parsing ["a", "bye bye", "a::b", "a::c", "b::c::d"]:
 
 
 -go through all source
+-communicate start_review, SQLite_no_pregerated_data to client writers
 -do extra input checking in controller
 -include coverage source option
 -test on cramming counters
@@ -102,14 +83,14 @@
 -test running from usb, update instructions
 -add tests with unicode in data_dir
 
+-more elaborate plugin description in bottom pane
+
 -reenable datadir in setup.py
 
 -Contributors: Konrad Wojas, Laurent Mauron, Ed Bartosh, Mike Appleby, Max Usachev, Ullrich Martini
  (also make sure they are on webpage)
 
 -Faq about how to pronounce Mnemosyne
--check if online username is still free
--threading or forking sync and review servers
 
 
 -import
@@ -229,7 +210,6 @@ pylint:
 
 * After 2.0:
 
--more elaborate plugin description in bottom pane
 
 -post nose 0.11: add cover branches
 
@@ -305,7 +285,6 @@ pylint:
 -if there are actual card based clients, remove pragma: no cover and test these as well
 
 
--mechanism to have plugin settings synced?
 -send across cards as pictures (see stubs in client.py and server.py). Add resolution to filename? (device rotation)
 -Tim's gogorender plugin
 -option purge history, refactor logging test. Should only happen in no other sync partners are
