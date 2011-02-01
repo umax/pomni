@@ -77,6 +77,7 @@ def create_menu_ui(theme_path):
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('TTS settings'))
     button_import = hildon.Button(gtk.HILDON_SIZE_AUTO, \
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Import'))
+    button_import.set_sensitive(False)
     button_sync = hildon.Button(gtk.HILDON_SIZE_AUTO, \
         hildon.BUTTON_ARRANGEMENT_HORIZONTAL, _('Sync'))
     button_help = hildon.Button(gtk.HILDON_SIZE_AUTO, \
