@@ -40,7 +40,7 @@ class ReviewWdgt(ReviewWidget):
         ReviewWidget.__init__(self, component_manager)
         self._main_widget = self.main_widget()
         self._review_controller = self.review_controller()
-        self.renderer = self.renderer()
+        self.renderer = self.render_chain().renderer_for_card_type(None)
         self.tts = None
         self.sndtext = None
         self.is_sound_card = False
@@ -188,7 +188,7 @@ class ReviewWdgt(ReviewWidget):
         """Hook for 'Edit card' button."""
 
         self._main_widget.soundplayer.stop()
-        self.component_manager.current("edit_fact_dialog")\
+        self.component_manager.current("edit_card_dialog")\
             (self.component_manager).activate()
 
     def grade_cb(self, widget):

@@ -28,7 +28,7 @@ import pango
 from gettext import gettext as _
 
 from mnemosyne.libmnemosyne.ui_components.dialogs import \
-    AddCardsDialog, EditFactDialog
+    AddCardsDialog, EditCardDialog
 import mnemosyne.maemo_ui.widgets.input as widgets
 import mnemosyne.maemo_ui.widgets.dialogs as dialogs
 from mnemosyne.libmnemosyne.ui_component import UiComponent
@@ -308,7 +308,7 @@ class InputWidget(UiComponent):
 
 
 
-class AddCardsWidget(AddCardsDialog, InputWidget):
+class AddCardWidget(AddCardsDialog, InputWidget):
     """Add new card widget."""
 
     def __init__(self, component_manager):
@@ -386,7 +386,7 @@ class AddCardsWidget(AddCardsDialog, InputWidget):
 
 
 
-class EditFactWidget(EditFactDialog, InputWidget):
+class EditCardWidget(EditCardDialog, InputWidget):
     """Edit current fact widget."""
 
     def __init__(self, component_manager):

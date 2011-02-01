@@ -80,16 +80,16 @@ def app_factory(interface=None):
         app.components.remove(\
             ("mnemosyne.libmnemosyne.plugins.cramming_plugin", \
             "CrammingPlugin"))
-        app.components.remove(\
-            ("mnemosyne.libmnemosyne.renderers.html_css", "HtmlCss"))
-        app.components.remove(\
-            ("mnemosyne.libmnemosyne.filters.escape_to_html", "EscapeToHtml"))
-        app.components.remove(\
-            ("mnemosyne.libmnemosyne.filters.expand_paths", "ExpandPaths"))
-        app.components.remove(\
-            ("mnemosyne.libmnemosyne.filters.latex", "Latex"))
-        app.components.remove(\
-            ("mnemosyne.libmnemosyne.filters.html5_media", "Html5Media"))
+        #app.components.remove(\
+        #    ("mnemosyne.libmnemosyne.renderers.html_css", "HtmlCss"))
+        #app.components.remove(\
+        #    ("mnemosyne.libmnemosyne.filters.escape_to_html", "EscapeToHtml"))
+        #app.components.remove(\
+        #    ("mnemosyne.libmnemosyne.filters.expand_paths", "ExpandPaths"))
+        #app.components.remove(\
+        #    ("mnemosyne.libmnemosyne.filters.latex", "Latex"))
+        #app.components.remove(\
+        #    ("mnemosyne.libmnemosyne.filters.html5_media", "Html5Media"))
 
         # Add necessary components
         app.components.insert(\
@@ -99,8 +99,9 @@ def app_factory(interface=None):
         app.components.append(("mnemosyne.maemo_ui.main", "MainWdgt"))
         app.components.append(("mnemosyne.maemo_ui.menu", "MenuWidget"))
         app.components.append(("mnemosyne.maemo_ui.review", "ReviewWdgt"))
-        app.components.append(("mnemosyne.maemo_ui.input", "AddCardsWidget"))
-        app.components.append(("mnemosyne.maemo_ui.input", "EditFactWidget"))
+        app.components.append(("mnemosyne.maemo_ui.input", "AddCardWidget"))
+        app.components.append(("mnemosyne.maemo_ui.input", "EditCardWidget"))
+        app.components.append(("mnemosyne.maemo_ui.render_chain", "MaemoRenderChain"))
         #app.components.append(\
         #    ("mnemosyne.maemo_ui.configuration", "ConfigurationWidget"))
         #app.components.append(("mnemosyne.maemo_ui.sync", "SyncWidget"))
