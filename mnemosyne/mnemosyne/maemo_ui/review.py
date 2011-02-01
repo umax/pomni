@@ -125,7 +125,7 @@ class ReviewWdgt(ReviewWidget):
         if enabled:
             self.renderer.render_hint(self.answer_text, text)
 
-    def enable_grades(self, enabled):
+    def set_grades_enabled(self, enabled):
         """Enable grades."""
 
         self.grades_table.set_sensitive(enabled)

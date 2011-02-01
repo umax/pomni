@@ -44,7 +44,7 @@ class MainWdgt(MainWidget):
     def soundplayer(self):
         if not self._soundplayer:
             from mnemosyne.maemo_ui.sound import SoundPlayer
-            self._soundplayer = SoundPlayer(self.error_box)
+            self._soundplayer = SoundPlayer(self.show_error)
         return self._soundplayer
 
     def activate(self):
@@ -141,18 +141,18 @@ class MainWdgt(MainWidget):
 
 
     # Main Widget API
-    def information_box(self, message):
+    def show_information(self, message):
         """Show Information message."""
 
         widgets.create_information_dialog(self.review_window, message)
 
-    def error_box(self, message):
+    def show_error(self, message):
         """Error message."""
 
         widgets.create_information_dialog(self.review_window, message,  \
             title=_('Error'))
 
-    def question_box(self, question, option0, option1, option2):
+    def show_question(self, question, option0, option1, option2):
         """Show Question message."""
 
         return widgets.create_question_dialog(self.review_window, question)
