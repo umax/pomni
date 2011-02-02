@@ -30,7 +30,7 @@ mnemosyne.libmnemosyne.statistics_page.StatisticsPage.prepare_statistics method 
 mnemosyne.libmnemosyne.filter.Filter.run method modules/filter.html
 mnemosyne.libmnemosyne.card_type.CardType.key_names method modules/card_type.html
 mnemosyne.libmnemosyne.component_manager.ComponentManager.all method modules/component_manager.html
-mnemosyne.libmnemosyne.logger.Logger.edited_card_type method modules/logger.html
+mnemosyne.libmnemosyne.logger.Logger.added_tag method modules/logger.html
 mnemosyne.libmnemosyne.database.Database.fact_view method modules/database.html
 mnemosyne.libmnemosyne.scheduler.Scheduler class modules/scheduler.html
 mnemosyne.libmnemosyne.database.Database.current_activity_criterion method modules/database.html
@@ -42,6 +42,7 @@ mnemosyne.libmnemosyne.card.Card.tag_string method modules/card.html
 mnemosyne.libmnemosyne.logger.Logger.dump_to_science_log method modules/logger.html
 mnemosyne.libmnemosyne.controller.Controller.browse_cards method modules/controller.html
 mnemosyne.libmnemosyne.scheduler.Scheduler.grade_answer method modules/scheduler.html
+mnemosyne.libmnemosyne.logger.Logger.edited_card_type method modules/logger.html
 mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion class modules/activity_criterion.html
 mnemosyne.libmnemosyne.logger.Logger.added_activity_criterion method modules/logger.html
 mnemosyne.libmnemosyne.component.Component.render_chain method modules/component.html
@@ -49,7 +50,7 @@ mnemosyne.libmnemosyne.database.Database.add_activity_criterion method modules/d
 mnemosyne.libmnemosyne.database.Database.unload method modules/database.html
 mnemosyne.libmnemosyne.card_type.CardType.render_question method modules/card_type.html
 mnemosyne.libmnemosyne.review_controller.ReviewController.grade_answer method modules/review_controller.html
-mnemosyne.libmnemosyne.database.Database.deactivate method modules/database.html
+mnemosyne.libmnemosyne.database.Database.tag method modules/database.html
 mnemosyne.libmnemosyne.component.Component.start_review method modules/component.html
 mnemosyne.libmnemosyne.statistics_page.HtmlStatisticsPage class modules/statistics_page.html
 mnemosyne.libmnemosyne.configuration.Configuration.change_user_id method modules/configuration.html
@@ -77,7 +78,6 @@ mnemosyne.libmnemosyne.stopwatch.Stopwatch.unpause method modules/stopwatch.html
 mnemosyne.libmnemosyne.card.Card.question method modules/card.html
 mnemosyne.libmnemosyne.controller.Controller.file_new method modules/controller.html
 mnemosyne.libmnemosyne.database.Database.name method modules/database.html
-mnemosyne.libmnemosyne.database.Database.tag method modules/database.html
 mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion.tag_deleted method modules/activity_criterion.html
 mnemosyne.libmnemosyne.scheduler.Scheduler.in_queue method modules/scheduler.html
 mnemosyne.libmnemosyne.plugin.Plugin.deactivate method modules/plugin.html
@@ -100,7 +100,7 @@ mnemosyne.libmnemosyne.component.Component.scheduler method modules/component.ht
 mnemosyne.libmnemosyne.scheduler.Scheduler.allow_prefetch method modules/scheduler.html
 mnemosyne.libmnemosyne.logger.Logger.deactivate method modules/logger.html
 mnemosyne.libmnemosyne.controller.Controller.sync method modules/controller.html
-mnemosyne.libmnemosyne.controller.Controller.edit_current_card method modules/controller.html
+mnemosyne.libmnemosyne.database.Database.deactivate method modules/database.html
 mnemosyne.libmnemosyne.card_type.CardType class modules/card_type.html
 mnemosyne.libmnemosyne.card_type.CardType.before_repetition method modules/card_type.html
 mnemosyne.libmnemosyne.logger.Logger.deleted_activity_criterion method modules/logger.html
@@ -124,7 +124,6 @@ mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion.tag_created method m
 mnemosyne.libmnemosyne.review_controller.ReviewController.update_dialog method modules/review_controller.html
 mnemosyne.libmnemosyne.controller.Controller.import_file method modules/controller.html
 mnemosyne.libmnemosyne.logger.Logger.set_timestamp method modules/logger.html
-mnemosyne.libmnemosyne.logger.Logger.added_tag method modules/logger.html
 mnemosyne.libmnemosyne.database.Database class modules/database.html
 mnemosyne.libmnemosyne.review_controller.ReviewController.set_render_chain method modules/review_controller.html
 mnemosyne.libmnemosyne.database.Database.cards_unseen method modules/database.html
@@ -156,7 +155,6 @@ mnemosyne.libmnemosyne.controller.Controller.activate_plugins method modules/con
 mnemosyne.libmnemosyne.database.Database.delete_activity_criterion method modules/database.html
 mnemosyne.libmnemosyne.review_controller.ReviewController.reset_but_try_to_keep_current_card method modules/review_controller.html
 mnemosyne.libmnemosyne.configuration.Configuration class modules/configuration.html
-mnemosyne.libmnemosyne.logger.Logger.stopped_program method modules/logger.html
 mnemosyne.libmnemosyne.configuration.Configuration.set_defaults method modules/configuration.html
 mnemosyne.libmnemosyne.logger.Logger.edited_tag method modules/logger.html
 mnemosyne.libmnemosyne.database.Database.update_fact method modules/database.html
@@ -208,6 +206,7 @@ mnemosyne.libmnemosyne.component.Component.controller method modules/component.h
 mnemosyne.libmnemosyne.controller.Controller.card_appearance method modules/controller.html
 mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion.card_type_deleted method modules/activity_criterion.html
 mnemosyne.libmnemosyne.card_type.CardType.key_with_name method modules/card_type.html
+mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion.card_type_created method modules/activity_criterion.html
 mnemosyne.libmnemosyne.configuration.Configuration.set_appearance_property method modules/configuration.html
 mnemosyne.libmnemosyne.controller.Controller.file_save_as method modules/controller.html
 mnemosyne.libmnemosyne.card_type.CardType.render_answer method modules/card_type.html
@@ -230,13 +229,14 @@ mnemosyne.libmnemosyne.renderer.Renderer.update method modules/renderer.html
 mnemosyne.libmnemosyne.logger.Logger.get_timestamp method modules/logger.html
 mnemosyne.libmnemosyne.component.Component.deactivate method modules/component.html
 mnemosyne.libmnemosyne.card_type.CardType.create_related_cards method modules/card_type.html
-mnemosyne.libmnemosyne.activity_criterion.ActivityCriterion.card_type_created method modules/activity_criterion.html
+mnemosyne.libmnemosyne.logger.Logger.stopped_program method modules/logger.html
 mnemosyne.libmnemosyne.database.Database.cards_with_scheduler_data method modules/database.html
 mnemosyne.libmnemosyne.statistics_page.StatisticsPage class modules/statistics_page.html
 mnemosyne.libmnemosyne.render_chain.RenderChain.render_question method modules/render_chain.html
 mnemosyne.libmnemosyne.database.Database.update_activity_criterion method modules/database.html
 mnemosyne.libmnemosyne.card_type_converter.CardTypeConverter class modules/card_type_converter.html
 mnemosyne.libmnemosyne.database.Database.add_card_type method modules/database.html
+mnemosyne.libmnemosyne.controller.Controller.edit_current_card method modules/controller.html
 mnemosyne.libmnemosyne.database.Database.card_types_in_use method modules/database.html
 mnemosyne.libmnemosyne.card.Card class modules/card.html
 mnemosyne.libmnemosyne.database.Database.duplicates_for_fact method modules/database.html

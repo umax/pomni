@@ -1,9 +1,3 @@
--redirect stdout, stderr + test
--better examples
--review all code
--add tests
-
-
 -server embedded in C
 -treat exceptions
 
@@ -24,6 +18,7 @@
 -save sort order
 -right click menu options: edit, preview, delete, change card type, add tags, remove tags
 -add controller logic for after editing/deleting a card in browse cards
+-throwing an exception in browse cards does not release database
 
 -do better numeric sort on card browser and activate cards, make sure 'untagged' shows up last
 
@@ -35,6 +30,8 @@
 -sync to empty webserver (add 'database_is_empty' to server and act upon it)
 -add support for error messages on protocol mismatch, expired credit
 -add support for render chain selection
+
+-larger interval for initial grade 5?
 
 -media file handler
 -don't do media check in database, but in controller?
