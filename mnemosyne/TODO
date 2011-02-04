@@ -1,13 +1,15 @@
--review_wdgt and main widget both have update_status bar. make one update_status_bar_counters?
--what to call text arguments: 'text' or something more specific?
--hook up dialogs, also in UDP
--fix merge duplicates and edit
--clean up paths
 -capture stdout/err: move to user space
+-SystemError: error return without exception set
+-rework 'upload science logs'
+
+-hook up dialogs, also in UDP
+-pyqt: hook up main widget calls directly to controller?
+-fix merge duplicates and edit. editcard --> edit related cards?
+-update 'how to write new front end'
 -make docs
 
 -add preambe/postamble in latex signature
--option not have pregenerated columns on initial binary download is sync
+-option not have pregenerated columns on initial binary download in sync
 
 -better next_rep, last rep representation
 -grey for inactive cards
@@ -160,6 +162,7 @@ the GUI function itself?
 
 -integrate webserver in GUI, login mechanism, session_token, cookies
 -add webserver in testsuite, case when the database is empty
+-make empty lines respect font size
 -sound files suffer from connection reset by peer. Try other WSGI server?
 -add html caching support for media files
 -send absolute filenames when running server locally, so that we don't need to

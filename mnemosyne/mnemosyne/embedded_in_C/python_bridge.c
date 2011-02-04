@@ -14,171 +14,150 @@
 // Functions relating to main widget.
 //
 
-static PyObject* _main_widget_set_window_title(PyObject* self, 
-                                               PyObject* args)
-{
-  char* title = NULL;
-  if (!PyArg_ParseTuple(args, "s", &title)) 
-    return NULL;
-  main_wdgt_set_window_title(title);
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-
-static PyObject* _main_widget_show_information(PyObject* self, 
-                                               PyObject* args)
-{
-  char* message = NULL;
-  if (!PyArg_ParseTuple(args, "s", &message)) 
-    return NULL;
-  main_widget_show_information(message);
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-
-static PyObject* _main_widget_show_question(PyObject* self, 
-                                            PyObject* args)
-{
-  char* question = NULL;
-  char* option_0 = NULL;
-  char* option_1 = NULL;
-  char* option_2 = NULL;
-  if (!PyArg_ParseTuple(args, "ssss", &question, &option_0, &option_1,
-        &option_2)) 
-    return NULL;
-  int answer;
-  answer = main_widget_show_question(question, option_0, option_1,
-                                     option_2);
-  return Py_BuildValue("i", answer);
-}
-
-
-static PyObject* _main_widget_show_error(PyObject* self, 
-                                         PyObject* args)
-{
-  char* message = NULL;
-  if (!PyArg_ParseTuple(args, "s", &message)) 
-    return NULL;
-  main_widget_show_error(message);
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-
-static PyObject* _main_widget_get_filename_to_open(PyObject* self, 
-                                                   PyObject* args)
-{
-  char* path = NULL;
-  char* filter = NULL;
-  char* caption = NULL;
-  if (!PyArg_ParseTuple(args, "sss", &path, &filter, &caption))
-    return NULL;
-  char filename[STR_SIZE+1];
-  main_widget_get_filename_to_open(path, filter, caption, filename, STR_SIZE);
-  return PyUnicode_FromString(filename);
-}
-
-
-static PyObject* _main_widget_get_filename_to_save(PyObject* self, 
-                                                   PyObject* args)
-{
-  char* path = NULL;
-  char* filter = NULL;
-  char* caption = NULL;
-  if (!PyArg_ParseTuple(args, "sss", &path, &filter, &caption))
-    return NULL;
-  char filename[STR_SIZE+1];
-  main_widget_get_filename_to_save(path, filter, caption, filename, STR_SIZE);
-  return PyUnicode_FromString(filename);
-}
-
-
-static PyObject* _main_widget_set_status_bar_message(PyObject* self, 
-                                                     PyObject* args)
-{
-  char* message = NULL;
-  if (!PyArg_ParseTuple(args, "s", &message))
-    return NULL;
-
-  // --------------------------------------------------------------------------
-  // Replace this by something useful.
-  printf("set_status_bar_message: %s\n", message);
-  // --------------------------------------------------------------------------
-
-static PyObject* _main_widget_set_status_bar_message(PyObject* self, 
-                                                     PyObject* args)
-{
-  char* message = NULL;
-  if (!PyArg_ParseTuple(args, "s", &message))
-    return NULL;
-  main_widget_set_status_bar_message(message);
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-
-static PyObject* _main_widget_set_progress_text(PyObject* self, 
-                                                PyObject* args)
+static PyObject* _main_wdgt_set_window_title(PyObject* self, PyObject* args)
 {
   char* text = NULL;
   if (!PyArg_ParseTuple(args, "s", &text)) 
     return NULL;
-  main_widget_set_progress_text(text);
+  main_wdgt_set_window_title(text);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject* _main_widget_set_progress_range(PyObject* self, 
+static PyObject* _main_wdgt_show_information(PyObject* self, PyObject* args)
+{
+  char* text = NULL;
+  if (!PyArg_ParseTuple(args, "s", &text)) 
+    return NULL;
+  main_wdgt_show_information(text);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+
+static PyObject* _main_wdgt_show_question(PyObject* self, PyObject* args)
+{
+  char* text = NULL;
+  char* option_0 = NULL;
+  char* option_1 = NULL;
+  char* option_2 = NULL;
+  if (!PyArg_ParseTuple(args, "ssss", &text, &option_0, &option_1,
+        &option_2)) 
+    return NULL;
+  int answer;
+  answer = main_wdgt_show_question(text, option_0, option_1, option_2);
+  return Py_BuildValue("i", answer);
+}
+
+
+static PyObject* _main_wdgt_show_error(PyObject* self, PyObject* args)
+{
+  char* text = NULL;
+  if (!PyArg_ParseTuple(args, "s", &text)) 
+    return NULL;
+  main_wdgt_show_error(text);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+
+static PyObject* _main_wdgt_get_filename_to_open(PyObject* self, 
                                                  PyObject* args)
+{
+  char* path = NULL;
+  char* filter = NULL;
+  char* caption = NULL;
+  if (!PyArg_ParseTuple(args, "sss", &path, &filter, &caption))
+    return NULL;
+  char filename[STR_SIZE+1];
+  main_wdgt_get_filename_to_open(path, filter, caption, filename, STR_SIZE);
+  return PyUnicode_FromString(filename);
+}
+
+
+static PyObject* _main_wdgt_get_filename_to_save(PyObject* self,
+                                                 PyObject* args)
+{
+  char* path = NULL;
+  char* filter = NULL;
+  char* caption = NULL;
+  if (!PyArg_ParseTuple(args, "sss", &path, &filter, &caption))
+    return NULL;
+  char filename[STR_SIZE+1];
+  main_wdgt_get_filename_to_save(path, filter, caption, filename, STR_SIZE);
+  return PyUnicode_FromString(filename);
+}
+
+
+static PyObject* _main_wdgt_set_status_bar_message(PyObject* self, 
+                                                   PyObject* args)
+{
+  char* text = NULL;
+  if (!PyArg_ParseTuple(args, "s", &text))
+    return NULL;
+  main_wdgt_set_status_bar_message(text);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+
+static PyObject* _main_wdgt_set_progress_text(PyObject* self, PyObject* args)
+{
+  char* text = NULL;
+  if (!PyArg_ParseTuple(args, "s", &text)) 
+    return NULL;
+  main_wdgt_set_progress_text(text);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+
+static PyObject* _main_wdgt_set_progress_range(PyObject* self, PyObject* args)
 {
   int min = 0;
   int max = 0;
   if (!PyArg_ParseTuple(args, "ii", &min, &max)) 
     return NULL;
-  main_widget_set_progress_range(min, max);
+  main_wdgt_set_progress_range(min, max);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject* _main_widget_set_progress_update_interval(PyObject* self, 
-                                                           PyObject* args)
+static PyObject* _main_wdgt_set_progress_update_interval(PyObject* self,
+                                                         PyObject* args)
 {
   int interval = 0;
   if (!PyArg_ParseTuple(args, "i", &interval)) 
     return NULL;
-  main_widget_set_progress_update_interval(interval);
+  main_wdgt_set_progress_update_interval(interval);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject* _main_widget_set_progress_value(PyObject* self, 
-                                                 PyObject* args)
+static PyObject* _main_wdgt_set_progress_value(PyObject* self, PyObject* args)
 {
   int value = 0;
   if (!PyArg_ParseTuple(args, "i", &value)) 
     return NULL;
-  main_widget_set_progress_value(value);
+  main_wdgt_set_progress_value(value);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject* _main_widget_close_progress(PyObject* self, 
-                                             PyObject* args)
+static PyObject* _main_wdgt_close_progress(PyObject* self, PyObject* args)
 {
-  main_widget_close_progress();
+  main_wdgt_close_progress();
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject* _main_widget_enable_edit_current_card(PyObject* self, 
-                                                       PyObject* args)
+static PyObject* _main_wdgt_enable_edit_current_card(PyObject* self, 
+                                                     PyObject* args)
 {
   int is_enabled = 0;
   if (!PyArg_ParseTuple(args, "i", &is_enabled)) 
@@ -189,8 +168,8 @@ static PyObject* _main_widget_enable_edit_current_card(PyObject* self,
 }
 
 
-static PyObject* _main_widget_enable_delete_current_card(PyObject* self, 
-                                                         PyObject* args)
+static PyObject* _main_wdgt_enable_delete_current_card(PyObject* self,
+                                                       PyObject* args)
 {
   int is_enabled = 0;
   if (!PyArg_ParseTuple(args, "i", &is_enabled)) 
@@ -201,8 +180,8 @@ static PyObject* _main_widget_enable_delete_current_card(PyObject* self,
 }
 
 
-static PyObject* _main_widget_enable_browse_cards(PyObject* self, 
-                                                  PyObject* args)
+static PyObject* _main_wdgt_enable_browse_cards(PyObject* self,
+                                                PyObject* args)
 {
   int is_enabled = 0;
   if (!PyArg_ParseTuple(args, "i", &is_enabled)) 
@@ -249,9 +228,9 @@ static PyMethodDef main_wdgt_methods[] = {
 
 
 PyMODINIT_FUNC
-init__main_widget(void)
+init__main_wdgt(void)
 {
-  Py_InitModule("_main_widget", main_widget_methods);
+  Py_InitModule("_main_wdgt", main_wdgt_methods);
 }
 
 
@@ -260,7 +239,8 @@ init__main_widget(void)
 // Functions relating to review widget.
 //
 
-static PyObject* _review_wdgt_set_question_box_visible(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_set_question_box_visible(PyObject* self, 
+                                                       PyObject* args)
 {
   int is_visible = 0;
   if (!PyArg_ParseTuple(args, "i", &is_visible))
@@ -270,7 +250,8 @@ static PyObject* _review_wdgt_set_question_box_visible(PyObject* self, PyObject*
   return Py_None;
 }
         
-static PyObject* _review_wdgt_set_answer_box_visible(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_set_answer_box_visible(PyObject* self, 
+                                                     PyObject* args)
 {
   int is_visible = 0;
   if (!PyArg_ParseTuple(args, "i", &is_visible)) 
@@ -280,7 +261,8 @@ static PyObject* _review_wdgt_set_answer_box_visible(PyObject* self, PyObject* a
   return Py_None;
 }
 
-static PyObject* _review_wdgt_set_question_label(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_set_question_label(PyObject* self, 
+                                                 PyObject* args)
 {
   char* text = NULL;
   if (!PyArg_ParseTuple(args, "s", &text))
@@ -329,7 +311,8 @@ static PyObject* _review_wdgt_clear_answer(PyObject* self, PyObject* args)
 }
 
 
-static PyObject* _review_wdgt_update_show_button(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_update_show_button(PyObject* self, 
+                                                 PyObject* args)
 {  
   char* text = NULL;
   int is_default = 0;
@@ -342,7 +325,8 @@ static PyObject* _review_wdgt_update_show_button(PyObject* self, PyObject* args)
 }
 
 
-static PyObject* _review_wdgt_set_grades_enabled(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_set_grades_enabled(PyObject* self, 
+                                                 PyObject* args)
 {
   int is_enabled = 0;
   if (!PyArg_ParseTuple(args, "i", &is_enabled))
@@ -410,47 +394,45 @@ static PyObject* _review_wdgt_set_grade_tooltip(PyObject* self, PyObject* args)
 }
 
 
-static PyObject* _review_wdgt_update_status_bar(PyObject* self, PyObject* args)
+static PyObject* _review_wdgt_update_status_bar_counters(PyObject* self, 
+                                                         PyObject* args)
 {
-  char* message = NULL;
-  if (!PyArg_ParseTuple(args, "s", &message)) 
-    return NULL;
-  review_wdgt_update_status_bar(message);
+  review_wdgt_update_status_bar_counters();
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 
 static PyMethodDef review_wdgt_methods[] = {
-  {"set_question_box_visible", _review_wdgt_set_question_box_visible, 
+  {"set_question_box_visible",   _review_wdgt_set_question_box_visible, 
    METH_VARARGS, ""},
-  {"set_answer_box_visible",   _review_wdgt_set_answer_box_visible, 
+  {"set_answer_box_visible",     _review_wdgt_set_answer_box_visible, 
    METH_VARARGS, ""},
-  {"set_question_label",       _review_wdgt_set_question_label, 
+  {"set_question_label",         _review_wdgt_set_question_label, 
    METH_VARARGS, ""},
-  {"set_question",             _review_wdgt_set_question, 
+  {"set_question",               _review_wdgt_set_question, 
    METH_VARARGS, ""},
-  {"set_answer",               _review_wdgt_set_answer, 
+  {"set_answer",                 _review_wdgt_set_answer, 
    METH_VARARGS, ""},
-  {"clear_question",           _review_wdgt_clear_question, 
+  {"clear_question",             _review_wdgt_clear_question, 
    METH_VARARGS, ""},
-  {"clear_answer",             _review_wdgt_clear_answer, 
+  {"clear_answer",               _review_wdgt_clear_answer, 
    METH_VARARGS, ""},
-  {"update_show_button",       _review_wdgt_update_show_button, 
+  {"update_show_button",         _review_wdgt_update_show_button, 
    METH_VARARGS, ""},
-  {"set_grades_enabled",       _review_wdgt_set_grades_enabled, 
+  {"set_grades_enabled",         _review_wdgt_set_grades_enabled, 
    METH_VARARGS, ""},
-  {"set_grade_enabled",        _review_wdgt_set_grade_enabled, 
+  {"set_grade_enabled",          _review_wdgt_set_grade_enabled, 
    METH_VARARGS, ""},
-  {"set_default_grade",        _review_wdgt_set_default_grade, 
+  {"set_default_grade",          _review_wdgt_set_default_grade, 
    METH_VARARGS, ""},
-  {"set_grades_title",         _review_wdgt_set_grades_title, 
+  {"set_grades_title",           _review_wdgt_set_grades_title, 
    METH_VARARGS, ""},
-  {"set_grade_text",           _review_wdgt_set_grade_text, 
+  {"set_grade_text",             _review_wdgt_set_grade_text, 
    METH_VARARGS, ""},
-  {"set_grade_tooltip",        _review_wdgt_set_grade_tooltip, 
+  {"set_grade_tooltip",          _review_wdgt_set_grade_tooltip, 
    METH_VARARGS, ""},  
-  {"update_status_bar",        _review_wdgt_update_status_bar, 
+  {"update_status_bar_counters", _review_wdgt_update_status_bar_counters, 
    METH_VARARGS, ""},
   {NULL, NULL, 0, NULL}
 };
@@ -520,7 +502,12 @@ void start_python_bridge()
     "\t\tlog.CaptureStderr(str)\n"
     "sys.stdout = StdoutCatcher()\n"
     "sys.stderr = StderrCatcher()\n"
-   );
+   );  
+
+  //PyRun_SimpleString(
+  //"if 1:\n"
+  //  "\tprint 'hi'"
+  // );
 }
 
 
@@ -530,21 +517,30 @@ void stop_python_bridge()
 }
 
 
+void run_python(char* command)
+{
+  PyRun_SimpleString(command);
+}
+
+
 void eval_python_as_unicode(char* expression, char* result, int bufsize)
 {
   char buf[256];
-  if (strlen(expression) + 10 > sizeof(buf))
+  if (strlen(expression) + 26 > sizeof(buf))
   {
     printf("Expression too long in eval_as_unicode.\n");
     exit (-1);    
   };
-  snprintf(buf, sizeof(buf), "unicode(%s)", expression);
+  snprintf(buf, sizeof(buf), "unicode(%s).encode(\"utf-8\")", expression);
   PyObject* main = PyImport_AddModule("__main__");
-  PyObject* main_dict = PyModule_GetDict( main );
+  PyObject* main_dict = PyModule_GetDict(main);
   PyObject* obj = PyRun_String(buf, Py_eval_input, main_dict, main_dict);
   PyErr_Print();
   if (obj == NULL)
+  {
+    *result = NULL;
     return;
+  }
   strncpy(result, PyString_AsString(obj), bufsize);
   Py_DECREF(obj);
 }

@@ -45,7 +45,7 @@ class Client(object):
             if line.startswith("@@"):
                 # Example of callback which requires user input to be sent
                 # immediately back to the server:
-                if "main_widget.show_save_file_dialog" in line:
+                if "main_widget.get_filename_to_save" in line:
                     # Normally, we should ask the user which path he chooses,
                     # but here we hardcode an answer.
                     self.send_answer("/home/pbienst/.mnemosyne2/default.db")
@@ -137,7 +137,7 @@ if __name__ == "__main__":
 #@@review_widget.set_grade_tooltip("""0""","""You've forgotten this card completely.""")
 #@@review_widget.set_grade_text("""0""","""0""")
 # ...
-#@@review_widget.update_status_bar()
+#@@review_widget.update_status_bar_counters()
 #@@main_widget.enable_edit_current_card("""True""")
 #@@main_widget.enable_delete_current_card("""True""")
 #@@main_widget.enable_browse_cards("""True""")
