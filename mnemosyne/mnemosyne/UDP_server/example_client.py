@@ -45,7 +45,7 @@ class Client(object):
             if line.startswith("@@"):
                 # Example of callback which requires user input to be sent
                 # immediately back to the server:
-                if "main_widget.save_file_dialog" in line:
+                if "main_widget.show_save_file_dialog" in line:
                     # Normally, we should ask the user which path he chooses,
                     # but here we hardcode an answer.
                     self.send_answer("/home/pbienst/.mnemosyne2/default.db")
@@ -144,3 +144,20 @@ if __name__ == "__main__":
 #Done!
 #>>exit()
 
+
+# For syncing, the python code looks something like this:
+
+#    from openSM2sync.client import Client
+#    import mnemosyne.version
+#    client = Client(self.machine_id, self.database, self)
+#    client.program_name = "Mnemosyne"
+#    client.program_version = mnemosyne.version.version
+#    client.capabilities = "mnemosyne_dynamic_cards"
+#    client.check_for_updated_media_files = False
+#    client.interested_in_old_reps = False
+#    client.do_backup = True
+#    client.upload_science_logs = False
+#    try:
+#        client.sync(self.server, self.port, self.username, self.password)
+#    finally:
+#        client.database.release_connection()
