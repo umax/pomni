@@ -115,21 +115,26 @@ class MaemoStatisticsWidget(StatisticsDialog):
         """Switches to the common card statistics page."""
 
         self.window.set_title(_('All cards statistics'))
-        self.html_container.show()
-        self.info_label.hide()
         database = self.database()
-        html = self.html
-        html += "<tr><td><br><br>" + _('Total cards') + ": %d<br><br><br>" \
-            "</td></tr>" % sum([database.total_card_count_for__tag_id(tag._id) \
-                for tag in database.tags()])
-        html += "<tr><td><b>" + _('Grade statistics for all cards') + "</b>" \
-            "</td></tr>"
-        for grade in range(-1, 6):
-            html += "<tr><td>" + _('Grade') + " %2i: %i cards</td></tr>" % \
-                (grade, self.database().total_card_count_for_grade(grade))
-        html += "</table><br><br></body></html>"
-        html = self.renderer.change_font_size(html)
-        self.renderer.render_html(self.html_widget, html)
+        if database.card_count() == 0:
+            self.info_label.set_text(_('There are no cards in database'))
+            self.html_container.hide()
+            self.info_label.show()
+        else:
+            self.info_label.hide()
+            self.html_container.show()
+            html = self.html
+            html += "<tr><td><br><br>" + _('Total cards') + ": %d<br><br><br>" \
+                "</td></tr>" % sum([database.total_card_count_for__tag_id(tag._id) \
+                    for tag in database.tags()])
+            html += "<tr><td><b>" + _('Grade statistics for all cards') + "</b>" \
+                "</td></tr>"
+            for grade in range(-1, 6):
+                html += "<tr><td>" + _('Grade') + " %2i: %i cards</td></tr>" % \
+                    (grade, database.total_card_count_for_grade(grade))
+            html += "</table><br><br></body></html>"
+            html = self.renderer.change_font_size(html)
+            self.renderer.render_html(self.html_widget, html)
 
     def tags_statistics_cb(self, widget):
         """Switches to the tags statistics page."""
