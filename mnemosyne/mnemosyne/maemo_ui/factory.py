@@ -69,7 +69,7 @@ class ConfigHook(Component):
 def app_factory(interface=None):
     """Mnemosyne application factory."""
 
-    app = Mnemosyne()
+    app = Mnemosyne(False)
 
     if not interface or interface == "hildon":
         # Remove not used components
