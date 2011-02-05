@@ -38,11 +38,12 @@ class MaemoStatisticsWidget(StatisticsDialog):
         StatisticsDialog.__init__(self, component_manager)
         self.renderer = self.render_chain().renderer_for_card_type(None)
         self.statistics_page = None
-        self.html = '<html><head><meta http-equiv="Content-Type" content='\
+        self.start_html = '<html><head><meta http-equiv="Content-Type" content='\
         '"text/html;charset=UTF-8"><style type="text/css">*{font-size:28px;'\
         'font-family:Nokia Sans} table {height:100%;margin-left:auto;margin-'\
         'right:auto;text-align:center} body{ background-color:black;margin:0;'\
         'padding:0;}</style></head><body><table>'
+        self.end_html = '</table><br><br></body></html>'
         # create widgets
         self.window, self.current_button, self.common_button, \
             self.tags_button, self.html_widget, self.html_container, \
@@ -62,15 +63,9 @@ class MaemoStatisticsWidget(StatisticsDialog):
         except KeyError:
             last_page = 2
 
-        if last_page == 0:
-            self.tags_button.set_active(True)
-            self.tags_statistics_cb(None)
-        elif last_page == 1:
-            self.common_button.set_active(True)
-            self.common_statistics_cb(None)
-        else:
-            self.current_button.set_active(True)
-            self.current_card_statistics_cb(None)
+        page_dict = {0: self.tags_button, 1: self.common_button, 
+            2: self.current_button}
+        page_dict[last_page].activate()
 
 
     # callbacks
@@ -89,27 +84,28 @@ class MaemoStatisticsWidget(StatisticsDialog):
             self.info_label.show()
         else:
             self.html_container.show()
-            html = self.html
-            html += "<tr><td><br><br>" + _('Grade') + ": %d</td></tr>" % \
-                card.grade
-            html += "<tr><td>" + _('Easiness') + ": %1.2f</td></tr>" % \
-                card.easiness
-            html += "<tr><td>" + _('Repetitions') + ": %d</td></tr>" % \
-                (card.acq_reps + card.ret_reps)
-            html += "<tr><td>" + _('Lapses') + ": %d</td></tr>" % card.lapses
-            html += "<tr><td>" + _('Interval') + ": %d</td></tr>" % \
-                (card.interval / DAY)
-            html += "<tr><td>" + _('Last repetition') + ": %s</td></tr>" \
-                % time.strftime("%B %d, %Y", time.gmtime(card.last_rep))
-            html += "<tr><td>" + _('Next repetition') + ": %s</td></tr>" \
-                % time.strftime("%B %d, %Y", time.gmtime(card.next_rep))
-            html += "<tr><td>" + _('Average thinking time (secs)') + ": %d" \
-                "</td></tr>" % self.database().average_thinking_time(card)
-            html += "<tr><td>" + _('Total thinking time (secs)') + ": %d</td>" \
-                "</tr>" % self.database().total_thinking_time(card)
-            html += "</table><br><br></body></html>"
-            html = self.renderer.change_font_size(html)
-            self.renderer.render_html(self.html_widget, html)
+            html = [self.start_html]
+            html.extend(["<tr><td><br><br>", _('Grade'), ": %d</td></tr>" % \
+                card.grade])
+            html.extend(["<tr><td>",  _('Easiness'), ": %1.2f</td></tr>" % \
+                card.easiness])
+            html.extend(["<tr><td>", _('Repetitions'), ": %d</td></tr>" % \
+                (card.acq_reps + card.ret_reps)])
+            html.extend(["<tr><td>", _('Lapses'), ": %d</td></tr>" % \
+                card.lapses])
+            html.extend(["<tr><td>", _('Interval'), ": %d</td></tr>" % \
+                (card.interval / DAY)])
+            html.extend(["<tr><td>", _('Last repetition'), ": %s</td></tr>" \
+                % time.strftime("%B %d, %Y", time.gmtime(card.last_rep))])
+            html.extend(["<tr><td>", _('Next repetition'), ": %s</td></tr>" \
+                % time.strftime("%B %d, %Y", time.gmtime(card.next_rep))])
+            html.extend(["<tr><td>", _('Average thinking time (secs)'), ": %d" \
+                "</td></tr>" % self.database().average_thinking_time(card)])
+            html.extend(["<tr><td>", _('Total thinking time (secs)'), \
+                ": %d</td></tr>" % self.database().total_thinking_time(card)])
+            html.append(self.end_html)
+            self.renderer.render_html(self.html_widget, \
+                self.renderer.change_font_size(''.join(html)))
 
     def common_statistics_cb(self, widget):
         """Switches to the common card statistics page."""
@@ -123,44 +119,43 @@ class MaemoStatisticsWidget(StatisticsDialog):
         else:
             self.info_label.hide()
             self.html_container.show()
-            html = self.html
-            html += "<tr><td><br><br>" + _('Total cards') + ": %d<br><br><br>" \
-                "</td></tr>" % sum([database.total_card_count_for__tag_id(tag._id) \
-                    for tag in database.tags()])
-            html += "<tr><td><b>" + _('Grade statistics for all cards') + "</b>" \
-                "</td></tr>"
+            html = [self.start_html]
+            html.extend(["<tr><td><br><br>", _('Total cards'), ": %d<br><br>" \
+                "<br></td></tr>" % sum([database.total_card_count_for__tag_id( \
+                    tag._id) for tag in database.tags()])])
+            html.extend(["<tr><td><b>", _('Grade statistics for all cards'), \
+                "</b></td></tr>"])
             for grade in range(-1, 6):
-                html += "<tr><td>" + _('Grade') + " %2i: %i cards</td></tr>" % \
-                    (grade, database.total_card_count_for_grade(grade))
-            html += "</table><br><br></body></html>"
-            html = self.renderer.change_font_size(html)
-            self.renderer.render_html(self.html_widget, html)
+                html.extend(["<tr><td>", _('Grade'), " %2i: %i cards</td>" \
+                    "</tr>" % (grade, database.total_card_count_for_grade( \
+                    grade))])
+            html.append(self.end_html)
+            self.renderer.render_html(self.html_widget, \
+                self.renderer.change_font_size(''.join(html)))
 
     def tags_statistics_cb(self, widget):
         """Switches to the tags statistics page."""
 
         self.window.set_title(_('Tags statistics'))
-        self.html_container.hide()
-        self.info_label.hide()
         tags = [(tag._id, tag.name) for tag in self.database().tags()]
-            #self.database().get_tags__id_and_name()]
-            #zip(self.database().tags(), self.database().tag_names())]
         if not tags:
             self.info_label.set_text(_('There are no tags'))
+            self.html_container.hide()
             self.info_label.show()
         else:
+            self.info_label.hide()
             self.html_container.show()
-            html = self.html
+            html = [self.start_html]
             for _id, name in tags:
-                html += "<tr><td><br><br>" + _('Tag') + " <b>%s</b></td></tr>" \
-                    % name.replace('<', '&lt;').replace('>', '&gt;')
+                html.extend(["<tr><td><br><br>", _('Tag'), " <b>%s</b></td>" \
+                    "</tr>" % name.replace('<', '&lt;').replace('>', '&gt;')])
                 for grade in range(-1, 6):
-                    html += "<tr><td>" + _('Grade') + " %2i: %i cards</td>" \
+                    html.extend(["<tr><td>", _('Grade'), " %2i: %i cards</td>" \
                         "</tr>" % (grade, self.database(). \
-                        total_card_count_for_grade_and__tag_id(grade, _id))
-            html += "</table><br><br></body></html>"
-            html = self.renderer.change_font_size(html)
-            self.renderer.render_html(self.html_widget, html)
+                        total_card_count_for_grade_and__tag_id(grade, _id))])
+            html.append(self.end_html)
+            self.renderer.render_html(self.html_widget, \
+                self.renderer.change_font_size(''.join(html)))
 
     def back_to_previous_mode_cb(self, widget):
         """Returns to previous mode."""
