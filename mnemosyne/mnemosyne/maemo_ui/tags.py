@@ -28,7 +28,7 @@ import re
 import mnemosyne.maemo_ui.widgets.tags as widgets
 from mnemosyne.libmnemosyne.ui_component import UiComponent
 from mnemosyne.libmnemosyne.ui_components.dialogs import ActivateCardsDialog
-from mnemosyne.libmnemosyne.activity_criteria.default_criterion import \
+from mnemosyne.libmnemosyne.criteria.default_criterion import \
     DefaultCriterion
 
 
