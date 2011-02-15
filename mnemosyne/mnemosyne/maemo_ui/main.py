@@ -152,10 +152,11 @@ class MainWdgt(MainWidget):
         widgets.create_information_dialog(self.review_window, message,  \
             title=_('Error'))
 
-    def show_question(self, question, option0, option1, option2):
+    def show_question(self, question, *buttons):
         """Show Question message."""
 
-        return widgets.create_question_dialog(self.review_window, question)
+        return widgets.create_question_dialog(self.review_window, question, \
+            buttons)
 
 
 

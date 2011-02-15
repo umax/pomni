@@ -29,7 +29,7 @@ import hildon
 from gettext import gettext as _
 
 
-def create_question_dialog(window, text):
+def create_question_dialog(window, text, buttons):
     """Create QuestionDialog UI."""
 
     if 'Activate cards' in text:
@@ -39,13 +39,16 @@ def create_question_dialog(window, text):
     dialog.set_title(_('Card deletion'))
     dialog.vbox.add(label)
     dialog.vbox.show_all()
-    dialog.add_button(_('Yes'), gtk.RESPONSE_YES)
-    dialog.add_button(_('No'), gtk.RESPONSE_NO)
+    delete_event_response_id = 0
+    for response_id, button in enumerate(buttons):
+        if button:
+            delete_event_response_id = response_id
+            dialog.add_button(_(button.replace('&', '')), response_id)
     response = dialog.run()
     dialog.destroy()
-    if response == gtk.RESPONSE_YES:
-        return False
-    return True
+    if response == gtk.RESPONSE_DELETE_EVENT:
+        return delete_event_response_id
+    return response
 
 
 def create_information_dialog(window, text, title=_('Information')):
