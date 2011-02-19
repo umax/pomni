@@ -115,8 +115,7 @@ class MainWdgt(MainWidget):
 
         if 'review' not in self.widgets:
             self.create_mode('review')
-        self.component_manager.current('add_cards_dialog') \
-            (self.component_manager).activate()
+        self.controller().add_cards()
 
     def review_(self):
         """Activates 'Review' mode."""

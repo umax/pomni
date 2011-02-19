@@ -188,8 +188,7 @@ class ReviewWdgt(ReviewWidget):
         """Hook for 'Edit card' button."""
 
         self._main_widget.soundplayer.stop()
-        self.component_manager.current("edit_card_dialog")\
-            (self.component_manager).activate()
+        self.controller().edit_current_card()
 
     def grade_cb(self, widget):
         """Hook for 'GradeN' button."""

@@ -24,6 +24,7 @@
 Hildon UI: Input mode Widgets.
 """
 
+import glib
 import pango
 from gettext import gettext as _
 
@@ -46,7 +47,10 @@ class InputWidget(UiComponent):
 
     def __init__(self, component_manager):
         UiComponent.__init__(self, component_manager)
+
+        self.window_loop = glib.MainLoop()
         self.conf = self.config()
+        self.database = self.database()
         self.renderer = self.component_manager.current('renderer')
         self.default_tag_name = unicode(_('<default>'))
         self.content_type = None
@@ -56,7 +60,7 @@ class InputWidget(UiComponent):
         self.imagedir = None
         self.card_type = None
         self.selected_tags = None   # user selected tags list
-        tags = self.database().tags()
+        tags = self.database.tags()
         if tags:
             self.tags = [unicode(tag.name) for tag in sorted(tags, \
                 cmp=numeric_string_cmp)]
@@ -313,6 +317,7 @@ class AddCardWidget(AddCardsDialog, InputWidget):
 
     def __init__(self, component_manager):
         InputWidget.__init__(self, component_manager)
+
         # connect signals
         self.widgets['CardTypeButton'].connect('clicked', \
             self.show_cardtype_dialog_cb)
@@ -328,14 +333,12 @@ class AddCardWidget(AddCardsDialog, InputWidget):
     def activate(self):
         """Activate input mode."""
 
-        # this part is the first part of add_cards from default controller
-        self.stopwatch().pause()
-
         self.set_content_type(self.conf['content_type_last_selected'])
         self.set_card_type( \
             self.selectors[self.conf['card_type_last_selected']]['card_type'])
         self.update_tags()
         self.clear_widgets()
+        self.window_loop.run()
 
     def clear_text_cb(self, widget, event):
         """Clear textview content."""
@@ -357,7 +360,7 @@ class AddCardWidget(AddCardsDialog, InputWidget):
             return # Let the user try again to fill out the missing data.
 
         grade = int(widget.name[-1])
-        if grade in (0, 1):
+        if grade == 0:
             grade = -1
         self.controller().create_new_cards(fact_data, self.card_type, grade, \
             self.selected_tags, save=True)
@@ -373,15 +376,7 @@ class AddCardWidget(AddCardsDialog, InputWidget):
         conf['content_type_last_selected'] = self.content_type
         conf.save()
 
-        # this part is called from add_card_cb, when card is added
-        self.database().save()
-        review_controller = self.review_controller()
-        review_controller.reload_counters()
-        if review_controller.card is None:
-            review_controller.new_question()
-        self.stopwatch().unpause()
-
-        #self._main_widget.soundplayer.stop()
+        self.window_loop.quit()
         self._main_widget.menu_()
 
 
@@ -389,15 +384,16 @@ class AddCardWidget(AddCardsDialog, InputWidget):
 class EditCardWidget(EditCardDialog, InputWidget):
     """Edit current fact widget."""
 
-    def __init__(self, component_manager):
+    def __init__(self, card, component_manager):
         InputWidget.__init__(self, component_manager)
-        self.card = self.review_controller().card
+
+        self.card = card
         self.selected_tags = [tag.name for tag in \
-            self.database().cards_from_fact(self.card.fact)[0].tags]
+            self.database.cards_from_fact(card.fact)[0].tags]
         # set grade of the current card active
         for num in range(6):
             self.grades[num].set_sensitive(False)
-        current_grade = self.card.grade
+        current_grade = card.grade
         if current_grade == -1:
             current_grade = 0
         self.grades[current_grade].set_sensitive(True)
@@ -407,10 +403,6 @@ class EditCardWidget(EditCardDialog, InputWidget):
 
     def activate(self):
         """Activate Edit mode."""
-
-        # this part is the first part of
-        # edit_current_card from default controller
-        self.stopwatch().pause()
 
         self.set_card_type(self.card.card_type)
         if self.card_type.id is FrontToBack.id:
@@ -429,6 +421,7 @@ class EditCardWidget(EditCardDialog, InputWidget):
         self.set_content_type(content_type)
         self.set_widgets_data(self.card.fact)
         self.update_tags()
+        self.window_loop.run()
 
     def update_card_cb(self, widget):
         """Update card in the database."""
@@ -438,18 +431,9 @@ class EditCardWidget(EditCardDialog, InputWidget):
         except ValueError:
             return # Let the user try again to fill out the missing data.
 
-        review_controller = self.review_controller()
         new_tags = [unicode(tag.strip()) for tag in self.selected_tags]
         self.controller().edit_related_cards(self.card.fact, fact_data,
           self.card_type, new_tags, None)
-
-        # this part is the second part of
-        # edit_current_fact from default controller
-        review_controller.reload_counters()
-        review_controller.card = self.database().card(\
-            review_controller.card._id, id_is_internal=True)
-        review_controller.update_dialog(redraw_all=True)
-        self.stopwatch().unpause()
 
         self.input_to_main_menu_cb()
 
@@ -458,6 +442,7 @@ class EditCardWidget(EditCardDialog, InputWidget):
 
         #self._main_widget.soundplayer.stop()
         self.window.destroy()
+        self.window_loop.quit()
         self._main_widget.activate_mode('review')
 
 
